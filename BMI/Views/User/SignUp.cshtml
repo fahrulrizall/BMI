@@ -1,0 +1,58 @@
+﻿@model BMI.Models.Usermodel
+@{
+    ViewData["Title"] = "Register";
+}
+
+<div class="register-box">
+    <div class="register-logo">
+        <a href="../../index2.html"><b>Anova</b>Food</a>
+    </div>
+    <div class="card">
+        <div class="card-body register-card-body">
+            <p class="login-box-msg">Register a new membership</p>
+
+            <form asp-action="SignUp">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <input asp-for="UserId" type="number" class="form-control" placeholder="User ID">
+                    <span asp-validation-for="UserId" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input asp-for="FirstName" type="text" class="form-control" placeholder="First Name">
+                    <span asp-validation-for="FirstName" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input asp-for="LastName" type="text" class="form-control" placeholder="Last Name">
+                    <span asp-validation-for="LastName" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input asp-for="EmailAddress" type="email" class="form-control" placeholder="Email">
+                    <span asp-validation-for="EmailAddress" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input asp-for="ConfirmEmail" type="email" class="form-control" placeholder="Confirm Email">
+                    <span asp-validation-for="ConfirmEmail" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input asp-for="Password" type="password" class="form-control" placeholder="Password">
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input asp-for="ConfirmPassword" type="password" class="form-control" placeholder="Confirm Password">
+                    <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <input type="submit" value="Create" class="btn btn-primary float-right" />
+                </div>
+            </form>
+
+
+            <a class="btn btn-primary" asp-area="" asp-controller="user" asp-action="SignIn">Sign In</a>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

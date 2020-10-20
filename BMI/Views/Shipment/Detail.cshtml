@@ -1,0 +1,166 @@
+﻿@model IEnumerable<BMI.Models.ShipmentDetailModel>
+@{
+    ViewData["Title"] = "Shipment";
+}
+@{int no = ViewBag.no; }
+
+<div class="content-wrapper">
+    <section class="content-header">
+    </section>
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-12">
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Shipment @no</h3>
+                        <div class="card-tools">
+                            <a href="#" type="button" class="btn btn-sm btn-default float-right mx-1"
+                               data-toggle="modal" data-target="#modal-upload">
+                                <i class="fa fa-upload">
+                                </i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <table id="example1" class="table table-bordered table-striped table-sm">
+                            <thead>
+                                <tr>
+                                    <th style="width: 3%;font-size:small">
+                                        BMI Code
+                                    </th>
+                                    <th style="width: 3%;font-size:small">
+                                        SAP Code
+                                    </th>
+                                    <th style="width: 15%;font-size:small">
+                                        Description
+                                    </th>
+                                    <th style="width: 5%;font-size:small">
+                                        Qty
+                                    </th>
+                                    <th style="width: 6%;font-size:small">
+                                        Batch
+                                    </th>
+                                    <th style="width: 5%;font-size:small">
+                                        Action
+                                    </th>
+                                </tr>
+                            </thead>
+                            @if (Model.Count() > 0)
+                            {
+                                <tbody>
+                                    @foreach (var obj in Model)
+                                    {
+                                        <tr>
+                                            <td style="font-size:small">@obj.bmi_code</td>
+                                            <td style="font-size:small">@obj.MasterBMIModel.sap_code</td>
+                                            <td style="font-size:small">@obj.MasterBMIModel.description</td>
+                                            <td style="font-size:small">@obj.qty</td>
+                                            <td style="font-size:small">@obj.batch</td>
+                                            <td>
+                                                <form asp-controller="Shipment" asp-route-id="@obj.id_shipment_detail" asp-action="Delete" method="post">
+                                                    <a data-toggle="modal" data-target="#modal-default" data-id="@obj.id_ship" class="btn btn-xs btn-warning update-shipment">
+                                                        <i class="fa fa-edit" style="color:ghostwhite;outline:thin"></i>
+                                                    </a>
+                                                    <button type="submit" onclick="return confirm ('Delete Shipment No @obj.id_ship');" class="btn btn-xs btn-danger">
+                                                        <i class="fa fa-trash"></i>
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            }
+                        </table>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </section>
+    <!-- /.content -->
+</div>
+
+
+@if (Model.Count() > 0)
+{
+    <div class="modal fade" id="modal-default">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="formModalLabel">Add Item</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body mb-2">
+                    <form method="POST" asp-action="Update" asp-controller="Shipment">
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label asp-for="First().bmi_code" class="shipment-id-label"></label>
+                                <input type="text" class="form-control shipment-id" asp-for="First().bmi_code"
+                                       placeholder="Shipment Number">
+                                <span asp-validation-for="First().bmi_code" class="text-danger" style="font-size:smaller"> </span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="First().qty"></label>
+                                <input type="number" class="form-control" asp-for="First().qty"
+                                       placeholder="PO Number">
+                                <span asp-validation-for="First().qty" class="text-danger" style="font-size:smaller"> </span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="First().batch"></label>
+                                <input type="date" class="form-control" asp-for="First().batch">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" value="Create" class="btn btn-primary">Add</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<div class="modal fade" id="modal-upload">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="formModalLabel">Upload File</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body mb-2">
+                <form method="POST" asp-controller="Shipment" asp-action="Import" enctype="multipart/form-data">
+                    <div class="card-body">
+                        <input type="hidden" id="id" name="id" value="@no">
+                        <div class="form-group input-file">
+                            <label for="exampleInputFile">File input</label>
+                            <div class="input-group">
+                                <div class="custom-file">
+                                    <input type="file" class="custom-file-input" name="postedFile" id="postedFile" accept="application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" required>
+                                    <label class="custom-file-label" for="exampleInputFile">Choose file</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Upload</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- /.modal-content -->
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

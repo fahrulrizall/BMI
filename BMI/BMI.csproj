@@ -1,0 +1,123 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UserSecretsId>1e867ddc-46b5-4988-ab92-3d29ebf54eb0</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Migrations\20200923134024_change_sap_code_int.cs" />
+    <Compile Remove="Migrations\20200923134024_change_sap_code_int.Designer.cs" />
+    <Compile Remove="Migrations\20200924013954_addrawtodatabase.cs" />
+    <Compile Remove="Migrations\20200924013954_addrawtodatabase.Designer.cs" />
+    <Compile Remove="Migrations\20200924014145_addrawtodatabase1.cs" />
+    <Compile Remove="Migrations\20200924014145_addrawtodatabase1.Designer.cs" />
+    <Compile Remove="Migrations\20200924014403_addrawtodatabase2.cs" />
+    <Compile Remove="Migrations\20200924014403_addrawtodatabase2.Designer.cs" />
+    <Compile Remove="Migrations\20200924014445_addrawtodatabase3.cs" />
+    <Compile Remove="Migrations\20200924014445_addrawtodatabase3.Designer.cs" />
+    <Compile Remove="Migrations\20200924014634_addrawtodatabase.cs" />
+    <Compile Remove="Migrations\20200924014634_addrawtodatabase.Designer.cs" />
+    <Compile Remove="Migrations\20200924085147_changedatetime.cs" />
+    <Compile Remove="Migrations\20200924085147_changedatetime.Designer.cs" />
+    <Compile Remove="Migrations\20200926081326_updatedateformat.cs" />
+    <Compile Remove="Migrations\20200926081326_updatedateformat.Designer.cs" />
+    <Compile Remove="Migrations\20201007070805_anjayani.cs" />
+    <Compile Remove="Migrations\20201007070805_anjayani.Designer.cs" />
+    <Compile Remove="Migrations\20201007073256_resize.cs" />
+    <Compile Remove="Migrations\20201007073256_resize.Designer.cs" />
+    <Compile Remove="Migrations\20201007075727_afasfasfasf.cs" />
+    <Compile Remove="Migrations\20201007075727_afasfasfasf.Designer.cs" />
+    <Compile Remove="Migrations\20201007123853_addtablees.cs" />
+    <Compile Remove="Migrations\20201007123853_addtablees.Designer.cs" />
+    <Compile Remove="Migrations\20201007125301_addrelationsjk.cs" />
+    <Compile Remove="Migrations\20201007125301_addrelationsjk.Designer.cs" />
+    <Compile Remove="Migrations\20201007131224_coba1.cs" />
+    <Compile Remove="Migrations\20201007131224_coba1.Designer.cs" />
+    <Compile Remove="Migrations\20201007132110_addfk1.cs" />
+    <Compile Remove="Migrations\20201007132110_addfk1.Designer.cs" />
+    <Compile Remove="Migrations\20201007133140_dataset1.cs" />
+    <Compile Remove="Migrations\20201007133140_dataset1.Designer.cs" />
+    <Compile Remove="Migrations\20201008014553_removetablemasterdata.cs" />
+    <Compile Remove="Migrations\20201008014553_removetablemasterdata.Designer.cs" />
+    <Compile Remove="Migrations\20201008021028_addtablemasterdata.cs" />
+    <Compile Remove="Migrations\20201008021028_addtablemasterdata.Designer.cs" />
+    <Compile Remove="Migrations\20201008084450_setdatabase.cs" />
+    <Compile Remove="Migrations\20201008084450_setdatabase.Designer.cs" />
+    <Compile Remove="Migrations\20201009070257_aaaaaaaaaaaaaa.cs" />
+    <Compile Remove="Migrations\20201009070257_aaaaaaaaaaaaaa.Designer.cs" />
+    <Compile Remove="Migrations\20201012075435_updatealltable.cs" />
+    <Compile Remove="Migrations\20201012075435_updatealltable.Designer.cs" />
+    <Compile Remove="Migrations\20201013060858_addshipmenttable.cs" />
+    <Compile Remove="Migrations\20201013060858_addshipmenttable.Designer.cs" />
+    <Compile Remove="Migrations\20201013065856_changeidshipment.cs" />
+    <Compile Remove="Migrations\20201013065856_changeidshipment.Designer.cs" />
+    <Compile Remove="Migrations\20201013070110_changeidshipment.cs" />
+    <Compile Remove="Migrations\20201013070110_changeidshipment.Designer.cs" />
+    <Compile Remove="Migrations\20201013070925_changetableshipment.cs" />
+    <Compile Remove="Migrations\20201013070925_changetableshipment.Designer.cs" />
+    <Compile Remove="Migrations\20201013072457_changetableshipment1.cs" />
+    <Compile Remove="Migrations\20201013072457_changetableshipment1.Designer.cs" />
+    <Compile Remove="Migrations\20201013072901_changetableshipment1.cs" />
+    <Compile Remove="Migrations\20201013072901_changetableshipment1.Designer.cs" />
+    <Compile Remove="Migrations\20201013073249_changetableshipment1.cs" />
+    <Compile Remove="Migrations\20201013073249_changetableshipment1.Designer.cs" />
+    <Compile Remove="Migrations\20201013082904_changettableshipment.cs" />
+    <Compile Remove="Migrations\20201013082904_changettableshipment.Designer.cs" />
+    <Compile Remove="Migrations\20201013083546_changettableshipment.cs" />
+    <Compile Remove="Migrations\20201013083546_changettableshipment.Designer.cs" />
+    <Compile Remove="Migrations\20201013084157_changettableshipmentpart2.cs" />
+    <Compile Remove="Migrations\20201013084157_changettableshipmentpart2.Designer.cs" />
+    <Compile Remove="Migrations\20201013084235_changettableshipmentpart2.cs" />
+    <Compile Remove="Migrations\20201013084235_changettableshipmentpart2.Designer.cs" />
+    <Compile Remove="Migrations\20201013084459_changettableshipmentpart3.cs" />
+    <Compile Remove="Migrations\20201013084459_changettableshipmentpart3.Designer.cs" />
+    <Compile Remove="Migrations\20201013084757_changeid_sipment.cs" />
+    <Compile Remove="Migrations\20201013084757_changeid_sipment.Designer.cs" />
+    <Compile Remove="Migrations\20201013085019_changeid_sipment.cs" />
+    <Compile Remove="Migrations\20201013085019_changeid_sipment.Designer.cs" />
+    <Compile Remove="Migrations\20201013085659_changeid_sipment.cs" />
+    <Compile Remove="Migrations\20201013085659_changeid_sipment.Designer.cs" />
+    <Compile Remove="Migrations\20201013090017_changeid_sipment.cs" />
+    <Compile Remove="Migrations\20201013090017_changeid_sipment.Designer.cs" />
+    <Compile Remove="Migrations\20201013091515_changeid_sipment.cs" />
+    <Compile Remove="Migrations\20201013091515_changeid_sipment.Designer.cs" />
+    <Compile Remove="Migrations\20201013094138_removeprimarykey.cs" />
+    <Compile Remove="Migrations\20201013094138_removeprimarykey.Designer.cs" />
+    <Compile Remove="Migrations\20201013094420_changingprimarykey.cs" />
+    <Compile Remove="Migrations\20201013094420_changingprimarykey.Designer.cs" />
+    <Compile Remove="Migrations\20201013114609_deletecloumn.cs" />
+    <Compile Remove="Migrations\20201013114609_deletecloumn.Designer.cs" />
+    <Compile Remove="Migrations\20201013115833_addPKontableShipment.cs" />
+    <Compile Remove="Migrations\20201013115833_addPKontableShipment.Designer.cs" />
+    <Compile Remove="Migrations\20201013115954_removetableshipment.cs" />
+    <Compile Remove="Migrations\20201013115954_removetableshipment.Designer.cs" />
+    <Compile Remove="Migrations\20201013120437_removecolumnshipmentpart2.cs" />
+    <Compile Remove="Migrations\20201013120437_removecolumnshipmentpart2.Designer.cs" />
+    <Compile Remove="Migrations\20201013121413_removecolumnshipmentpart3.cs" />
+    <Compile Remove="Migrations\20201013121413_removecolumnshipmentpart3.Designer.cs" />
+    <Compile Remove="Migrations\20201013121523_removecolumnshipmentpart3.cs" />
+    <Compile Remove="Migrations\20201013121523_removecolumnshipmentpart3.Designer.cs" />
+    <Compile Remove="Migrations\20201013121632_removecolumnshipmentpart3.cs" />
+    <Compile Remove="Migrations\20201013121632_removecolumnshipmentpart3.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ExcelDataReader" Version="3.6.0" />
+    <PackageReference Include="ExcelDataReader.DataSet" Version="3.6.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.2.7" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.8" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.8" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.8">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.4" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\Uploads\" />
+  </ItemGroup>
+
+</Project>

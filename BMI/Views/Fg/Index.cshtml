@@ -1,0 +1,160 @@
+﻿@model IEnumerable<BMI.Models.Fgmodel>
+@{int plant = ViewBag.plant; }
+@{
+    ViewData["Title"] = @plant;
+}
+<div class="content-wrapper">
+    <section class="content-header">
+        @*<div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1>@plant Finished Good Item</h1>
+                    </div>
+                </div>
+            </div>*@
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-12">
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title"> @plant Finish Good List</h3>
+                        <!-- <div class="card-tools">
+                        <a href="#" type="button" class="btn btn-default float-right upload-file "
+                        data-toggle="modal" data-target="#modal-default">Upload File</a>
+                        </div> -->
+                        <div class="card-tools ">
+                            <button class="btn btn-sm float-right mx-1 add-new-fg"
+                                    data-toggle="modal" data-target="#modal-default">
+                                <i class="fa fa-plus">
+                                </i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <table id="example1" class="table table-bordered table-striped table-sm">
+                            <thead>
+                                <tr>
+                                    <th style="width: 10%;font-size:small">
+                                        SAP Code
+                                    </th>
+                                    <th style="width: 23%;font-size:small">
+                                        Description
+                                    </th>
+                                    <th style="width: 5%;font-size:small">
+                                        Price/Lbs
+                                    </th>
+                                    <th style="width: 8%;font-size:small">
+                                        Lbs
+                                    </th>
+                                    <th style="width: 5%;font-size:small">
+                                        StdPrice
+                                    </th>
+                                    <th style="width: 5%;font-size:small">
+                                        Fee
+                                    </th>
+                                    <th style="width: 8%;font-size:small">
+                                        Category
+                                    </th>
+                                    <th style="width: 3%;font-size:small">
+                                        Action
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var obj in Model)
+                                {
+                                    <tr>
+                                        <td style="font-size:small">@obj.sap_code</td>
+                                        <td style="font-size:small">@obj.Masterdatamodel.description</td>
+                                        <td style="font-size:small">@obj.price_lbs</td>
+                                        <td style="font-size:small">@obj.Masterdatamodel.lbs</td>
+                                        <td style="font-size:small">@obj.std_price</td>
+                                        <td style="font-size:small">@obj.processing_fee</td>
+                                        <td style="font-size:small">@obj.Masterdatamodel.category</td>
+                                        <td>
+                                            <form asp-controller="Fg" asp-route-id="@obj.id_fg" asp-route-plant="@obj.plant" asp-action="Delete" method="post">
+                                                <a data-toggle="modal" data-target="#modal-default" data-id="@obj.id_fg" class="btn btn-xs btn-warning update-fg">
+                                                    <i class="fa fa-edit" style="color:whitesmoke;outline:thin">
+                                                    </i>
+                                                </a>
+                                                <button type="submit" onclick="return confirm ('Delete Item @obj.sap_code');" class="btn btn-xs btn-danger">
+                                                    <i class="fa fa-trash">
+                                                    </i>
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </section>
+    <!-- /.content -->
+</div>
+
+
+<div class="modal fade" id="modal-default">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="formModalLabel">Add Item</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body mb-2">
+                <form method="POST" asp-action="Create">
+                    <div class="card-body">
+                        <input type="hidden" class="form-control" id="id_fg" name="id_fg">
+                        <div class="form-group">
+                            <label asp-for="First().sap_code"></label>
+                            <input type="number" class="form-control" asp-for="First().sap_code"
+                                   placeholder="SAP Code">
+                            <span asp-validation-for="First().sap_code" class="text-danger" style="font-size:smaller"> </span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="First().price_lbs"></label>
+                            <input type="number" step="any" class="form-control" asp-for="First().price_lbs"
+                                   placeholder="Price LBS">
+                            <span asp-validation-for="First().price_lbs" class="text-danger" style="font-size:smaller"> </span>
+                        </div>
+                        <input type="hidden" class="form-control" asp-for="First().plant" value="@plant">
+                        <div class="form-group">
+                            <label asp-for="First().std_price"></label>
+                            <input type="number" step="any" class="form-control" asp-for="First().std_price"
+                                   placeholder="Standard Price">
+                            <span asp-validation-for="First().std_price" class="text-danger" style="font-size:smaller"> </span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="First().processing_fee"></label>
+                            <input type="number" step="any" class="form-control" asp-for="First().processing_fee"
+                                   placeholder="Processing Fee">
+                            <span asp-validation-for="First().processing_fee" class="text-danger" style="font-size:smaller"> </span>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" value="Create" class="btn btn-primary">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- /.modal-content -->
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

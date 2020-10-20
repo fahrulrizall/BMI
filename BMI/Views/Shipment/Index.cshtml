@@ -1,0 +1,144 @@
+﻿@model IEnumerable<BMI.Models.Shipmentmodel>
+@{
+    ViewData["Title"] = "Shipment";
+}
+<div class="content-wrapper">
+     <section class="content-header">
+    </section>
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-12">
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Shipment List</h3>
+                        <div class="card-tools">
+                            <a href="#" type="button" class="btn btn-sm btn-default float-right mx-1 add-shipment"
+                               data-toggle="modal" data-target="#modal-default">Add New Shipment</a>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <table id="example1" class="table table-bordered table-striped table-sm">
+                            <thead>
+                                <tr>
+                                    <th style="width: 3%;font-size:small">
+                                        Shipment
+                                    </th>
+                                    <th style="width: 10%;font-size:small">
+                                        PO
+                                    </th>
+                                    <th style="width: 8%;font-size:small">
+                                        ETD
+                                    </th>
+                                    <th style="width: 8%;font-size:small">
+                                        ETA
+                                    </th>
+                                    <th style="width: 10%;font-size:small">
+                                        Destination
+                                    </th>
+                                    <th style="width: 3%;font-size:small">
+                                        Action
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var obj in Model)
+                                {
+                                    <tr>
+                                        <td>
+                                            <a style="font-size:small;color:black" asp-controller="Shipment" asp-action="Detail" asp-route-id="@obj.id_ship">
+                                                @Html.DisplayFor(modelItem => obj.id_ship)
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a style="font-size:small;color:black" asp-controller="Shipment" asp-action="Detail" asp-route-id="@obj.id_ship">
+                                                @Html.DisplayFor(modelItem => obj.po)
+                                            </a>
+                                        </td>
+                                        <td style="font-size:small">@Html.DisplayFor(modelItem => obj.etd)</td>
+                                        <td style="font-size:small">@Html.DisplayFor(modelItem => obj.eta)</td>
+                                        <td style="font-size:small">@obj.destination</td>
+                                        <td>
+                                            <form asp-controller="Shipment" asp-route-id="@obj.id_ship" asp-action="Delete" method="post">
+                                                <a data-toggle="modal" data-target="#modal-default" data-id="@obj.id_ship" class="btn btn-xs btn-warning update-shipment">
+                                                    <i class="fa fa-edit" style="color:ghostwhite;outline:thin">
+                                                    </i>
+                                                </a>
+                                                <button type="submit" onclick="return confirm ('Delete Shipment No @obj.id_ship');" class="btn btn-xs btn-danger">
+                                                    <i class="fa fa-trash">
+                                                    </i>
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </section>
+    <!-- /.content -->
+</div>
+
+
+<div class="modal fade" id="modal-default">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="formModalLabel">Add Item</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body mb-2">
+                <form method="POST" asp-action="Update" asp-controller="Shipment">
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label asp-for="First().id_ship" class="shipment-id-label"></label>
+                            <input type="number" class="form-control shipment-id" asp-for="First().id_ship"
+                                   placeholder="Shipment Number">
+                            <span asp-validation-for="First().id_ship" class="text-danger" style="font-size:smaller"> </span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="First().po"></label>
+                            <input type="number" class="form-control" asp-for="First().po"
+                                   placeholder="PO Number">
+                            <span asp-validation-for="First().po" class="text-danger" style="font-size:smaller"> </span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="First().etd"></label>
+                            <input type="date" class="form-control" asp-for="First().etd">
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="First().eta"></label>
+                            <input type="date" class="form-control" asp-for="First().eta">
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="First().destination"></label>
+                            <input type="text" class="form-control" asp-for="First().destination"
+                                   placeholder="Destination">
+                            <span asp-validation-for="First().destination" class="text-danger" style="font-size:smaller"> </span>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" value="Create" class="btn btn-primary">Add</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- /.modal-content -->
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

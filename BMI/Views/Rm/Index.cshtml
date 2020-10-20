@@ -1,0 +1,61 @@
+﻿@model IEnumerable<BMI.Models.Rmmodel>
+@{
+    ViewData["Title"] = "Raw Material";
+}
+<div class="content-wrapper">
+
+    <section class="content-header">
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-12">
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Container Status</h3>
+                        <!-- <div class="card-tools">
+                              <a href="#" type="button" class="btn btn-default float-right add-container"
+                          data-toggle="modal" data-target="#modal-default">Add New Container</a>
+                        </div> -->
+                    </div>
+
+                    <div class="card-body">
+                        <table id="example2" class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th style="width: 8%">
+                                        Status
+                                    </th>
+                                    <th style="width: 14%">
+                                        Action
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>In Plant</td>
+                                    <td>
+                                        <a asp-controller="Rm" asp-action="List" asp-route-status="in_plant" class="btn btn-sm btn-primary" value="in_plant">View</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>On The Water</td>
+                                    <td>
+                                        <a asp-controller="Rm" asp-action="List" asp-route-status="otw" class="btn btn-sm btn-primary" value="otw">View</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </section>
+    <!-- /.content -->
+</div>
