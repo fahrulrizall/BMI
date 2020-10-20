@@ -208,59 +208,6 @@ namespace BMI.Controllers
             return RedirectToAction("List", new { status = "otw" });
         }
 
-
-        //[HttpPost]
-        //public IActionResult Import(IFormFile postedFile)
-        //{
-        //    if (postedFile != null)
-        //    {
-        //        List<Rmmodel> rm = new List<Rmmodel>();
-        //        string path = Path.Combine(this.Environment.WebRootPath, "Uploads");
-        //        string fileName = Path.GetFileName(postedFile.FileName);
-        //        string filePath = Path.Combine(path, fileName);
-        //        using (FileStream stream = new FileStream(filePath, FileMode.Create))
-        //        {
-        //            postedFile.CopyTo(stream);
-        //        }
-        //        // For .net core, the next line requires the NuGet package, 
-        //        //System.Text.Encoding.CodePages
-        //        System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
-        //        using (var stream = System.IO.File.Open(filePath, FileMode.Open, FileAccess.Read))
-        //        {
-        //            using (var reader = ExcelReaderFactory.CreateReader(stream))
-        //            {
-        //                if (reader.FieldCount == 10)
-        //                {
-        //                    while (reader.Read()) //Each row of the file
-        //                    {
-        //                        rm.Add(new Rmmodel
-        //                        {
-        //                            etd = reader.GetDateTime(0),
-        //                            eta = reader.GetDateTime(1),
-        //                            container = reader.GetValue(2).ToString(),
-        //                            reff = reader.GetValue(3).ToString(),
-        //                            landing_site = reader.GetValue(4).ToString(),
-        //                            sap_code = reader.GetValue(5).ToString(),
-        //                            cases = Convert.ToInt32(reader.GetValue(6)),
-        //                            qty_pl = Convert.ToSingle(reader.GetValue(7)),
-        //                            usd_price = Convert.ToSingle(reader.GetValue(8)),
-        //                            ex_rate = Convert.ToSingle(reader.GetValue(9)),
-        //                            status = "otw"
-        //                        });
-
-        //                    }
-        //                    var obj = rm;
-        //                    _db.Rm.AddRange(rm);
-        //                    _db.SaveChanges();
-        //                    return RedirectToAction("List", new { status = "otw" });
-        //                }
-        //                return RedirectToAction("List", new { status = "otw" });
-        //            }
-        //        }
-        //    }
-        //    return RedirectToAction("List", new { status = "otw" });
-        //}
-
         [HttpPost]
         [AutoValidateAntiforgeryToken]
         public IActionResult Delete(string reff,string status)
