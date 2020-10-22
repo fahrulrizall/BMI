@@ -35,7 +35,7 @@ namespace BMI.Models
         //[Remote(action: "POExist", controller: "Shipment", HttpMethod = "POST", AdditionalFields = "po", ErrorMessage = "No Shipment Already Exist")]
         [Range(1111111111, 9999999999,ErrorMessage ="PO mush 10 Character")]
         [Required]
-        public int po { get; set; }
+        public string po { get; set; }
 
         public string saved { get; set; }
 

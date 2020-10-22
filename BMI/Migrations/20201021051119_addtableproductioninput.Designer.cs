@@ -4,14 +4,16 @@ using BMI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BMI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201021051119_addtableproductioninput")]
+    partial class addtableproductioninput
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -148,8 +150,8 @@ namespace BMI.Migrations
                     b.Property<string>("landing_site")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("po")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("po")
+                        .HasColumnType("int");
 
                     b.Property<int>("pt")
                         .HasColumnType("int");
@@ -171,55 +173,6 @@ namespace BMI.Migrations
                     b.HasIndex("bmi_code");
 
                     b.ToTable("Production_input");
-                });
-
-            modelBuilder.Entity("BMI.Models.ProductionOutputModel", b =>
-                {
-                    b.Property<int>("id_productionoutput")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("batch")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("batch_repack")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("bmi_code")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("bmi_code_repack")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime?>("created_at")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("po")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("pt")
-                        .HasColumnType("int");
-
-                    b.Property<float>("qty")
-                        .HasColumnType("real");
-
-                    b.Property<string>("saved")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("updated_at")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("id_productionoutput");
-
-                    b.HasIndex("bmi_code");
-
-                    b.HasIndex("bmi_code_repack");
-
-                    b.ToTable("Production_output");
                 });
 
             modelBuilder.Entity("BMI.Models.Rmmodel", b =>
@@ -345,9 +298,8 @@ namespace BMI.Migrations
                     b.Property<DateTime>("etd")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("po")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("po")
+                        .HasColumnType("int");
 
                     b.Property<string>("saved")
                         .HasColumnType("nvarchar(max)");
@@ -409,17 +361,6 @@ namespace BMI.Migrations
                     b.HasOne("BMI.Models.MasterBMIModel", "MasterBMIModel")
                         .WithMany()
                         .HasForeignKey("bmi_code");
-                });
-
-            modelBuilder.Entity("BMI.Models.ProductionOutputModel", b =>
-                {
-                    b.HasOne("BMI.Models.MasterBMIModel", "MasterBMIModel")
-                        .WithMany()
-                        .HasForeignKey("bmi_code");
-
-                    b.HasOne("BMI.Models.MasterBMIModel", "MasterBMIModel1")
-                        .WithMany()
-                        .HasForeignKey("bmi_code_repack");
                 });
 
             modelBuilder.Entity("BMI.Models.Rmmodel", b =>

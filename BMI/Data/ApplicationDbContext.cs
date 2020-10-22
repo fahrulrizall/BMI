@@ -32,6 +32,8 @@ namespace BMI.Data
         public DbSet<Shipmentmodel> Shipment { get; set; }
         public DbSet<MasterBMIModel> Master_BMI { get; set; }
         public DbSet<ShipmentDetailModel> Shipment_detail { get; set; }
+        public DbSet<ProductionInputModel> Production_input { get; set; }
+        public DbSet<ProductionOutputModel> Production_output { get; set; }
 
     }
 }
