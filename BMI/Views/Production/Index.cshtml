@@ -15,9 +15,15 @@
                     <div class="card-header">
                         <h3 class="card-title">Detail List</h3>
                         <a href="#" class="btn btn-sm btn-default upload-gr float-right "
-                           data-toggle="modal" data-target="#modal-default">Upload GR</a>
+                           data-toggle="modal" data-target="#modal-default">GR
+                            <i class="fa fa-upload">
+                            </i>
+                        </a>
                         <a href="#" class="btn btn-sm btn-default upload-gi float-right mx-2"
-                           data-toggle="modal" data-target="#modal-default">Upload GI</a>
+                           data-toggle="modal" data-target="#modal-default">GI
+                            <i class="fa fa-upload">
+                            </i>
+                        </a>
                     </div>
 
                     <div class="card-body">
@@ -67,13 +73,13 @@
                 </button>
             </div>
             <div class="modal-body mb-2">
-                <form method="POST" action="/bmi/import" enctype="multipart/form-data">
+                <form method="POST" asp-controller="Production" asp-action="ImportGI" enctype="multipart/form-data">
                     <div class="card-body">
                         <div class="form-group input-file">
                             <label for="exampleInputFile">File input</label>
                             <div class="input-group">
                                 <div class="custom-file">
-                                    <input type="file" class="custom-file-input" name="file" id="file" accept=".csv,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+                                    <input type="file" class="custom-file-input" name="postedFile" id="postedFile"  accept="application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
                                     <label class="custom-file-label" for="exampleInputFile">Choose file</label>
                                 </div>
                             </div>

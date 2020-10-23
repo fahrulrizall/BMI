@@ -207,14 +207,14 @@ $(function(){
         $('.modal-body form').attr('action', '/Rm/Duplicateitem');
     });
 
-    //$('.upload-gi').on('click',function () {
-    //    $('#formModalLabel').html('Upload GI');
-    //    $('.modal-body form').attr('action','/bmi/production/gi');
-    //});
-    //$('.upload-gr').on('click',function () {
-    //    $('#formModalLabel').html('Upload GR');
-    //    $('.modal-body form').attr('action','/bmi/production/gr');
-    //});
+    $('.upload-gi').on('click',function () {
+        $('#formModalLabel').html('Upload GI');
+        $('.modal-body form').attr('action','/Production/ImportGI');
+    });
+    $('.upload-gr').on('click',function () {
+        $('#formModalLabel').html('Upload GR');
+        $('.modal-body form').attr('action','/Production/ImportGR');
+    });
 
     $('.add-shipment').on('click', function () {
         $('#formModalLabel').html('New Shipment');
