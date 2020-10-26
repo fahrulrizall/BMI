@@ -1,5 +1,73 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model IEnumerable<BMI.Models.ProductionView>
 @{
+    ViewData["Title"] = "ptname";
+}
+
+<div class="content-wrapper">
+    <section class="content-header">
+    </section>
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-12">
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Shipment</h3>
+                        <div class="card-tools">
+                            <a href="#" type="button" class="btn btn-sm btn-default float-right mx-1"
+                               data-toggle="modal" data-target="#modal-upload">
+                                <i class="fa fa-upload">
+                                </i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <table id="example1" class="table table-bordered table-striped table-sm">
+                            <thead>
+                                <tr>
+                                    <th style="width: 5%;font-size:small">
+                                        SAP Code
+                                    </th>
+                                    <th style="width: 10%;font-size:small">
+                                        Description
+                                    </th>
+                                     <th style="width: 5%;font-size:small">
+                                        Total
+                                    </th>
+                                </tr>
+                            </thead>
+                            @*@if (Model.Count() > 0)
+                            {*@
+                                <tbody>
+                                    @foreach (var obj in Model)
+                                    {
+                                        <tr>
+                                            <td style="font-size:small">@obj.MasterBMIModels.sap_code</td>
+                                            <td style="font-size:small">@obj.MasterBMIModels.description</td>
+                                            <td style="font-size:small">@obj.total</td>
+                                        
+                                            
+                                        </tr>
+                                    }
+                                </tbody>
+                            @*}*@
+                        </table>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </section>
+    <!-- /.content -->
+</div>
+
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

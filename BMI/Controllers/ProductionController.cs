@@ -14,6 +14,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Hosting;
 using ExcelDataReader;
 using Microsoft.EntityFrameworkCore.Internal;
+using Microsoft.EntityFrameworkCore.Scaffolding.Metadata;
 
 namespace BMI.Controllers
 {
@@ -201,32 +202,46 @@ namespace BMI.Controllers
 
         public IActionResult Detail(int pt)
         {
-             var date = _db.Production_output
-                .AsEnumerable()
-                .Where(a => a.pt == pt)
-                .GroupBy(x => x.date, (key, g) => g.OrderByDescending(e => e.date).First())
-                .Select(a=>a.date)
-                .ToList();
-            var abj = date;
+            //var model = new Random;
+             //var date = _db.Production_output
+             //   .AsEnumerable()
+             //   .Where(a => a.pt == pt)
+             //   .GroupBy(x => x.date, (key, g) => g.OrderByDescending(e => e.date).First())
+             //   .ToList();
+
+            //var obj = _db.Production_output
+            //    .Where(a => a.pt == pt)
+            //    .AsEnumerable()
+            //    .GroupBy(x => x.bmi_code)
+            //    .Select(a => new 
+            //    {
+            //        code = a.Key,
+            //        //subject = a.GroupBy(f => f.date).Select(m => new {date = m.Key, qty = m.Sum(k => k.qty) })
+            //        pertama = a.Where(c => c.date.Day == 12).Sum(c => c.qty),
+            //        kedua = a.Where(c => c.date.Day == 13).Sum(c => c.qty),
+            //        ketiga = a.Where(c => c.date.Day == 14).Sum(c => c.qty),
+            //        total = a.Sum(x => x.qty)
+            //    })
+            //    .ToList();
 
             var obj = _db.Production_output
                 .Where(a => a.pt == pt)
+                .Include(k=>k.MasterBMIModel)
                 .AsEnumerable()
-                .GroupBy(x => x.bmi_code)
-                .Select(a => new
-                {
+                //.GroupBy(x => x.bmi_code)
+                //.Select(a => new
+                //{
+                //    code = a.bmi_code,
+                //    MasterBMIModels = a.MasterBMIModel
+                //})
+                .GroupBy(k=>k.bmi_code)
+                .Select(a=>new ProductionView { 
                     code = a.Key,
-                    subject = a.GroupBy(f => f.date).Select(m => new { Sub = m.Key, Score = m.Sum(k => k.qty) })
-                    //pertama = a.Where(c => c.date.Day == 12).Sum(c => c.qty),
-                    //kedua = a.Where(c => c.date.Day == 13).Sum(c => c.qty),
-                    //ketiga = a.Where(c => c.date.Day == 14).Sum(c => c.qty),
-                    //total = a.Sum(x => x.qty)
+                    MasterBMIModels = a.Max(k=>k.MasterBMIModel),
+                    total = a.Sum(x=>x.qty)
                 })
                 .ToList();
-
-            var k =obj;
-
-            return View(date);
+            return View(obj);
         }
 
 

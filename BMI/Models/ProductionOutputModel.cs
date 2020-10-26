@@ -12,6 +12,7 @@ namespace BMI.Models
         [Key]
         public int id_productionoutput { get; set; }
         public string po { get; set; }
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime date { get; set; }
         public int pt { get; set; }
         public MasterBMIModel MasterBMIModel { get; set; }
