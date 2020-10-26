@@ -94,8 +94,7 @@ namespace BMI.Controllers
                                         reff = Convert.ToString(rowDataList[3]),
                                         bmi_code = Convert.ToString(rowDataList[4]),
                                         qty = Convert.ToSingle(rowDataList[5]),
-                                        landing_site = Convert.ToString(rowDataList[6]),
-
+                                        landing_site = Convert.ToString(rowDataList[6])
                                     });
                                 }
                                 _db.Production_input.AddRange(prod_input);
@@ -202,33 +201,32 @@ namespace BMI.Controllers
 
         public IActionResult Detail(int pt)
         {
-            
-
-            var abc = _db.Production_output
-                .Where(a => a.pt == pt)
+             var date = _db.Production_output
                 .AsEnumerable()
-                .GroupBy(x => x.date)
+                .Where(a => a.pt == pt)
+                .GroupBy(x => x.date, (key, g) => g.OrderByDescending(e => e.date).First())
+                .Select(a=>a.date)
                 .ToList();
-
-            var day = abc[0];
-
-            
+            var abj = date;
 
             var obj = _db.Production_output
                 .Where(a => a.pt == pt)
                 .AsEnumerable()
                 .GroupBy(x => x.bmi_code)
-                .Select(a => new { 
+                .Select(a => new
+                {
                     code = a.Key,
-                    pertama = a.Where(c => c.date.Day == 12).Sum(c => c.qty),
-                    kedua = a.Where(c => c.date.Day == 13).Sum(c => c.qty),
-                    ketiga = a.Where(c => c.date.Day == 14).Sum(c => c.qty),
-                    total = a.Sum(x=>x.qty)
+                    subject = a.GroupBy(f => f.date).Select(m => new { Sub = m.Key, Score = m.Sum(k => k.qty) })
+                    //pertama = a.Where(c => c.date.Day == 12).Sum(c => c.qty),
+                    //kedua = a.Where(c => c.date.Day == 13).Sum(c => c.qty),
+                    //ketiga = a.Where(c => c.date.Day == 14).Sum(c => c.qty),
+                    //total = a.Sum(x => x.qty)
                 })
                 .ToList();
-            var k = obj;
-        
-            return View(abc);
+
+            var k =obj;
+
+            return View(date);
         }
 
 

@@ -84,7 +84,7 @@ namespace BMI.Controllers
                 TempData["result"] = "success";
                 return RedirectToAction("Index", new { plant = obj.plant });
             }
-            TempData["msg"] = "Item Failed Updated";
+            TempData["msg"] = "Item Failed Update";
             TempData["result"] = "failed";
             return RedirectToAction("Index", new { plant = obj.plant });
         }
