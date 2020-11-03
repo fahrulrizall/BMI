@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -11,7 +12,10 @@ namespace BMI.Models
     {
         [Key]
         public int id_productioninput { get; set; }
+        public BMIPO BMIPO { get; set; }
+        [ForeignKey("BMIPO")]
         public string po { get; set; }
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime date { get; set; }
         public int pt { get; set; }
         public string reff { get; set; }

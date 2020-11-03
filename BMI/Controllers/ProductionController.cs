@@ -15,6 +15,8 @@ using Microsoft.AspNetCore.Hosting;
 using ExcelDataReader;
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.EntityFrameworkCore.Scaffolding.Metadata;
+using System.Dynamic;
+using BMI.UtilityModels;
 
 namespace BMI.Controllers
 {
@@ -54,6 +56,7 @@ namespace BMI.Controllers
                 if (allowedExtensions.Contains(checkextension))
                 {
                     List<ProductionInputModel> prod_input = new List<ProductionInputModel>();
+                    List<BMIPO> bmi_po = new List<BMIPO>();
                     string path = Path.Combine(this.Environment.WebRootPath, "Uploads");
 
                     string filePath = Path.Combine(path, fileName);
@@ -84,6 +87,22 @@ namespace BMI.Controllers
                                 DataRowCollection row = dataSet.Tables["GI"].Rows;
                                 List<object> rowDataList = null;
 
+                                foreach (DataRow item in row)
+                                {
+                                    rowDataList = item.ItemArray.ToList();
+                                    var unique = _db.Bmi_po.FirstOrDefault(m => m.po== Convert.ToString(rowDataList[0]));
+                                    if (unique == null)
+                                    {
+                                        var obj = new BMIPO
+                                        {
+                                            po = Convert.ToString(rowDataList[0]),
+                                            pt = Convert.ToInt32(rowDataList[2])
+                                        };
+                                        _db.Bmi_po.Add(obj);
+                                        _db.SaveChanges();
+                                    }
+                                }
+                                
                                 foreach (DataRow item in row)
                                 {
                                     rowDataList = item.ItemArray.ToList();
@@ -202,48 +221,130 @@ namespace BMI.Controllers
 
         public IActionResult Detail(int pt)
         {
-            //var model = new Random;
-             //var date = _db.Production_output
-             //   .AsEnumerable()
-             //   .Where(a => a.pt == pt)
-             //   .GroupBy(x => x.date, (key, g) => g.OrderByDescending(e => e.date).First())
-             //   .ToList();
-
-            //var obj = _db.Production_output
-            //    .Where(a => a.pt == pt)
-            //    .AsEnumerable()
-            //    .GroupBy(x => x.bmi_code)
-            //    .Select(a => new 
-            //    {
-            //        code = a.Key,
-            //        //subject = a.GroupBy(f => f.date).Select(m => new {date = m.Key, qty = m.Sum(k => k.qty) })
-            //        pertama = a.Where(c => c.date.Day == 12).Sum(c => c.qty),
-            //        kedua = a.Where(c => c.date.Day == 13).Sum(c => c.qty),
-            //        ketiga = a.Where(c => c.date.Day == 14).Sum(c => c.qty),
-            //        total = a.Sum(x => x.qty)
-            //    })
-            //    .ToList();
-
             var obj = _db.Production_output
                 .Where(a => a.pt == pt)
                 .Include(k=>k.MasterBMIModel)
                 .AsEnumerable()
-                //.GroupBy(x => x.bmi_code)
-                //.Select(a => new
-                //{
-                //    code = a.bmi_code,
-                //    MasterBMIModels = a.MasterBMIModel
-                //})
                 .GroupBy(k=>k.bmi_code)
                 .Select(a=>new ProductionView { 
                     code = a.Key,
-                    MasterBMIModels = a.Max(k=>k.MasterBMIModel),
+                    MasterBMIModel = a.Max(m=>m.MasterBMIModel),
                     total = a.Sum(x=>x.qty)
                 })
+                .ToList();
+            ViewBag.pt = pt;
+            return View(obj);
+        }
+
+        public IActionResult Detailperitem(int pt,string code)
+        {
+            
+            var obj = _db.Production_output
+                .Where(a => a.pt == pt && a.bmi_code==code)
+                .Include(k => k.MasterBMIModel)
+                .AsEnumerable()
+                .GroupBy(k => k.date)
+                .Select(a => new ProductionView
+                {
+                    date = a.Key,
+                    MasterBMIModel = a.Max(m => m.MasterBMIModel),
+                    total = a.Sum(x => x.qty)
+                    
+                })
+                .OrderByDescending(a=>a.date)
+                .ToList();
+            return Json(obj);
+        }
+
+
+        public IActionResult All()
+        {
+            var obj = _db.Production_output
+                .Include(k => k.MasterBMIModel)
+                .AsEnumerable()
+                .GroupBy(k => new { k.pt, k.bmi_code })
+                .Select(k => new ProductionView
+                {
+                    pt = k.Key.pt,
+                    code = k.Key.bmi_code,
+                    MasterBMIModel = k.Max(m => m.MasterBMIModel),
+                    total = k.Sum(a => a.qty),
+                    batch = k.Max(m=>m.batch)
+                })
+                .OrderByDescending(a => a.pt)
                 .ToList();
             return View(obj);
         }
 
+        public IActionResult DateExist(DateTime date)
+        {
+            var unique = _db.Production_input.FirstOrDefault(m => m.date.Year == date.Year &&
+                                                                    m.date.Month == date.Month &&
+                                                                    m.date.Day == date.Day);
+            if (unique != null)
+            {
+                return Json(true);
+            }
+            return Json(false);
+        }
+
+        public IActionResult Daily(DateTime date)
+        {
+            var obj = _db.Production_input
+                .Where(m => m.date.Year == date.Year &&
+                       m.date.Month == date.Month &&
+                       m.date.Day == date.Day)
+                .GroupBy(k => k.po)
+                .Select(a => new ProductionInputModel
+                {
+                    po = a.Key,
+                    reff = a.Max(k=>k.reff),
+                    pt = a.Max(k=>k.pt),
+                    landing_site = a.Max(k => k.landing_site)
+                })
+                .ToList();
+            ViewBag.date = date.Date;
+            return View(obj);
+        }
+
+        public IActionResult RawMaterial(string po,DateTime date)
+        {
+            var obj = _db.Production_input
+                .Include(k => k.MasterBMIModel)
+                .AsEnumerable()
+                .Where(m => m.po == po && m.date.Year == date.Year &&
+                       m.date.Month == date.Month &&
+                       m.date.Day == date.Day)
+                .GroupBy(k => new { k.bmi_code, k.landing_site })
+                .Select(a => new ProductionInputModel
+                {
+                    bmi_code = a.Key.bmi_code,
+                    landing_site = a.Key.landing_site,
+                    MasterBMIModel = a.Max(m => m.MasterBMIModel),
+                    qty = a.Sum(k => k.qty)
+                })
+                .ToList();
+            return Json(obj);
+        }
+
+        public IActionResult FinishedGood(string po,DateTime date)
+        {
+            var obj = _db.Production_output
+                .Include(k => k.MasterBMIModel)
+                .AsEnumerable()
+                .Where(m => m.po == po && m.date.Year == date.Year &&
+                       m.date.Month == date.Month &&
+                       m.date.Day == date.Day)
+                .GroupBy(k =>k.bmi_code)
+                .Select(a => new ProductionOutputModel
+                {
+                    bmi_code = a.Key,
+                    MasterBMIModel = a.Max(m => m.MasterBMIModel),
+                    qty = a.Sum(k => k.qty)
+                })
+                .ToList();
+            return Json(obj);
+        }
 
     }
 }

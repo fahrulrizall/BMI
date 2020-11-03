@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 
 namespace BMI.Models
 {
@@ -11,8 +12,11 @@ namespace BMI.Models
     {
         [Key]
         public int id_productionoutput { get; set; }
+        public BMIPO BMIPO { get; set; }
+        [ForeignKey("BMIPO")]
         public string po { get; set; }
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        [Remote(action: "DateExist", controller: "Production", HttpMethod = "POST", AdditionalFields = "date", ErrorMessage = "Production Not Available")]
         public DateTime date { get; set; }
         public int pt { get; set; }
         public MasterBMIModel MasterBMIModel { get; set; }

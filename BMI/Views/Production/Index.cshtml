@@ -1,6 +1,6 @@
 ﻿@model IEnumerable<BMI.Models.ProductionOutputModel>
 @{
-    ViewData["Title"] = "Testing";
+    ViewData["Title"] = "Production";
 }
 <div class="content-wrapper">
     <section class="content-header">
@@ -10,21 +10,48 @@
     <section class="content">
         <div class="row">
             <div class="col-12">
-
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Detail List</h3>
-                        <a href="#" class="btn btn-sm btn-default upload-gr float-right "
-                           data-toggle="modal" data-target="#modal-default">GR
-                            <i class="fa fa-upload">
-                            </i>
-                        </a>
-                        <a href="#" class="btn btn-sm btn-default upload-gi float-right mx-2"
-                           data-toggle="modal" data-target="#modal-default">GI
-                            <i class="fa fa-upload">
-                            </i>
-                        </a>
+                        <div class="card-title">
+                            @if (Model.Count() > 0)
+                            {
+                                <form method="get" asp-action="Daily" asp-controller="Production">
+                                    <div class="input-group input-group-sm">
+                                        <input type="date" asp-for="First().date">
+                                        <span class="input-group-append">
+                                            <button type="submit" value="Create" class="btn btn-primary">Go!</button>
+                                        </span>
+                                        <span asp-validation-for="First().date" class="text-danger" style="font-size:smaller"></span>
+                                    </div>
+                                </form>
+                            }
+                            </div>
+
+                        <div class="card-tools">
+                            <a href="#" class="btn btn-sm btn-default upload-gr float-right "
+                               data-toggle="modal" data-target="#modal-default">
+                                GR
+                                <i class="fa fa-upload">
+                                </i>
+                            </a>
+                            <a href="#" class="btn btn-sm btn-default upload-gi float-right mx-2"
+                               data-toggle="modal" data-target="#modal-default">
+                                GI
+                                <i class="fa fa-upload">
+                                </i>
+                            </a>
+                            <a asp-controller="Production" asp-action="all" class="btn btn-sm btn-default float-right mx-2">
+                                <i class="fa fa-book"></i>
+                            </a>
+                            <a href="#" class="btn btn-sm btn-default upload-gr float-right mx-2"
+                               data-toggle="modal" data-target="#modal-default">
+                                <i class="fa fa-history"></i>
+                            </a>
+                        </div>
                     </div>
+                </div>
+
+                <div class="card">
 
                     <div class="card-body">
                         <table id="example1" class="table table-bordered table-striped table-sm">
@@ -38,17 +65,21 @@
                                     </th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                @foreach(var obj in Model) {
+                            @if (Model.Count() > 0)
+                            {
+                                <tbody>
+                                    @foreach (var obj in Model)
+                                    {
 
-                                    <tr>
-                                        <td style="font-size:smaller">@obj.pt</td>
-                                        <td>
-                                            <a asp-controller="Production" asp-action="Detail" asp-route-pt="@obj.pt" class="btn btn-sm btn-primary">View</a>
-                                        </td>
-                                    </tr>
-                                }
-                            </tbody>
+                                        <tr>
+                                            <td style="font-size:smaller">@obj.pt</td>
+                                            <td>
+                                                <a asp-controller="Production" asp-action="Detail" asp-route-pt="@obj.pt" class="btn btn-sm btn-primary">View</a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            }
                         </table>
                     </div>
                     <!-- /.card-body -->
@@ -79,7 +110,7 @@
                             <label for="exampleInputFile">File input</label>
                             <div class="input-group">
                                 <div class="custom-file">
-                                    <input type="file" class="custom-file-input" name="postedFile" id="postedFile"  accept="application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+                                    <input type="file" class="custom-file-input" name="postedFile" id="postedFile" accept="application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
                                     <label class="custom-file-label" for="exampleInputFile">Choose file</label>
                                 </div>
                             </div>
@@ -93,6 +124,7 @@
         </div>
     </div>
 </div>
+
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

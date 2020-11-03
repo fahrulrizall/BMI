@@ -1,0 +1,70 @@
+﻿@model IEnumerable<BMI.Models.ProductionView>
+@*@model dynamic*@
+@{
+    ViewData["Title"] = "All Goods";
+}
+
+<div class="content-wrapper">
+    <section class="content-header">
+    </section>
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+
+                <div class="col-md-12" id="partial-table">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">All Finished Goods</h3>
+                        </div>
+
+                        <div class="card-body">
+                            <table id="example1" class="table table-bordered table-striped table-sm">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 2%;font-size:small">
+                                            PT
+                                        </th>
+                                        <th style="width: 2%;font-size:small">
+                                            SAP Code
+                                        </th>
+                                        <th style="width: 15%;font-size:small">
+                                            Description
+                                        </th>
+                                        <th style="width: 1%;font-size:small">
+                                            Case
+                                        </th>
+                                        <th style="width: 1%;font-size:small">
+                                            Batch
+                                        </th>
+                                    </tr>
+                                </thead>
+                                @if (Model.Count() > 0)
+                                {
+                                    <tbody>
+                                        @foreach (var obj in Model)
+                                        {
+                                        <tr>
+                                            <td style="font-size:small">PT#@obj.pt</td>
+                                            <td style="font-size:small">@obj.MasterBMIModel.sap_code</td>
+                                            <td style="font-size:small">@obj.MasterBMIModel.description</td>
+                                            <td style="font-size:small">@Convert.ToInt32(((obj.total * 2.204) / obj.MasterBMIModel.lbs))</td>
+                                            <td style="font-size:small">@obj.batch</td>
+                                        </tr>
+                                        }
+                                    </tbody>
+                                }
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -22,10 +22,6 @@
                 <div class="card">
                     <div class="card-header">
                         <h3 class="card-title"> @plant Finish Good List</h3>
-                        <!-- <div class="card-tools">
-                        <a href="#" type="button" class="btn btn-default float-right upload-file "
-                        data-toggle="modal" data-target="#modal-default">Upload File</a>
-                        </div> -->
                         <div class="card-tools ">
                             <button class="btn btn-sm float-right mx-1 add-new-fg"
                                     data-toggle="modal" data-target="#modal-default">
@@ -69,7 +65,7 @@
                                 @foreach (var obj in Model)
                                 {
                                     <tr>
-                                        <td style="font-size:small">@obj.sap_code</td>
+                                        <td class="text text-sm" >@obj.sap_code</td>
                                         <td style="font-size:small">@obj.Masterdatamodel.description</td>
                                         <td style="font-size:small">@obj.price_lbs</td>
                                         <td style="font-size:small">@obj.Masterdatamodel.lbs</td>

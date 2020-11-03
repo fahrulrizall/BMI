@@ -34,6 +34,7 @@ namespace BMI.Data
         public DbSet<ShipmentDetailModel> Shipment_detail { get; set; }
         public DbSet<ProductionInputModel> Production_input { get; set; }
         public DbSet<ProductionOutputModel> Production_output { get; set; }
+        public DbSet<BMIPO> Bmi_po { get; set; }
 
     }
 }

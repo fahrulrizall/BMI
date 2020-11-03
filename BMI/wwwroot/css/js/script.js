@@ -1,5 +1,21 @@
+$(function () {
 
-$(function(){
+    $(function () {
+        $("#example1").DataTable({
+            "aaSorting": [],
+        });
+        $('#example2').DataTable({
+            "paging": true,
+            "lengthChange": false,
+            "searching": false,
+            "ordering": true,
+            "aaSorting": [],
+            "info": true,
+            "autoWidth": false,
+        });
+    });
+    
+
     //untuk fgs
     $('.add-new-fg').on('click',function () {
         $('#formModalLabel').html('Add New Item');
@@ -265,5 +281,128 @@ $(function(){
             }
         });
     });
+
+
+    //table global pt
+    $('.detail-pt-daily').on('click', function () {
+        $('.table-production-daily').show();
+        $("#master-pt-table").attr('class', 'col-md-8');
+        var code = $(this).data('code');
+        var sap = $(this).data('sap');
+        $('#card-title').html(sap);
+        var pt = $(this).data('pt');
+        $('#detail-table-daily').html("");
+        $.ajax({
+            url: '/Production/Detailperitem',
+            data: { pt: pt,code:code },
+            method: 'get',
+            dataType: 'json',
+            success: function (data) {
+                data.forEach(function (e) {
+                    var date = new Date(e.date);
+                    yr = date.getFullYear();
+                    month = date.getMonth() + 1;
+                    day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate();
+                    if (month < 10) {
+                        month = "0" + month;
+                    }
+                    newdate = yr + '-' + month + '-' + day;
+                    totaldaily = parseInt(e.total * 2.204 / e.masterBMIModel.lbs);
+                    $('#detail-table-daily').append("<tr><td>" + newdate + "</td>" + "<td>" +  parseFloat(e.total).toFixed(2) + "</td>" + "<td class='case'>" + totaldaily + "</td></tr>");
+                    calc_case();
+                })  
+            }
+        });
+        function calc_case() {
+            var sum = 0;
+            $('.case').each(function () {
+                sum += parseInt($(this).text())
+            });
+            $('#total').text(sum);
+        };
+    });
+
+    $('.close-production-daily').on('click', function () {
+        $('.table-production-daily').hide();
+        $("#master-pt-table").attr('class', 'col-md-12');
+    });
+
+    $(function () {
+        $('.table-production-daily').hide();
+    });
+
+    // table production by daily
+    $(function () {
+        $('.table-raw-daily').hide();
+        $('.table-fg-daily').hide();
+    });
+
+    $('.close-raw-daily').on('click', function () {
+        $('.table-raw-daily').hide();
+    });
+
+    $('.close-fg-daily').on('click', function () {
+        $('.table-fg-daily').hide();
+    });
+
+    $('.detail-po-daily').on('click', function () {
+        $('.table-raw-daily').show();
+        $('.table-fg-daily').show();
+        var po = $(this).data('po');
+        var date = $(this).data('date');
+        $('#detail-raw-daily').html("");
+        $('#detail-fg-daily').html("");
+        $.ajax({
+            url: '/Production/RawMaterial',
+            data: { po: po, date: date },
+            method: 'get',
+            dataType: 'json',
+            success: function (data) {
+                data.forEach(function (e) {
+                    $('#detail-raw-daily').append("<tr><td>" + e.masterBMIModel.sap_code + "</td>" + "<td>" + e.masterBMIModel.description + "</td>" + "<td>" + e.landing_site + "</td>" + "<td class='qty'>" + e.qty + "</td></tr>");
+                    total_kg();
+                })
+            }
+        });
+        function total_kg() {
+            var sum = 0;
+            $('.qty').each(function () {
+                sum += parseInt($(this).text())
+            });
+            $('#total-kg-raw').text(sum);
+        };
+
+        $.ajax({
+            url: '/Production/FinishedGood',
+            data: { po: po, date: date },
+            method: 'get',
+            dataType: 'json',
+            success: function (data) {
+                data.forEach(function (e) {
+                    total_case = parseInt(e.qty * 2.204 / e.masterBMIModel.lbs);
+                    $('#detail-fg-daily').append("<tr><td>" + e.masterBMIModel.sap_code + "</td>" + "<td>" + e.masterBMIModel.description + "</td>" + "<td class='qty-kg'>" + parseFloat(e.qty).toFixed(2) + "</td>" + "<td class='qty-case'>" + total_case + "</td></tr>");
+                    calc_total_fg();
+                    calc_total_case();
+                })
+            }
+        });
+        function calc_total_fg() {
+            var sum = 0;
+            $('.qty-kg').each(function () {
+                sum += parseFloat($(this).text())
+            });
+            $('#total-kg-fg').html(sum);
+        };
+        function calc_total_case() {
+            var sum = 0;
+            $('.qty-case').each(function () {
+                sum += parseInt($(this).text())
+            });
+            $('#total-cs-fg').html(sum);
+        };
+
+
+    });
+
 
 });  

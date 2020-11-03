@@ -1,6 +1,7 @@
 ﻿@model IEnumerable<BMI.Models.ProductionView>
+@{int pt = ViewBag.pt; }
 @{
-    ViewData["Title"] = "ptname";
+    ViewData["Title"] = "PT "+pt;
 }
 
 <div class="content-wrapper">
@@ -8,62 +9,93 @@
     </section>
     <!-- Main content -->
     <section class="content">
-        <div class="row">
-            <div class="col-12">
+        <div class="container-fluid">
+            <div class="row">
 
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Shipment</h3>
-                        <div class="card-tools">
-                            <a href="#" type="button" class="btn btn-sm btn-default float-right mx-1"
-                               data-toggle="modal" data-target="#modal-upload">
-                                <i class="fa fa-upload">
-                                </i>
-                            </a>
+                <div class="col-md-12" id="master-pt-table">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">PT# @pt</h3>
+                        </div>
+
+                        <div class="card-body">
+                            <table id="example2" class="table table-bordered table-striped table-sm">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 2%;font-size:small">
+                                            SAP Code
+                                        </th>
+                                        <th style="width: 15%;font-size:small">
+                                            Description
+                                        </th>
+                                        <th style="width: 1%;font-size:small">
+                                            Total KG
+                                        </th>
+                                        <th style="width: 1%;font-size:small">
+                                            Total CS
+                                        </th>
+                                    </tr>
+                                </thead>
+                                @if (Model.Count() > 0)
+                                {
+                                    <tbody>
+                                        @foreach (var obj in Model)
+                                        {
+                                        <tr>
+                                            <td style="font-size:small">@obj.MasterBMIModel.sap_code</td>
+                                            <td style="font-size:small">@obj.MasterBMIModel.description</td>
+                                            <td style="font-size:small">@obj.total</td>
+                                            <td style="font-size:small" id="sumdaily" name="sumdaily" class="btn detail-pt-daily"  data-pt="@pt" data-code="@obj.code" data-sap="@obj.MasterBMIModel.sap_code">@Convert.ToInt32(((obj.total * 2.204) / obj.MasterBMIModel.lbs))</td>
+                                        </tr>
+                                        }
+                                    </tbody>
+                                }
+                            </table>
                         </div>
                     </div>
-
-                    <div class="card-body">
-                        <table id="example1" class="table table-bordered table-striped table-sm">
-                            <thead>
-                                <tr>
-                                    <th style="width: 5%;font-size:small">
-                                        SAP Code
-                                    </th>
-                                    <th style="width: 10%;font-size:small">
-                                        Description
-                                    </th>
-                                     <th style="width: 5%;font-size:small">
-                                        Total
-                                    </th>
-                                </tr>
-                            </thead>
-                            @*@if (Model.Count() > 0)
-                            {*@
-                                <tbody>
-                                    @foreach (var obj in Model)
-                                    {
-                                        <tr>
-                                            <td style="font-size:small">@obj.MasterBMIModels.sap_code</td>
-                                            <td style="font-size:small">@obj.MasterBMIModels.description</td>
-                                            <td style="font-size:small">@obj.total</td>
-                                        
-                                            
-                                        </tr>
-                                    }
-                                </tbody>
-                            @*}*@
-                        </table>
-                    </div>
-                    <!-- /.card-body -->
                 </div>
-                <!-- /.card -->
+
+                <div class="col-md-4 table-production-daily">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title" id="card-title">Detail</h3>
+                            <button type="button" class="btn btn-tool float-right close-production-daily">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <table id="example2" class="table table-bordered table-striped table-sm">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 2%;font-size:small">
+                                            Date
+                                        </th>
+                                        <th style="width: 1%;font-size:small">
+                                            Total KG
+                                        </th>
+                                        <th style="width: 1%;font-size:small">
+                                            Total CS
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody id="detail-table-daily" name="detail-table-daily" class="table-sm">
+
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th style="width: 2%;font-size:small" colspan="2">Total</th>
+                                        <th style="width: 2%;font-size:small" id="total" name="total" class="total"></th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                 </div>
+
+
+                </div>
             </div>
-            <!-- /.col -->
-        </div>
-        <!-- /.row -->
     </section>
-    <!-- /.content -->
 </div>
 
 
