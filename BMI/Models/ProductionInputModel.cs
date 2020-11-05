@@ -12,13 +12,13 @@ namespace BMI.Models
     {
         [Key]
         public int id_productioninput { get; set; }
-        public BMIPO BMIPO { get; set; }
-        [ForeignKey("BMIPO")]
         public string po { get; set; }
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime date { get; set; }
-        public int pt { get; set; }
-        public string reff { get; set; }
+        public PTModel PTModel { get; set; }
+        [ForeignKey("PTModel")]
+        public int id_pt { get; set; }
+        public string raw_source { get; set; }
 
         public MasterBMIModel MasterBMIModel { get; set; }
         [ForeignKey("MasterBMIModel")]

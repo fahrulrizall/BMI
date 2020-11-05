@@ -12,24 +12,25 @@ namespace BMI.Models
     {
         [Key]
         public int id_productionoutput { get; set; }
-        public BMIPO BMIPO { get; set; }
-        [ForeignKey("BMIPO")]
         public string po { get; set; }
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         [Remote(action: "DateExist", controller: "Production", HttpMethod = "POST", AdditionalFields = "date", ErrorMessage = "Production Not Available")]
         public DateTime date { get; set; }
-        public int pt { get; set; }
+        public PTModel PTModel { get; set; }
+        [ForeignKey("PTModel")]
+        public int id_pt { get; set; }
         public MasterBMIModel MasterBMIModel { get; set; }
         public MasterBMIModel MasterBMIModel1 { get; set; }
         [ForeignKey("MasterBMIModel")]
         public string bmi_code { get; set; }
         public float qty { get; set; }
-        public string batch { get; set; }
-        [ForeignKey("MasterBMIModel1")]
+        //public string batch { get; set; }
+        //[ForeignKey("MasterBMIModel1")]
         #nullable enable
-        public string? bmi_code_repack { get; set; }
-        public string? batch_repack { get; set; }
         public string? saved { get; set; }
+        //public string? bmi_code_repack { get; set; }
+        //public string? batch_repack { get; set; }
+        //public string? saved { get; set; }
         public DateTime? created_at { get; set; }
         public DateTime? updated_at { get; set; }
 

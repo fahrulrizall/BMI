@@ -4,14 +4,16 @@ using BMI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BMI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201105011123_add_table_pt")]
+    partial class add_table_pt
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -206,10 +208,16 @@ namespace BMI.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("MasterBMIModel1bmi_code")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<string>("batch")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("batch_repack")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("bmi_code")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("bmi_code_repack")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime?>("created_at")
@@ -235,9 +243,9 @@ namespace BMI.Migrations
 
                     b.HasKey("id_productionoutput");
 
-                    b.HasIndex("MasterBMIModel1bmi_code");
-
                     b.HasIndex("bmi_code");
+
+                    b.HasIndex("bmi_code_repack");
 
                     b.HasIndex("id_pt");
 
@@ -441,13 +449,13 @@ namespace BMI.Migrations
 
             modelBuilder.Entity("BMI.Models.ProductionOutputModel", b =>
                 {
-                    b.HasOne("BMI.Models.MasterBMIModel", "MasterBMIModel1")
-                        .WithMany()
-                        .HasForeignKey("MasterBMIModel1bmi_code");
-
                     b.HasOne("BMI.Models.MasterBMIModel", "MasterBMIModel")
                         .WithMany()
                         .HasForeignKey("bmi_code");
+
+                    b.HasOne("BMI.Models.MasterBMIModel", "MasterBMIModel1")
+                        .WithMany()
+                        .HasForeignKey("bmi_code_repack");
 
                     b.HasOne("BMI.Models.PTModel", "PTModel")
                         .WithMany()

@@ -37,7 +37,7 @@ namespace BMI.Controllers
         {
             var obj = _db.Production_output
                 .AsEnumerable()
-                .GroupBy(x => x.pt, (key, g) => g.OrderByDescending(e => e.id_productionoutput).First())
+                .GroupBy(x => x.id_pt, (key, g) => g.OrderByDescending(e => e.id_productionoutput).First())
                 .OrderByDescending(e => e.id_productionoutput)
                 .ToList();
             return View(obj);
@@ -56,7 +56,7 @@ namespace BMI.Controllers
                 if (allowedExtensions.Contains(checkextension))
                 {
                     List<ProductionInputModel> prod_input = new List<ProductionInputModel>();
-                    List<BMIPO> bmi_po = new List<BMIPO>();
+                    List<PTModel> bmi_po = new List<PTModel>();
                     string path = Path.Combine(this.Environment.WebRootPath, "Uploads");
 
                     string filePath = Path.Combine(path, fileName);
@@ -87,21 +87,21 @@ namespace BMI.Controllers
                                 DataRowCollection row = dataSet.Tables["GI"].Rows;
                                 List<object> rowDataList = null;
 
-                                foreach (DataRow item in row)
-                                {
-                                    rowDataList = item.ItemArray.ToList();
-                                    var unique = _db.Bmi_po.FirstOrDefault(m => m.po== Convert.ToString(rowDataList[0]));
-                                    if (unique == null)
-                                    {
-                                        var obj = new BMIPO
-                                        {
-                                            po = Convert.ToString(rowDataList[0]),
-                                            pt = Convert.ToInt32(rowDataList[2])
-                                        };
-                                        _db.Bmi_po.Add(obj);
-                                        _db.SaveChanges();
-                                    }
-                                }
+                                //foreach (DataRow item in row)
+                                //{
+                                //    rowDataList = item.ItemArray.ToList();
+                                //    var unique = _db.Bmi_po.FirstOrDefault(m => m.po== Convert.ToString(rowDataList[0]));
+                                //    if (unique == null)
+                                //    {
+                                //        var obj = new BMIPO
+                                //        {
+                                //            po = Convert.ToString(rowDataList[0]),
+                                //            pt = Convert.ToInt32(rowDataList[2])
+                                //        };
+                                //        _db.Bmi_po.Add(obj);
+                                //        _db.SaveChanges();
+                                //    }
+                                //}
                                 
                                 foreach (DataRow item in row)
                                 {
@@ -110,8 +110,8 @@ namespace BMI.Controllers
                                     {
                                         po = Convert.ToString(rowDataList[0]),
                                         date = Convert.ToDateTime(rowDataList[1]),
-                                        pt = Convert.ToInt32(rowDataList[2]),
-                                        reff = Convert.ToString(rowDataList[3]),
+                                        id_pt = Convert.ToInt32(rowDataList[2]),
+                                        raw_source = Convert.ToString(rowDataList[3]),
                                         bmi_code = Convert.ToString(rowDataList[4]),
                                         qty = Convert.ToSingle(rowDataList[5]),
                                         landing_site = Convert.ToString(rowDataList[6])
@@ -190,10 +190,10 @@ namespace BMI.Controllers
                                     {
                                         po = Convert.ToString(rowDataList[0]),
                                         date = Convert.ToDateTime(rowDataList[1]),
-                                        pt = Convert.ToInt32(rowDataList[2]),
+                                        id_pt = Convert.ToInt32(rowDataList[2]),
                                         bmi_code = Convert.ToString(rowDataList[3]),
                                         qty = Convert.ToSingle(rowDataList[4]),
-                                        batch = Convert.ToString(rowDataList[5]),
+                                        //batch = Convert.ToString(rowDataList[5]),
 
                                     });
                                 }
@@ -222,7 +222,7 @@ namespace BMI.Controllers
         public IActionResult Detail(int pt)
         {
             var obj = _db.Production_output
-                .Where(a => a.pt == pt)
+                .Where(a => a.id_pt == pt)
                 .Include(k=>k.MasterBMIModel)
                 .AsEnumerable()
                 .GroupBy(k=>k.bmi_code)
@@ -240,7 +240,7 @@ namespace BMI.Controllers
         {
             
             var obj = _db.Production_output
-                .Where(a => a.pt == pt && a.bmi_code==code)
+                .Where(a => a.id_pt == pt && a.bmi_code==code)
                 .Include(k => k.MasterBMIModel)
                 .AsEnumerable()
                 .GroupBy(k => k.date)
@@ -262,14 +262,14 @@ namespace BMI.Controllers
             var obj = _db.Production_output
                 .Include(k => k.MasterBMIModel)
                 .AsEnumerable()
-                .GroupBy(k => new { k.pt, k.bmi_code })
+                .GroupBy(k => new { k.id_pt, k.bmi_code })
                 .Select(k => new ProductionView
                 {
-                    pt = k.Key.pt,
+                    pt = k.Key.id_pt,
                     code = k.Key.bmi_code,
                     MasterBMIModel = k.Max(m => m.MasterBMIModel),
                     total = k.Sum(a => a.qty),
-                    batch = k.Max(m=>m.batch)
+                    //batch = k.Max(m=>m.batch)
                 })
                 .OrderByDescending(a => a.pt)
                 .ToList();
@@ -298,8 +298,8 @@ namespace BMI.Controllers
                 .Select(a => new ProductionInputModel
                 {
                     po = a.Key,
-                    reff = a.Max(k=>k.reff),
-                    pt = a.Max(k=>k.pt),
+                    raw_source = a.Max(k=>k.raw_source),
+                    id_pt = a.Max(k=>k.id_pt),
                     landing_site = a.Max(k => k.landing_site)
                 })
                 .ToList();

@@ -6,10 +6,14 @@ using System.Threading.Tasks;
 
 namespace BMI.Models
 {
-    public class BMIPO
+    public class PTModel
     {
         [Key]
+        public int id_pt { get; set; }
+        public int pt { get; set; }
+        public string plant  { get; set; }
+        public string batch  { get; set; }
         public string po  { get; set; }
-        public int pt   { get; set; }
+        
     }
 }
