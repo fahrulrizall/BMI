@@ -18,19 +18,13 @@ namespace BMI.Models
         public DateTime date { get; set; }
         public PTModel PTModel { get; set; }
         [ForeignKey("PTModel")]
-        public int id_pt { get; set; }
+        public string id_pt { get; set; }
         public MasterBMIModel MasterBMIModel { get; set; }
-        public MasterBMIModel MasterBMIModel1 { get; set; }
         [ForeignKey("MasterBMIModel")]
         public string bmi_code { get; set; }
         public float qty { get; set; }
-        //public string batch { get; set; }
-        //[ForeignKey("MasterBMIModel1")]
         #nullable enable
         public string? saved { get; set; }
-        //public string? bmi_code_repack { get; set; }
-        //public string? batch_repack { get; set; }
-        //public string? saved { get; set; }
         public DateTime? created_at { get; set; }
         public DateTime? updated_at { get; set; }
 

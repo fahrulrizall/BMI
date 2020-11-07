@@ -61,10 +61,10 @@
                                             <td style="font-size:small">@obj.batch</td>
                                             <td>
                                                 <form asp-controller="Shipment" asp-route-id="@obj.id_shipment_detail" asp-action="Delete" method="post">
-                                                    <a data-toggle="modal" data-target="#modal-default" data-id="@obj.id_ship" class="btn btn-xs btn-warning update-shipment">
+                                                    <a data-toggle="modal" data-target="#modal-default" data-id="@obj.id_shipment_detail" class="btn btn-xs btn-warning update-item-shipment">
                                                         <i class="fa fa-edit" style="color:ghostwhite;outline:thin"></i>
                                                     </a>
-                                                    <button type="submit" onclick="return confirm ('Delete Shipment No @obj.id_ship');" class="btn btn-xs btn-danger">
+                                                    <button type="submit" onclick="return confirm ('Delete Shipment No @obj.id_shipment_detail');" class="btn btn-xs btn-danger">
                                                         <i class="fa fa-trash"></i>
                                                     </button>
                                                 </form>
@@ -101,12 +101,9 @@
                 <div class="modal-body mb-2">
                     <form method="POST" asp-action="Update" asp-controller="Shipment">
                         <div class="card-body">
-                            <div class="form-group">
-                                <label asp-for="First().bmi_code" class="shipment-id-label"></label>
-                                <input type="text" class="form-control shipment-id" asp-for="First().bmi_code"
-                                       placeholder="Shipment Number">
-                                <span asp-validation-for="First().bmi_code" class="text-danger" style="font-size:smaller"> </span>
-                            </div>
+                            <input type="hidden" asp-for="First().id_shipment_detail" />
+                            <input type="hidden" asp-for="First().id_ship" />
+                            <input type="hidden" asp-for="First().bmi_code" />
                             <div class="form-group">
                                 <label asp-for="First().qty"></label>
                                 <input type="number" class="form-control" asp-for="First().qty"
@@ -115,7 +112,7 @@
                             </div>
                             <div class="form-group">
                                 <label asp-for="First().batch"></label>
-                                <input type="date" class="form-control" asp-for="First().batch">
+                                <input type="text" class="form-control" asp-for="First().batch">
                             </div>
                         </div>
                         <div class="modal-footer">

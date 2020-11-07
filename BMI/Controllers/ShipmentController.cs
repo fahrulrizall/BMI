@@ -202,8 +202,27 @@ namespace BMI.Controllers
             return RedirectToAction("Detail", "Shipment", new { id = id });
         }
 
+        public IActionResult Getitem(int id)
+        {
+            var obj = _db.Shipment_detail.Find(id);
+            return Json(obj);
+        }
 
 
+        public IActionResult Updateitem(ShipmentDetailModel shipmentDetailModel)
+        {
+            if (ModelState.IsValid)
+            {
+                _db.Shipment_detail.Update(shipmentDetailModel);
+                _db.SaveChanges();
+                TempData["msg"] = "Item Succesfully Updated";
+                TempData["result"] = "success";
+                return RedirectToAction("Detail", "Shipment", new { id = shipmentDetailModel.id_ship });
+            }
+            TempData["msg"] = "Item Failed to Update";
+            TempData["result"] = "failed";
+            return RedirectToAction("Detail", "Shipment", new { id= shipmentDetailModel.id_ship });
+        }
 
 
 

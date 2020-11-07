@@ -1,20 +1,19 @@
-﻿@model IEnumerable<BMI.Models.Rmmodel>
+﻿@model IEnumerable<BMI.Models.ProductionView>
 @{
-    ViewData["Title"] = "Raw Material";
+    ViewData["Title"] = "Inventory";
 }
 <div class="content-wrapper">
 
     <section class="content-header">
     </section>
 
-    <!-- Main content -->
     <section class="content">
         <div class="row">
             <div class="col-12">
 
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Container Status</h3>
+                        <h3 class="card-title">Select Material</h3>
                     </div>
 
                     <div class="card-body">
@@ -22,7 +21,7 @@
                             <thead>
                                 <tr>
                                     <th style="width: 15%">
-                                        Status
+                                        Raw Material
                                     </th>
                                     <th style="width: 1%">
                                         Action
@@ -31,15 +30,15 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>In Plant</td>
+                                    <td>Finished Good</td>
                                     <td>
-                                        <a asp-controller="Rm" asp-action="List" asp-route-status="in_plant" class="btn btn-sm btn-primary">View</a>
+                                        <a asp-controller="Inventory" asp-action="Detail" class="btn btn-sm btn-primary" asp-route-material="fg">View</a>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td>On The Water</td>
+                                    <td>Raw Material</td>
                                     <td>
-                                        <a asp-controller="Rm" asp-action="List" asp-route-status="otw" class="btn btn-sm btn-primary">View</a>
+                                        <a asp-controller="Inventory" asp-action="Detail" class="btn btn-sm btn-primary" asp-route-material="raw">View</a>
                                     </td>
                                 </tr>
                             </tbody>
@@ -53,5 +52,4 @@
         </div>
         <!-- /.row -->
     </section>
-    <!-- /.content -->
 </div>

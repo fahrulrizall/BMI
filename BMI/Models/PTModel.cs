@@ -9,7 +9,7 @@ namespace BMI.Models
     public class PTModel
     {
         [Key]
-        public int id_pt { get; set; }
+        public string id_pt { get; set; }
         public int pt { get; set; }
         public string plant  { get; set; }
         public string batch  { get; set; }

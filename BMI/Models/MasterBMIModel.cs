@@ -15,7 +15,7 @@ namespace BMI.Models
         #nullable enable
         public string? sap_code { get; set; }
         public string? description { get; set; }
-        public float? lbs { get; set; }
+        public float lbs { get; set; }
         public string? index_category { get; set; }
         public string? daily_category { get; set; }
         public string? weekly_category { get; set; }

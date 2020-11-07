@@ -1,5 +1,5 @@
 ﻿@model IEnumerable<BMI.Models.ProductionView>
-@{int pt = ViewBag.pt; }
+@{string pt = ViewBag.pt; }
 @{
     ViewData["Title"] = "PT "+pt;
 }
@@ -44,7 +44,7 @@
                                         <tr>
                                             <td style="font-size:small">@obj.MasterBMIModel.sap_code</td>
                                             <td style="font-size:small">@obj.MasterBMIModel.description</td>
-                                            <td style="font-size:small">@obj.total</td>
+                                            <td style="font-size:small">@obj.total.ToString("0.00")</td>
                                             <td style="font-size:small" id="sumdaily" name="sumdaily" class="btn detail-pt-daily"  data-pt="@pt" data-code="@obj.code" data-sap="@obj.MasterBMIModel.sap_code">@Convert.ToInt32(((obj.total * 2.204) / obj.MasterBMIModel.lbs))</td>
                                         </tr>
                                         }

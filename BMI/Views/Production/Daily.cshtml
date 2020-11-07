@@ -25,9 +25,6 @@
                                         <th style="width: 2%;font-size:small">
                                             BMI PO
                                         </th>
-                                        <th style="width: 5%;font-size:small">
-                                            Refference
-                                        </th>
                                         <th style="width: 2%;font-size:small">
                                             PT
                                         </th>
@@ -43,8 +40,7 @@
                                         {
                                             <tr>
                                                 <td style="font-size:small" class="btn detail-po-daily" data-date="@date" data-po="@obj.po">@obj.po</td>
-                                                <td style="font-size:small">@obj.raw_source</td>
-                                                <td style="font-size:small">PT#@obj.id_pt</td>
+                                                <td style="font-size:small">PT#@obj.PTModel.pt</td>
                                                 <td style="font-size:small">@obj.landing_site</td>
                                             </tr>
                                         }
@@ -65,6 +61,9 @@
                                 <thead>
                                     <tr>
                                         <th style="width: 1%;font-size:small">
+                                            Source
+                                        </th>
+                                        <th style="width: 1%;font-size:small">
                                             Code
                                         </th>
                                         <th style="width: 5%;font-size:small">
@@ -82,7 +81,7 @@
                                 </tbody>
                                 <tfoot>
                                     <tr>
-                                        <th style="width: 2%;font-size:small" colspan="3">Total</th>
+                                        <th style="width: 2%;font-size:small" colspan="4">Total</th>
                                         <th style="width: 2%;font-size:small" id="total-kg-raw"></th>
                                     </tr>
                                 </tfoot>

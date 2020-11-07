@@ -17,7 +17,7 @@ namespace BMI.Models
         public DateTime date { get; set; }
         public PTModel PTModel { get; set; }
         [ForeignKey("PTModel")]
-        public int id_pt { get; set; }
+        public string id_pt { get; set; }
         public string raw_source { get; set; }
 
         public MasterBMIModel MasterBMIModel { get; set; }

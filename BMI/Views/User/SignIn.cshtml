@@ -12,7 +12,7 @@
         <div class="card-body register-card-body">
             <p class="login-box-msg">Login</p>
 
-            <form asp-action="SignUp">
+            <form asp-action="SignIn">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="form-group">
                     <input asp-for="EmailAddress" type="email" class="form-control" placeholder="Email">
@@ -31,7 +31,7 @@
                     </div>
                     <!-- /.col -->
                 </div>
-                <a class="btn btn-primary" asp-area="" asp-controller="user" asp-action="SignUp">Sign Up</a>
+                @*<a class="btn btn-primary" asp-area="" asp-controller="user" asp-action="SignUp">Sign Up</a>*@
             </form>
 
             @*<a href="login.html" class="btn btn-primary float-right">Register</a>*@

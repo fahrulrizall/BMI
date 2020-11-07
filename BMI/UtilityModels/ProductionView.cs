@@ -12,9 +12,10 @@ namespace BMI.Models
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime date { get; set; }
         public string code { get; set; }
-        public int pt { get; set; }
-        public float total { get; set; }
+        public string pt { get; set; }
+        public double total { get; set; }
         public string batch { get; set; }
         public MasterBMIModel MasterBMIModel { get; set; }
+        public PTModel PTModel { get; set; }
     }
 }

@@ -36,6 +36,7 @@ namespace BMI.Controllers
         public IActionResult Index()
         {
             var obj = _db.Production_output
+                .Include(k=>k.PTModel)
                 .AsEnumerable()
                 .GroupBy(x => x.id_pt, (key, g) => g.OrderByDescending(e => e.id_productionoutput).First())
                 .OrderByDescending(e => e.id_productionoutput)
@@ -72,7 +73,7 @@ namespace BMI.Controllers
                     {
                         {
                             IExcelDataReader excelDataReader = ExcelDataReader.ExcelReaderFactory.CreateReader(stream);
-                            if (excelDataReader.FieldCount == 7)
+                            if (excelDataReader.FieldCount == 8)
                             {
 
                                 var conf = new ExcelDataSetConfiguration()
@@ -87,30 +88,34 @@ namespace BMI.Controllers
                                 DataRowCollection row = dataSet.Tables["GI"].Rows;
                                 List<object> rowDataList = null;
 
-                                //foreach (DataRow item in row)
-                                //{
-                                //    rowDataList = item.ItemArray.ToList();
-                                //    var unique = _db.Bmi_po.FirstOrDefault(m => m.po== Convert.ToString(rowDataList[0]));
-                                //    if (unique == null)
-                                //    {
-                                //        var obj = new BMIPO
-                                //        {
-                                //            po = Convert.ToString(rowDataList[0]),
-                                //            pt = Convert.ToInt32(rowDataList[2])
-                                //        };
-                                //        _db.Bmi_po.Add(obj);
-                                //        _db.SaveChanges();
-                                //    }
-                                //}
-                                
                                 foreach (DataRow item in row)
                                 {
                                     rowDataList = item.ItemArray.ToList();
+                                    var id_pt = rowDataList[2] + "3700";
+                                    var unique = _db.pt.FirstOrDefault(m => m.id_pt == id_pt);
+                                    if (unique == null)
+                                    {
+                                        var obj = new PTModel
+                                        {
+                                            id_pt = id_pt,
+                                            pt = Convert.ToInt32(rowDataList[2]),
+                                            plant="3770",
+                                            batch = Convert.ToString(rowDataList[7])
+                                        };
+                                        _db.pt.Add(obj);
+                                        _db.SaveChanges();
+                                    }
+                                }
+
+                                foreach (DataRow item in row)
+                                {
+                                    rowDataList = item.ItemArray.ToList();
+                                    var id_pt = rowDataList[2] + "3700";
                                     prod_input.Add(new ProductionInputModel
                                     {
                                         po = Convert.ToString(rowDataList[0]),
                                         date = Convert.ToDateTime(rowDataList[1]),
-                                        id_pt = Convert.ToInt32(rowDataList[2]),
+                                        id_pt = id_pt,
                                         raw_source = Convert.ToString(rowDataList[3]),
                                         bmi_code = Convert.ToString(rowDataList[4]),
                                         qty = Convert.ToSingle(rowDataList[5]),
@@ -168,7 +173,7 @@ namespace BMI.Controllers
                     {
                         {
                             IExcelDataReader excelDataReader = ExcelDataReader.ExcelReaderFactory.CreateReader(stream);
-                            if (excelDataReader.FieldCount == 6)
+                            if (excelDataReader.FieldCount == 5)
                             {
 
                                 var conf = new ExcelDataSetConfiguration()
@@ -186,15 +191,15 @@ namespace BMI.Controllers
                                 foreach (DataRow item in row)
                                 {
                                     rowDataList = item.ItemArray.ToList();
+                                    var id_pt = rowDataList[2] + "3700";
                                     prod_output.Add(new ProductionOutputModel
                                     {
                                         po = Convert.ToString(rowDataList[0]),
                                         date = Convert.ToDateTime(rowDataList[1]),
-                                        id_pt = Convert.ToInt32(rowDataList[2]),
+                                        id_pt = id_pt,
                                         bmi_code = Convert.ToString(rowDataList[3]),
                                         qty = Convert.ToSingle(rowDataList[4]),
                                         //batch = Convert.ToString(rowDataList[5]),
-
                                     });
                                 }
                                 _db.Production_output.AddRange(prod_output);
@@ -219,10 +224,11 @@ namespace BMI.Controllers
             return RedirectToAction("Index");
         }
 
-        public IActionResult Detail(int pt)
+        public IActionResult Detail(string pt)
         {
+            var no_pt = pt + "3700";
             var obj = _db.Production_output
-                .Where(a => a.id_pt == pt)
+                .Where(a => a.id_pt == no_pt)
                 .Include(k=>k.MasterBMIModel)
                 .AsEnumerable()
                 .GroupBy(k=>k.bmi_code)
@@ -240,7 +246,7 @@ namespace BMI.Controllers
         {
             
             var obj = _db.Production_output
-                .Where(a => a.id_pt == pt && a.bmi_code==code)
+                .Where(a => a.PTModel.pt == pt && a.bmi_code==code)
                 .Include(k => k.MasterBMIModel)
                 .AsEnumerable()
                 .GroupBy(k => k.date)
@@ -254,26 +260,6 @@ namespace BMI.Controllers
                 .OrderByDescending(a=>a.date)
                 .ToList();
             return Json(obj);
-        }
-
-
-        public IActionResult All()
-        {
-            var obj = _db.Production_output
-                .Include(k => k.MasterBMIModel)
-                .AsEnumerable()
-                .GroupBy(k => new { k.id_pt, k.bmi_code })
-                .Select(k => new ProductionView
-                {
-                    pt = k.Key.id_pt,
-                    code = k.Key.bmi_code,
-                    MasterBMIModel = k.Max(m => m.MasterBMIModel),
-                    total = k.Sum(a => a.qty),
-                    //batch = k.Max(m=>m.batch)
-                })
-                .OrderByDescending(a => a.pt)
-                .ToList();
-            return View(obj);
         }
 
         public IActionResult DateExist(DateTime date)
@@ -291,6 +277,8 @@ namespace BMI.Controllers
         public IActionResult Daily(DateTime date)
         {
             var obj = _db.Production_input
+                .Include(k=>k.PTModel)
+                .AsEnumerable()
                 .Where(m => m.date.Year == date.Year &&
                        m.date.Month == date.Month &&
                        m.date.Day == date.Day)
@@ -299,8 +287,8 @@ namespace BMI.Controllers
                 {
                     po = a.Key,
                     raw_source = a.Max(k=>k.raw_source),
-                    id_pt = a.Max(k=>k.id_pt),
-                    landing_site = a.Max(k => k.landing_site)
+                    PTModel = a.Max(k=>k.PTModel),
+                    landing_site = a.Max(k => k.landing_site),
                 })
                 .ToList();
             ViewBag.date = date.Date;
@@ -315,9 +303,10 @@ namespace BMI.Controllers
                 .Where(m => m.po == po && m.date.Year == date.Year &&
                        m.date.Month == date.Month &&
                        m.date.Day == date.Day)
-                .GroupBy(k => new { k.bmi_code, k.landing_site })
+                .GroupBy(k => new {k.raw_source, k.bmi_code, k.landing_site })
                 .Select(a => new ProductionInputModel
                 {
+                    raw_source = a.Key.raw_source,
                     bmi_code = a.Key.bmi_code,
                     landing_site = a.Key.landing_site,
                     MasterBMIModel = a.Max(m => m.MasterBMIModel),

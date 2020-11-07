@@ -18,28 +18,29 @@ namespace BMI.Controllers
             _db = db;
         }
 
-        public IActionResult List()
-        {
-            IEnumerable<Usermodel> list = _db.User;
-            return View(list);
-        }
+        //public IActionResult List()
+        //{
+        //    IEnumerable<Usermodel> list = _db.User;
+        //    return View(list);
+        //}
 
 
-        public IActionResult SignUp()
-        {
+        //public IActionResult SignUp()
+        //{
             
-            return View();
-        }
+        //    return View();
+        //}
 
-        [HttpPost]
-        public IActionResult SignUp(Usermodel model)
-        {
-            if (ModelState.IsValid)
-            {
-                return RedirectToAction("SignIn");    
-            }
-            return View();
-        }
+        //[HttpPost]
+        //public IActionResult SignUp(Usermodel model)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        return RedirectToAction("SignIn");    
+        //    }
+        //    return View();
+        //}
+
         public IActionResult SignIn()
         {
             return View();

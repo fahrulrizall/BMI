@@ -40,9 +40,6 @@
                                 <i class="fa fa-upload">
                                 </i>
                             </a>
-                            <a asp-controller="Production" asp-action="all" class="btn btn-sm btn-default float-right mx-2">
-                                <i class="fa fa-book"></i>
-                            </a>
                             <a href="#" class="btn btn-sm btn-default upload-gr float-right mx-2"
                                data-toggle="modal" data-target="#modal-default">
                                 <i class="fa fa-history"></i>
@@ -60,6 +57,9 @@
                                     <th style="width: 4%">
                                         PT
                                     </th>
+                                    <th style="width: 4%">
+                                        Batch
+                                    </th>
                                     <th style="width: 10%">
                                         Actions
                                     </th>
@@ -72,9 +72,10 @@
                                     {
 
                                         <tr>
-                                            <td style="font-size:smaller">@obj.id_pt</td>
+                                            <td style="font-size:smaller">@obj.PTModel.pt</td>
+                                            <td style="font-size:smaller">@obj.PTModel.batch</td>
                                             <td>
-                                                <a asp-controller="Production" asp-action="Detail" asp-route-pt="@obj.id_pt" class="btn btn-sm btn-primary">View</a>
+                                                <a asp-controller="Production" asp-action="Detail" asp-route-pt="@obj.PTModel.pt" class="btn btn-sm btn-primary">View</a>
                                             </td>
                                         </tr>
                                     }

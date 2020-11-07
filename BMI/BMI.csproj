@@ -100,6 +100,10 @@
     <Compile Remove="Migrations\20201013121523_removecolumnshipmentpart3.Designer.cs" />
     <Compile Remove="Migrations\20201013121632_removecolumnshipmentpart3.cs" />
     <Compile Remove="Migrations\20201013121632_removecolumnshipmentpart3.Designer.cs" />
+    <Compile Remove="Migrations\20201105014341_change_int_to_string_on_key_table_pt.cs" />
+    <Compile Remove="Migrations\20201105014341_change_int_to_string_on_key_table_pt.Designer.cs" />
+    <Compile Remove="Migrations\20201105014550_change_int_to_string_on_key_table_pt.cs" />
+    <Compile Remove="Migrations\20201105014550_change_int_to_string_on_key_table_pt.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

@@ -232,6 +232,8 @@ $(function () {
         $('.modal-body form').attr('action','/Production/ImportGR');
     });
 
+
+    // untuk shipment
     $('.add-shipment').on('click', function () {
         $('#formModalLabel').html('New Shipment');
         $('.modal-footer button[type=submit]').html('Create');
@@ -281,6 +283,27 @@ $(function () {
             }
         });
     });
+
+    $('.update-item-shipment').on('click', function () {
+        $('.modal-footer button[type=submit]').html('Update');
+        var id = $(this).data('id');
+        $('#formModalLabel').html('Update Item ');
+        $('.modal-body form').attr('action', '/Shipment/Updateitem');
+        $.ajax({
+            url: '/Shipment/Getitem',
+            data: { id: id },
+            method: 'get',
+            dataType: 'json',
+            success: function (data) {
+                $('#id_shipment_detail').val(data.id_shipment_detail);
+                $('#id_ship').val(data.id_ship);
+                $('#qty').val(data.qty);
+                $('#po').val(data.batch);
+            }
+        });
+    });
+
+
 
 
     //table global pt
@@ -337,14 +360,6 @@ $(function () {
         $('.table-fg-daily').hide();
     });
 
-    $('.close-raw-daily').on('click', function () {
-        $('.table-raw-daily').hide();
-    });
-
-    $('.close-fg-daily').on('click', function () {
-        $('.table-fg-daily').hide();
-    });
-
     $('.detail-po-daily').on('click', function () {
         $('.table-raw-daily').show();
         $('.table-fg-daily').show();
@@ -359,7 +374,7 @@ $(function () {
             dataType: 'json',
             success: function (data) {
                 data.forEach(function (e) {
-                    $('#detail-raw-daily').append("<tr><td>" + e.masterBMIModel.sap_code + "</td>" + "<td>" + e.masterBMIModel.description + "</td>" + "<td>" + e.landing_site + "</td>" + "<td class='qty'>" + e.qty + "</td></tr>");
+                    $('#detail-raw-daily').append("<tr><td>"+e.raw_source+"</td>"+"<td>" + e.masterBMIModel.sap_code + "</td>" + "<td>" + e.masterBMIModel.description + "</td>" + "<td>" + e.landing_site + "</td>" + "<td class='qty'>" + e.qty + "</td></tr>");
                     total_kg();
                 })
             }
@@ -391,6 +406,7 @@ $(function () {
             $('.qty-kg').each(function () {
                 sum += parseFloat($(this).text())
             });
+            sum = parseFloat(sum).toFixed(2);
             $('#total-kg-fg').html(sum);
         };
         function calc_total_case() {
@@ -403,6 +419,30 @@ $(function () {
 
 
     });
+
+    // untuk inventory
+    //$(function () {
+    //    $('.inventory-fg').hide();
+    //    $('.inventory-raw').hide();
+    //});
+
+    //$('.select-inventory').change(function () {
+    //    data = $(this).val();
+    //    if (data == 'fg') {
+    //        $('.inventory-fg').show();
+    //        $.ajax({
+    //            url: '/Inventory/GetInventoryFG',
+    //            method: 'get',
+    //            dataType: 'json',
+    //            success: function (data) {
+    //                data.forEach(function (e) {
+    //                    each_case = parseInt(e.total);
+    //                    $('#inventory-fg').append("<tr><td>" + e.ptModel.pt + "</td>" + "<td>" + e.masterBMIModel.sap_code + "</td>" + "<td>" + e.masterBMIModel.description + "</td>" + "<td>" + e.ptModel.batch + "</td>"+"<td>"+each_case+ "</td></tr>");
+    //                })
+    //            }
+    //        });
+    //    }
+    //})
 
 
 });  

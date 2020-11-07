@@ -4,14 +4,16 @@ using BMI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BMI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201105014705_change_int_to_string_on_key_table_pt")]
+    partial class change_int_to_string_on_key_table_pt
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -129,28 +131,6 @@ namespace BMI.Migrations
                     b.ToTable("Master_data");
                 });
 
-            modelBuilder.Entity("BMI.Models.PTModel", b =>
-                {
-                    b.Property<string>("id_pt")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("batch")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("plant")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("po")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("pt")
-                        .HasColumnType("int");
-
-                    b.HasKey("id_pt");
-
-                    b.ToTable("pt");
-                });
-
             modelBuilder.Entity("BMI.Models.ProductionInputModel", b =>
                 {
                     b.Property<int>("id_productioninput")
@@ -168,7 +148,7 @@ namespace BMI.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("id_pt")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("landing_site")
                         .HasColumnType("nvarchar(max)");
@@ -191,8 +171,6 @@ namespace BMI.Migrations
                     b.HasKey("id_productioninput");
 
                     b.HasIndex("bmi_code");
-
-                    b.HasIndex("id_pt");
 
                     b.ToTable("Production_input");
                 });
@@ -217,7 +195,7 @@ namespace BMI.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("id_pt")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("po")
                         .HasColumnType("nvarchar(max)");
@@ -236,8 +214,6 @@ namespace BMI.Migrations
                     b.HasIndex("MasterBMIModel1bmi_code");
 
                     b.HasIndex("bmi_code");
-
-                    b.HasIndex("id_pt");
 
                     b.ToTable("Production_output");
                 });
@@ -429,10 +405,6 @@ namespace BMI.Migrations
                     b.HasOne("BMI.Models.MasterBMIModel", "MasterBMIModel")
                         .WithMany()
                         .HasForeignKey("bmi_code");
-
-                    b.HasOne("BMI.Models.PTModel", "PTModel")
-                        .WithMany()
-                        .HasForeignKey("id_pt");
                 });
 
             modelBuilder.Entity("BMI.Models.ProductionOutputModel", b =>
@@ -444,10 +416,6 @@ namespace BMI.Migrations
                     b.HasOne("BMI.Models.MasterBMIModel", "MasterBMIModel")
                         .WithMany()
                         .HasForeignKey("bmi_code");
-
-                    b.HasOne("BMI.Models.PTModel", "PTModel")
-                        .WithMany()
-                        .HasForeignKey("id_pt");
                 });
 
             modelBuilder.Entity("BMI.Models.Rmmodel", b =>
