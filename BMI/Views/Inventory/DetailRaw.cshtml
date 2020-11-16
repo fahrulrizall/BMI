@@ -1,0 +1,61 @@
+﻿@model IEnumerable<BMI.Models.ProductionView>
+@{
+    ViewData["Title"] = "Inventory";
+}
+<div class="content-wrapper">
+    <section class="content-header">
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-12">
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Raw Material</h3>
+                        <div class="card-tools ">
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <table id="example1" class="table table-bordered table-striped table-sm">
+                            <thead>
+                                <tr>
+                                    <th style="width: 1%;font-size:small">
+                                        Raw Source
+                                    </th>
+                                    <th style="width: 5%;font-size:small">
+                                        SAP Code
+                                    </th>
+                                    <th style="width: 15%;font-size:small">
+                                        Decsription
+                                    </th>
+                                    <th style="width: 5%;font-size:small">
+                                        Available Qty
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var obj in Model)
+                                {
+                                    <tr>
+                                        <td class="text text-sm">@obj.raw_source</td>
+                                        <td style="font-size:small">@obj.MasterBMIModel.sap_code</td>
+                                        <td style="font-size:small">@obj.MasterBMIModel.description</td>
+                                        <td style="font-size:small">@obj.total.ToString("0.00")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </section>
+    <!-- /.content -->
+</div>

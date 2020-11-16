@@ -56,8 +56,8 @@
                                     {
                                     <tr>
                                         <td>
-                                            <a style="font-size:small;color:black" asp-controller="Rm" asp-action="Detail" asp-route-reff="@obj.reff">
-                                                @Html.DisplayFor(modelItem => obj.reff)
+                                            <a style="font-size:small;color:black" asp-controller="Rm" asp-action="Detail" asp-route-raw_source="@obj.raw_source">
+                                                @Html.DisplayFor(modelItem => obj.raw_source)
                                             </a>
                                         </td>
                                         <td style="font-size:small">@Html.DisplayFor(modelItem => obj.container)</td>
@@ -66,12 +66,12 @@
                                         <td style="font-size:small">@status</td>
                                         <td style="font-size:small">@Html.DisplayFor(modelItem => obj.saved)</td>
                                         <td>
-                                            <form asp-controller="Rm" asp-action="Delete" asp-route-reff="@obj.reff" asp-route-status="@obj.status" method="post">
+                                            <form asp-controller="Rm" asp-action="Delete" asp-route-raw_source="@obj.raw_source" asp-route-status="@obj.status" method="post">
                                             <a style="font-size:small" class="btn btn-xs btn-warning change-container"
                                                     data-toggle="modal" data-target="#modal-default" data-id="@obj.id_raw">
                                                 <i class="fa fa-edit" style="color:ghostwhite;outline:thin"></i>
                                             </a>
-                                            <button type="submit" onclick="return confirm ('Delete Refference @obj.reff');" class="btn btn-xs btn-danger">
+                                            <button type="submit" onclick="return confirm ('Delete Raw Source From @obj.raw_source');" class="btn btn-xs btn-danger">
                                                 <i class="fa fa-trash"></i>
                                             </button>
                                             </form>
@@ -121,7 +121,7 @@
                                 <label asp-for="First().container"></label>
                                 <input type="text" placeholder="Container" class="form-control" asp-for="First().container">
                             </div>
-                            <input type="hidden" class="form-control " asp-for="First().reff">
+                            <input type="hidden" class="form-control " asp-for="First().raw_source">
                             <div class="form-group">
                                 <label asp-for="First().status"></label>
                                 <select class="form-control" asp-for="First().status">

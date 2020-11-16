@@ -164,9 +164,27 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="" class="nav-link">
+                                    <a class="nav-link" asp-controller="Destroy" asp-route-status="destroy" asp-action="Index">
                                         <i class="far fa-circle nav-icon"></i>
-                                        <p>Destroys</p>
+                                        <p>Destroy</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Destroy" asp-route-status="adjustment" asp-action="Index">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Adjusment</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Repack" asp-action="Index">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Repack</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Deposit" asp-action="Index">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Deposit</p>
                                     </a>
                                 </li>
                             </ul>
@@ -224,6 +242,60 @@
             else if (result == 'failed')
                 toastr.error("", msg);
         });
+    </script>
+
+    <script>
+         $(function () {
+            var status = '@TempData["status"]';
+             if (status == "adjustment") {
+                 $('.reason').hide();
+             } 
+         });
+
+
+        $('.add-destroy-item').on('click', function () {
+            $('#formModalLabel').html('Add New Item');
+            $('.modal-body form').attr('action', 'Destroy/Create');
+            $('#id_destroy').val("");
+            $('#id_pt').val("");
+            $('#bmi_code').val("");
+            $('#qty').val("");
+            $('#raw_source').val("");
+            if (status == "destroy") {
+                $('.reason').val("");
+            } else {
+                $('#reason').val("");
+                $('.reason').hide();
+            }
+        });
+
+        $('.update-destroy').on('click', function () {
+            $('#formModalLabel').html('Update Item');
+            var id = $(this).data('id');
+            $('.modal-body form').attr('action', 'Destroy/Update');
+            $.ajax({
+                url: '/Destroy/Getdataitem',
+                data: { id: id },
+                method: 'get',
+                dataType: 'json',
+                success: function (data) {
+                    $('#id_destroy').val(data.id_destroy);
+                    $('#id_pt').val(data.id_pt.charAt(0));
+                    $('#bmi_code').val(data.bmi_code);
+                    $('#qty').val(data.qty);
+                    $('#raw_source').val(data.raw_source);
+                    if (status == "destroy") {
+                        $('.reason').val("");
+                        $('.reason').val(data.reason);
+                    } else {
+                        $('.reason').hide();
+                    }
+                    
+                }
+            });
+        });
+
+
     </script>
 
     @RenderSection("Scripts", required: false)

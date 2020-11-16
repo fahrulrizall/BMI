@@ -32,14 +32,14 @@ namespace BMI.Controllers
 
         public IActionResult Index()
         {
-            var list = _db.Shipment.OrderByDescending(e=>e.id_ship).ToList();
+            var list = _db.Shipment.OrderByDescending(e=>e.id_shipment).ToList();
             return View(list);
         }
 
         [HttpPost]
         public IActionResult IdExist(Shipmentmodel shipmentmodel)
         {
-            var unique = _db.Shipment.SingleOrDefault(m => m.id_ship == shipmentmodel.id_ship);
+            var unique = _db.Shipment.SingleOrDefault(m => m.id_shipment == shipmentmodel.id_shipment);
             if (unique != null)
             {
                 return Json(false);
@@ -114,7 +114,7 @@ namespace BMI.Controllers
         {
             ViewBag.no = id;
             var obj = _db.Shipment_detail
-                .Where(a => a.id_ship == id)
+                .Where(a => a.id_shipment == id)
                 .Include(c => c.MasterBMIModel)
                 .ToList();
             return View(obj);
@@ -170,7 +170,7 @@ namespace BMI.Controllers
                                     rowDataList = item.ItemArray.ToList();
                                     shipmentdata.Add(new ShipmentDetailModel
                                     {
-                                        id_ship = id,
+                                        id_shipment = id,
                                         bmi_code = Convert.ToString(rowDataList[0]),
                                         batch = Convert.ToString(rowDataList[1]),
                                         qty = Convert.ToInt32(rowDataList[2]),
@@ -217,11 +217,11 @@ namespace BMI.Controllers
                 _db.SaveChanges();
                 TempData["msg"] = "Item Succesfully Updated";
                 TempData["result"] = "success";
-                return RedirectToAction("Detail", "Shipment", new { id = shipmentDetailModel.id_ship });
+                return RedirectToAction("Detail", "Shipment", new { id = shipmentDetailModel.id_shipment_detail });
             }
             TempData["msg"] = "Item Failed to Update";
             TempData["result"] = "failed";
-            return RedirectToAction("Detail", "Shipment", new { id= shipmentDetailModel.id_ship });
+            return RedirectToAction("Detail", "Shipment", new { id= shipmentDetailModel.id_shipment_detail });
         }
 
 

@@ -240,7 +240,7 @@ $(function () {
         $('.modal-body form').attr('action', 'Shipment/Create');
         $('.shipment-id-label').show();
         $('.shipment-id').attr('type', 'number');
-        $('#id_ship').val("");
+        $('#id_shipment').val("");
         $('#etd').val("");
         $('#eta').val("");
         $('#po').val("");
@@ -259,7 +259,7 @@ $(function () {
             success: function (data) {
                 $('.shipment-id-label').hide();
                 $('.shipment-id').attr('type', 'hidden');
-                $('#id_ship').val(data.id_ship);
+                $('#id_shipment').val(data.id_shipment);
                 $('#po').val(data.po);
                     var date = new Date(data.etd);
                     yr = date.getFullYear();
@@ -296,7 +296,7 @@ $(function () {
             dataType: 'json',
             success: function (data) {
                 $('#id_shipment_detail').val(data.id_shipment_detail);
-                $('#id_ship').val(data.id_ship);
+                $('#id_shipment').val(data.id_shipment);
                 $('#qty').val(data.qty);
                 $('#po').val(data.batch);
             }
@@ -322,6 +322,7 @@ $(function () {
             dataType: 'json',
             success: function (data) {
                 data.forEach(function (e) {
+                    console.log(e);
                     var date = new Date(e.date);
                     yr = date.getFullYear();
                     month = date.getMonth() + 1;
@@ -330,8 +331,8 @@ $(function () {
                         month = "0" + month;
                     }
                     newdate = yr + '-' + month + '-' + day;
-                    totaldaily = parseInt(e.total * 2.204 / e.masterBMIModel.lbs);
-                    $('#detail-table-daily').append("<tr><td>" + newdate + "</td>" + "<td>" +  parseFloat(e.total).toFixed(2) + "</td>" + "<td class='case'>" + totaldaily + "</td></tr>");
+                    totaldaily = parseInt(e.qty * 2.204 / e.masterBMIModel.lbs);
+                    $('#detail-table-daily').append("<tr><td>" + newdate + "</td>" + "<td>" +  parseFloat(e.qty).toFixed(2) + "</td>" + "<td class='case'>" + totaldaily + "</td></tr>");
                     calc_case();
                 })  
             }
@@ -420,29 +421,62 @@ $(function () {
 
     });
 
-    // untuk inventory
-    //$(function () {
-    //    $('.inventory-fg').hide();
-    //    $('.inventory-raw').hide();
-    //});
 
-    //$('.select-inventory').change(function () {
-    //    data = $(this).val();
-    //    if (data == 'fg') {
-    //        $('.inventory-fg').show();
-    //        $.ajax({
-    //            url: '/Inventory/GetInventoryFG',
-    //            method: 'get',
-    //            dataType: 'json',
-    //            success: function (data) {
-    //                data.forEach(function (e) {
-    //                    each_case = parseInt(e.total);
-    //                    $('#inventory-fg').append("<tr><td>" + e.ptModel.pt + "</td>" + "<td>" + e.masterBMIModel.sap_code + "</td>" + "<td>" + e.masterBMIModel.description + "</td>" + "<td>" + e.ptModel.batch + "</td>"+"<td>"+each_case+ "</td></tr>");
-    //                })
-    //            }
-    //        });
-    //    }
-    //})
+
+    $('.adjustment-fg').on('click', function () {
+        var pt = $(this).data('pt');
+        var code = $(this).data('code');
+        $('#qty').val("");
+        $('.destination-pt').hide();
+        $('.destination-code').hide();
+        $.ajax({
+            url: '/Production/Getitemdata',
+            data: { pt: pt, code: code },
+            method: 'get',
+            dataType: 'json',
+            success: function (data) {
+                $('#id_pt').val(pt);
+                $('#bmi_code').val(data[0].bmi_code)
+            }
+        });
+
+    });
+
+    $('.repack-fg').on('click', function () {
+        $('#formModalLabel').html('Repack Item');
+        $('.destination-pt').show();
+        $('.destination-code').show();
+        var pt = $(this).data('pt');
+        var code = $(this).data('code');
+        $('#qty').val("");
+        $('#destination_pt').val("");
+        $('#to_bmi_code').val("");
+        $('.modal-body form').attr('action', '/Production/Repack');
+        $.ajax({
+            url: '/Production/Getitemdata',
+            data: { pt: pt, code: code },
+            method: 'get',
+            dataType: 'json',
+            success: function (data) {
+                $('#id_pt').val(pt);
+                $('#bmi_code').val(data[0].bmi_code)
+            }
+        });
+
+    });
+
+
+
+
+   
+
+
+
+
+
+
+
+
 
 
 });  

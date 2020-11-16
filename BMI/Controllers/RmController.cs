@@ -46,7 +46,7 @@ namespace BMI.Controllers
                 var list = _db.Rm
                     .Where(x => x.status == status)
                     .AsEnumerable()
-                    .GroupBy(x => x.reff, (key, g) => g.OrderByDescending(e => e.id_raw).First())
+                    .GroupBy(x => x.raw_source, (key, g) => g.OrderByDescending(e => e.id_raw).First())
                     .OrderByDescending(e => e.id_raw)
                     .ToList();
 
@@ -63,14 +63,14 @@ namespace BMI.Controllers
             return NotFound();
         }
 
-        public IActionResult Detail (string reff)
+        public IActionResult Detail (string raw_source)
         {
             var list = _db.Rm
-                .Where(x => x.reff == reff)
+                .Where(x => x.raw_source == raw_source)
                 .Include(x=>x.Masterdatamodel)
                 .OrderByDescending(e=>e.id_raw)
                 .ToList();
-            ViewBag.reff = reff;
+            ViewBag.raw_source = raw_source;
             return View(list);
         }
 
@@ -86,7 +86,7 @@ namespace BMI.Controllers
         {
             if (ModelState.IsValid)
             {
-                var list = _db.Rm.Where(x => x.reff == rmmodel.reff).ToList();
+                var list = _db.Rm.Where(x => x.raw_source == rmmodel.raw_source).ToList();
                 if (rmmodel.status == "In Plant")
                 {
                     var status = "in_plant";
@@ -176,7 +176,7 @@ namespace BMI.Controllers
                                         etd = Convert.ToDateTime(rowDataList[0]),
                                         eta = Convert.ToDateTime(rowDataList[1]),
                                         container = Convert.ToString(rowDataList[2]),
-                                        reff = Convert.ToString(rowDataList[3]),
+                                        raw_source = Convert.ToString(rowDataList[3]),
                                         landing_site = Convert.ToString(rowDataList[4]),
                                         sap_code = Convert.ToString(rowDataList[5]),
                                         cases = Convert.ToInt32(rowDataList[6]),
@@ -210,10 +210,10 @@ namespace BMI.Controllers
 
         [HttpPost]
         [AutoValidateAntiforgeryToken]
-        public IActionResult Delete(string reff,string status)
+        public IActionResult Delete(string raw_source,string status)
         {
-            var datareff = _db.Rm.Where(x => x.reff == reff).ToList();
-            _db.Rm.RemoveRange(datareff);
+            var raw_source_all = _db.Rm.Where(x => x.raw_source == raw_source).ToList();
+            _db.Rm.RemoveRange(raw_source_all);
             _db.SaveChanges();
             TempData["msg"] = "Item Succesfully Deleted";
             TempData["result"] = "success";
@@ -228,7 +228,7 @@ namespace BMI.Controllers
             _db.SaveChanges();
             TempData["msg"] = "Item Succesfully Updated";
             TempData["result"] = "success";
-            return RedirectToAction("Detail",new { reff = obj.reff });
+            return RedirectToAction("Detail",new { raw_source = obj.raw_source });
         }
 
         [HttpPost]
@@ -241,13 +241,13 @@ namespace BMI.Controllers
                 _db.SaveChanges();
                 TempData["msg"] = "Item Succesfully Duplicated";
                 TempData["result"] = "success";
-                return RedirectToAction("Detail", new { reff = obj.reff });
+                return RedirectToAction("Detail", new { raw_source = obj.raw_source });
             }
             else
             {
                 TempData["msg"] = "Item Failed Duplicated";
                 TempData["result"] = "failed";
-                return RedirectToAction("Detail", new { reff = obj.reff });
+                return RedirectToAction("Detail", new { raw_source = obj.raw_source });
             }
         }
 
@@ -259,14 +259,14 @@ namespace BMI.Controllers
 
         [HttpPost]
         [AutoValidateAntiforgeryToken]
-        public IActionResult Deleteitem(int id,string reff)
+        public IActionResult Deleteitem(int id,string raw_source)
         {
             var obj = _db.Rm.Find(id);
             _db.Rm.Remove(obj);
             _db.SaveChanges();
             TempData["msg"] = "Item Succesfully Deleted";
             TempData["result"] = "success";
-            return RedirectToAction("Detail", new { reff = reff });
+            return RedirectToAction("Detail", new { raw_source = raw_source });
         }
     }
 }

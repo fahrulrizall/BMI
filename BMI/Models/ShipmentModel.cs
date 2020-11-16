@@ -10,14 +10,11 @@ namespace BMI.Models
 {
     public class Shipmentmodel
     {
-        //[Display(Name = "Shipment Number")]
-        //[DatabaseGenerated(DatabaseGeneratedOption.None)]
-        //public int id_shipment { get; set; }
         [Key]
         [Display(Name = "Shipment No")]
         [Remote(action: "IdExist",controller:"Shipment",HttpMethod ="POST", AdditionalFields ="id_ship", ErrorMessage = "No Shipment Already Exist")]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public int id_ship { get; set; }
+        public int id_shipment { get; set; }
         
         [Display(Name = "Estimated Time of Departure")]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]

@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 
 namespace BMI.UtilityModels
 {
-    public class ProductionDate
+    public class CategoryView
     {
-        public List<ProductionOutputModel> ProductionFG { get; set; }
+        public string category { get; set; }
+        public double qty { get; set; }
+        public double yield { get; set; }
     }
 }

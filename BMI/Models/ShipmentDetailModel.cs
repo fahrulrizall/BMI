@@ -13,12 +13,13 @@ namespace BMI.Models
         public int id_shipment_detail { get; set; }
 
         [ForeignKey("Shipmentmodel")]
-        public int id_ship { get; set; }
+        public int id_shipment { get; set; }
 
         [ForeignKey("MasterBMIModel")]
         public string bmi_code { get; set; }
 
         #nullable enable
+        public string? raw_source { get; set; }
         public string? reff { get; set; }
         public string? batch { get; set; }
         public int qty { get; set; }

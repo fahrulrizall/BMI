@@ -4,83 +4,22 @@ using BMI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BMI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201107135545_change_column_name_on_table_rm")]
+    partial class change_column_name_on_table_rm
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "3.1.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-            modelBuilder.Entity("BMI.Models.DestroyFGModel", b =>
-                {
-                    b.Property<int>("id_destroyFG")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("bmi_code")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("id_pt")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("qty")
-                        .HasColumnType("int");
-
-                    b.Property<string>("raw_source")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("reason")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("status")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("id_destroyFG");
-
-                    b.HasIndex("bmi_code");
-
-                    b.HasIndex("id_pt");
-
-                    b.ToTable("DestroyFG");
-                });
-
-            modelBuilder.Entity("BMI.Models.DestroyRawModel", b =>
-                {
-                    b.Property<int>("id_destroyRaw")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<double>("qty")
-                        .HasColumnType("float");
-
-                    b.Property<string>("raw_source")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("reason")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("sap_code")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("status")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("id_destroyRaw");
-
-                    b.HasIndex("sap_code");
-
-                    b.ToTable("DestroyRaw");
-                });
 
             modelBuilder.Entity("BMI.Models.Fgmodel", b =>
                 {
@@ -211,7 +150,7 @@ namespace BMI.Migrations
 
                     b.HasKey("id_pt");
 
-                    b.ToTable("Pt");
+                    b.ToTable("pt");
                 });
 
             modelBuilder.Entity("BMI.Models.ProductionInputModel", b =>
@@ -285,9 +224,6 @@ namespace BMI.Migrations
                     b.Property<float>("qty")
                         .HasColumnType("real");
 
-                    b.Property<string>("raw_source")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("saved")
                         .HasColumnType("nvarchar(max)");
 
@@ -301,53 +237,6 @@ namespace BMI.Migrations
                     b.HasIndex("id_pt");
 
                     b.ToTable("Production_output");
-                });
-
-            modelBuilder.Entity("BMI.Models.RepackModel", b =>
-                {
-                    b.Property<int>("id_repack")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<DateTime>("date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("from_bmi_code")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("from_pt")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("po")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("production_date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<float>("qty")
-                        .HasColumnType("real");
-
-                    b.Property<string>("raw_source")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("to_bmi_code")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("to_pt")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("id_repack");
-
-                    b.HasIndex("from_bmi_code");
-
-                    b.HasIndex("from_pt");
-
-                    b.HasIndex("to_bmi_code");
-
-                    b.HasIndex("to_pt");
-
-                    b.ToTable("Repack");
                 });
 
             modelBuilder.Entity("BMI.Models.Rmmodel", b =>
@@ -428,7 +317,7 @@ namespace BMI.Migrations
                     b.Property<DateTime>("created_at")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("id_shipment")
+                    b.Property<int>("id_ship")
                         .HasColumnType("int");
 
                     b.Property<float>("index")
@@ -436,9 +325,6 @@ namespace BMI.Migrations
 
                     b.Property<int>("qty")
                         .HasColumnType("int");
-
-                    b.Property<string>("raw_source")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("reff")
                         .HasColumnType("nvarchar(max)");
@@ -453,14 +339,14 @@ namespace BMI.Migrations
 
                     b.HasIndex("bmi_code");
 
-                    b.HasIndex("id_shipment");
+                    b.HasIndex("id_ship");
 
                     b.ToTable("Shipment_detail");
                 });
 
             modelBuilder.Entity("BMI.Models.Shipmentmodel", b =>
                 {
-                    b.Property<int>("id_shipment")
+                    b.Property<int>("id_ship")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("created_at")
@@ -486,7 +372,7 @@ namespace BMI.Migrations
                     b.Property<DateTime?>("updated_at")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("id_shipment");
+                    b.HasKey("id_ship");
 
                     b.ToTable("Shipment");
                 });
@@ -526,24 +412,6 @@ namespace BMI.Migrations
                     b.ToTable("User");
                 });
 
-            modelBuilder.Entity("BMI.Models.DestroyFGModel", b =>
-                {
-                    b.HasOne("BMI.Models.MasterBMIModel", "MasterBMIModel")
-                        .WithMany()
-                        .HasForeignKey("bmi_code");
-
-                    b.HasOne("BMI.Models.PTModel", "PTModel")
-                        .WithMany()
-                        .HasForeignKey("id_pt");
-                });
-
-            modelBuilder.Entity("BMI.Models.DestroyRawModel", b =>
-                {
-                    b.HasOne("BMI.Models.Masterdatamodel", "Masterdatamodel")
-                        .WithMany()
-                        .HasForeignKey("sap_code");
-                });
-
             modelBuilder.Entity("BMI.Models.Fgmodel", b =>
                 {
                     b.HasOne("BMI.Models.Masterdatamodel", "Masterdatamodel")
@@ -575,25 +443,6 @@ namespace BMI.Migrations
                         .HasForeignKey("id_pt");
                 });
 
-            modelBuilder.Entity("BMI.Models.RepackModel", b =>
-                {
-                    b.HasOne("BMI.Models.MasterBMIModel", "fromMasterBMIModel")
-                        .WithMany()
-                        .HasForeignKey("from_bmi_code");
-
-                    b.HasOne("BMI.Models.PTModel", "fromPTModel")
-                        .WithMany()
-                        .HasForeignKey("from_pt");
-
-                    b.HasOne("BMI.Models.MasterBMIModel", "toMasterBMIModel")
-                        .WithMany()
-                        .HasForeignKey("to_bmi_code");
-
-                    b.HasOne("BMI.Models.PTModel", "toPTModel")
-                        .WithMany()
-                        .HasForeignKey("to_pt");
-                });
-
             modelBuilder.Entity("BMI.Models.Rmmodel", b =>
                 {
                     b.HasOne("BMI.Models.Masterdatamodel", "Masterdatamodel")
@@ -609,7 +458,7 @@ namespace BMI.Migrations
 
                     b.HasOne("BMI.Models.Shipmentmodel", "Shipmentmodel")
                         .WithMany()
-                        .HasForeignKey("id_shipment")
+                        .HasForeignKey("id_ship")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

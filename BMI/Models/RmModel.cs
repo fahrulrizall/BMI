@@ -25,7 +25,7 @@ namespace BMI.Models
 
 
         [Display(Name = "Refference")]
-        public string? reff { get; set; }
+        public string? raw_source { get; set; }
 
 
         [Display(Name = "Status")]
@@ -60,6 +60,10 @@ namespace BMI.Models
         public DateTime? updated_at { get; set; }
         
         public Masterdatamodel? Masterdatamodel { get; set; }
+        [NotMapped]
+        public double total_qty { get; set; }
+        [NotMapped]
+        public double total_amount { get; set; }
 
     }
 }

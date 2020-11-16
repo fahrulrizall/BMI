@@ -104,6 +104,18 @@
     <Compile Remove="Migrations\20201105014341_change_int_to_string_on_key_table_pt.Designer.cs" />
     <Compile Remove="Migrations\20201105014550_change_int_to_string_on_key_table_pt.cs" />
     <Compile Remove="Migrations\20201105014550_change_int_to_string_on_key_table_pt.Designer.cs" />
+    <Compile Remove="Migrations\20201111074753_adfasfasfaf.cs" />
+    <Compile Remove="Migrations\20201111074753_adfasfasfaf.Designer.cs" />
+    <Compile Remove="Migrations\20201114005815_add_table_repack.cs" />
+    <Compile Remove="Migrations\20201114005815_add_table_repack.Designer.cs" />
+    <Compile Remove="Migrations\20201114005949_add_table_repack.cs" />
+    <Compile Remove="Migrations\20201114005949_add_table_repack.Designer.cs" />
+    <Compile Remove="Migrations\20201116000102_add_table_to_database_dev.cs" />
+    <Compile Remove="Migrations\20201116000102_add_table_to_database_dev.Designer.cs" />
+    <Compile Remove="Migrations\20201116004049_add_table_to_server.cs" />
+    <Compile Remove="Migrations\20201116004049_add_table_to_server.Designer.cs" />
+    <Compile Remove="Migrations\20201116012007_asdasd.cs" />
+    <Compile Remove="Migrations\20201116012007_asdasd.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

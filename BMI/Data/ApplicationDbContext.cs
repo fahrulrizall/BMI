@@ -17,14 +17,14 @@ namespace BMI.Data
             
         }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<Masterdatamodel>()
-                .HasMany(b => b.Fgmodels)
-                .WithOne(p => p.Masterdatamodel);
+        //protected override void OnModelCreating(ModelBuilder modelBuilder)
+        //{
+        //    modelBuilder.Entity<Masterdatamodel>()
+        //        .HasMany(b => b.Fgmodels)
+        //        .WithOne(p => p.Masterdatamodel);
 
-            //modelBuilder.Entity<Shipmentmodel>().HasNoKey();
-        }
+        //    //modelBuilder.Entity<Shipmentmodel>().HasNoKey();
+        //}
         public DbSet<Usermodel> User { get; set; }
         public DbSet<Fgmodel> Fg { get; set; }
         public DbSet<Rmmodel> Rm { get; set; }
@@ -34,7 +34,10 @@ namespace BMI.Data
         public DbSet<ShipmentDetailModel> Shipment_detail { get; set; }
         public DbSet<ProductionInputModel> Production_input { get; set; }
         public DbSet<ProductionOutputModel> Production_output { get; set; }
-        public DbSet<PTModel> pt { get; set; }
+        public DbSet<PTModel> Pt { get; set; }
+        public DbSet<DestroyFGModel> DestroyFG { get; set; }
+        public DbSet<DestroyRawModel> DestroyRaw { get; set; }
+        public DbSet<RepackModel> Repack { get; set; }
 
     }
 }

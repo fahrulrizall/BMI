@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<BMI.Models.Rmmodel>
-@{string reff = ViewBag.reff; }
+@{string raw_source = ViewBag.raw_source; }
 @{
-    ViewData["Title"] = reff;
+    ViewData["Title"] = raw_source;
 }
 <div class="content-wrapper">
     <section class="content-header">
@@ -14,7 +14,7 @@
 
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Detail List of @reff</h3>
+                        <h3 class="card-title">Detail List of @raw_source</h3>
                     </div>
 
                     <div class="card-body">
@@ -59,7 +59,7 @@
                                     <td style="font-size:small">@obj.qty_pl</td>
                                     <td style="font-size:small">@obj.qty_received</td>
                                     <td>
-                                        <form asp-controller="Rm" asp-action="Deleteitem" asp-route-id="@obj.id_raw" asp-route-reff="@obj.reff" method="post" class="d-inline">
+                                        <form asp-controller="Rm" asp-action="Deleteitem" asp-route-id="@obj.id_raw" asp-route-raw_source="@obj.raw_source" method="post" class="d-inline">
                                             <a href="#" class="btn btn-xs btn-warning change-item-detail"
                                                 data-toggle="modal" data-target="#modal-default" data-id="@obj.id_raw">
                                                 <i class="fa fa-edit" style="color:ghostwhite;outline:thin"></i>
@@ -140,7 +140,7 @@
                         <input type="hidden" asp-for="First().etd">
                         <input type="hidden" asp-for="First().eta">
                         <input type="hidden" asp-for="First().status">
-                        <input type="hidden" asp-for="First().reff">
+                        <input type="hidden" asp-for="First().raw_source">
                         <input type="hidden" asp-for="First().cases">
                     </div>
                     <div class="modal-footer">

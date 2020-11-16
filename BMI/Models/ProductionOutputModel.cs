@@ -23,11 +23,15 @@ namespace BMI.Models
         [ForeignKey("MasterBMIModel")]
         public string bmi_code { get; set; }
         public float qty { get; set; }
+        
         #nullable enable
+        public string? raw_source { get; set; }
         public string? saved { get; set; }
         public DateTime? created_at { get; set; }
         public DateTime? updated_at { get; set; }
-
-        
+        [NotMapped]
+        public double qty_production { get; set; }
+        [NotMapped]
+        public double available { get; set; }
     }
 }

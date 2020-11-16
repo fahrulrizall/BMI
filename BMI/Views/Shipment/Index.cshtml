@@ -3,7 +3,7 @@
     ViewData["Title"] = "Shipment";
 }
 <div class="content-wrapper">
-     <section class="content-header">
+    <section class="content-header">
     </section>
     <!-- Main content -->
     <section class="content">
@@ -43,38 +43,41 @@
                                     </th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                @foreach (var obj in Model)
-                                {
-                                    <tr>
-                                        <td>
-                                            <a style="font-size:small;color:black" asp-controller="Shipment" asp-action="Detail" asp-route-id="@obj.id_ship">
-                                                @Html.DisplayFor(modelItem => obj.id_ship)
-                                            </a>
-                                        </td>
-                                        <td>
-                                            <a style="font-size:small;color:black" asp-controller="Shipment" asp-action="Detail" asp-route-id="@obj.id_ship">
-                                                @Html.DisplayFor(modelItem => obj.po)
-                                            </a>
-                                        </td>
-                                        <td style="font-size:small">@Html.DisplayFor(modelItem => obj.etd)</td>
-                                        <td style="font-size:small">@Html.DisplayFor(modelItem => obj.eta)</td>
-                                        <td style="font-size:small">@obj.destination</td>
-                                        <td>
-                                            <form asp-controller="Shipment" asp-route-id="@obj.id_ship" asp-action="Delete" method="post">
-                                                <a data-toggle="modal" data-target="#modal-default" data-id="@obj.id_ship" class="btn btn-xs btn-warning update-shipment">
-                                                    <i class="fa fa-edit" style="color:ghostwhite;outline:thin">
-                                                    </i>
+                            @if (Model.Count() > 0)
+                            {
+                                <tbody>
+                                    @foreach (var obj in Model)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <a style="font-size:small;color:black" asp-controller="Shipment" asp-action="Detail" asp-route-id="@obj.id_shipment">
+                                                    @Html.DisplayFor(modelItem => obj.id_shipment)
                                                 </a>
-                                                <button type="submit" onclick="return confirm ('Delete Shipment No @obj.id_ship');" class="btn btn-xs btn-danger">
-                                                    <i class="fa fa-trash">
-                                                    </i>
-                                                </button>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                }
-                            </tbody>
+                                            </td>
+                                            <td>
+                                                <a style="font-size:small;color:black" asp-controller="Shipment" asp-action="Detail" asp-route-id="@obj.id_shipment">
+                                                    @Html.DisplayFor(modelItem => obj.po)
+                                                </a>
+                                            </td>
+                                            <td style="font-size:small">@Html.DisplayFor(modelItem => obj.etd)</td>
+                                            <td style="font-size:small">@Html.DisplayFor(modelItem => obj.eta)</td>
+                                            <td style="font-size:small">@obj.destination</td>
+                                            <td>
+                                                <form asp-controller="Shipment" asp-route-id="@obj.id_shipment" asp-action="Delete" method="post">
+                                                    <a data-toggle="modal" data-target="#modal-default" data-id="@obj.id_shipment" class="btn btn-xs btn-warning update-shipment">
+                                                        <i class="fa fa-edit" style="color:ghostwhite;outline:thin">
+                                                        </i>
+                                                    </a>
+                                                    <button type="submit" onclick="return confirm ('Delete Shipment No @obj.id_shipment');" class="btn btn-xs btn-danger">
+                                                        <i class="fa fa-trash">
+                                                        </i>
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            }
                         </table>
                     </div>
                     <!-- /.card-body -->
@@ -88,57 +91,59 @@
     <!-- /.content -->
 </div>
 
+@if (Model.Count() > 0)
+{
+    <div class="modal fade" id="modal-default">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="formModalLabel">Add Item</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body mb-2">
+                    <form method="POST" asp-action="Update" asp-controller="Shipment">
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label asp-for="First().id_shipment" class="shipment-id-label"></label>
+                                <input type="number" class="form-control shipment-id" asp-for="First().id_shipment"
+                                       placeholder="Shipment Number">
+                                <span asp-validation-for="First().id_shipment" class="text-danger" style="font-size:smaller"> </span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="First().po"></label>
+                                <input type="number" class="form-control" asp-for="First().po"
+                                       placeholder="PO Number">
+                                <span asp-validation-for="First().po" class="text-danger" style="font-size:smaller"> </span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="First().etd"></label>
+                                <input type="date" class="form-control" asp-for="First().etd">
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="First().eta"></label>
+                                <input type="date" class="form-control" asp-for="First().eta">
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="First().destination"></label>
+                                <input type="text" class="form-control" asp-for="First().destination"
+                                       placeholder="Destination">
+                                <span asp-validation-for="First().destination" class="text-danger" style="font-size:smaller"> </span>
+                            </div>
 
-<div class="modal fade" id="modal-default">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="formModalLabel">Add Item</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body mb-2">
-                <form method="POST" asp-action="Update" asp-controller="Shipment">
-                    <div class="card-body">
-                        <div class="form-group">
-                            <label asp-for="First().id_ship" class="shipment-id-label"></label>
-                            <input type="number" class="form-control shipment-id" asp-for="First().id_ship"
-                                   placeholder="Shipment Number">
-                            <span asp-validation-for="First().id_ship" class="text-danger" style="font-size:smaller"> </span>
                         </div>
-                        <div class="form-group">
-                            <label asp-for="First().po"></label>
-                            <input type="number" class="form-control" asp-for="First().po"
-                                   placeholder="PO Number">
-                            <span asp-validation-for="First().po" class="text-danger" style="font-size:smaller"> </span>
+                        <div class="modal-footer">
+                            <button type="submit" value="Create" class="btn btn-primary">Add</button>
                         </div>
-                        <div class="form-group">
-                            <label asp-for="First().etd"></label>
-                            <input type="date" class="form-control" asp-for="First().etd">
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="First().eta"></label>
-                            <input type="date" class="form-control" asp-for="First().eta">
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="First().destination"></label>
-                            <input type="text" class="form-control" asp-for="First().destination"
-                                   placeholder="Destination">
-                            <span asp-validation-for="First().destination" class="text-danger" style="font-size:smaller"> </span>
-                        </div>
-
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" value="Create" class="btn btn-primary">Add</button>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
         </div>
+        <!-- /.modal-content -->
     </div>
-    <!-- /.modal-content -->
-</div>
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
+
+    @section Scripts {
+        @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    }

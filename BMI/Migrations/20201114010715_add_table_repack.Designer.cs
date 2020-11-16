@@ -4,14 +4,16 @@ using BMI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BMI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201114010715_add_table_repack")]
+    partial class add_table_repack
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -310,14 +312,20 @@ namespace BMI.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("MasterBMIModelbmi_code")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("PTModelid_pt")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<DateTime>("date")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("from_bmi_code")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("from_pt")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("po")
                         .HasColumnType("nvarchar(max)");
@@ -332,20 +340,16 @@ namespace BMI.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("to_bmi_code")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("to_pt")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("id_repack");
 
-                    b.HasIndex("from_bmi_code");
+                    b.HasIndex("MasterBMIModelbmi_code");
 
-                    b.HasIndex("from_pt");
-
-                    b.HasIndex("to_bmi_code");
-
-                    b.HasIndex("to_pt");
+                    b.HasIndex("PTModelid_pt");
 
                     b.ToTable("Repack");
                 });
@@ -577,21 +581,13 @@ namespace BMI.Migrations
 
             modelBuilder.Entity("BMI.Models.RepackModel", b =>
                 {
-                    b.HasOne("BMI.Models.MasterBMIModel", "fromMasterBMIModel")
+                    b.HasOne("BMI.Models.MasterBMIModel", "MasterBMIModel")
                         .WithMany()
-                        .HasForeignKey("from_bmi_code");
+                        .HasForeignKey("MasterBMIModelbmi_code");
 
-                    b.HasOne("BMI.Models.PTModel", "fromPTModel")
+                    b.HasOne("BMI.Models.PTModel", "PTModel")
                         .WithMany()
-                        .HasForeignKey("from_pt");
-
-                    b.HasOne("BMI.Models.MasterBMIModel", "toMasterBMIModel")
-                        .WithMany()
-                        .HasForeignKey("to_bmi_code");
-
-                    b.HasOne("BMI.Models.PTModel", "toPTModel")
-                        .WithMany()
-                        .HasForeignKey("to_pt");
+                        .HasForeignKey("PTModelid_pt");
                 });
 
             modelBuilder.Entity("BMI.Models.Rmmodel", b =>
