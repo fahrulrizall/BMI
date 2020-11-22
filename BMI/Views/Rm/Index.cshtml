@@ -1,4 +1,4 @@
-﻿@model IEnumerable<BMI.Models.Rmmodel>
+﻿@model IEnumerable<BMI.Models.RmDetailModel>
 @{
     ViewData["Title"] = "Raw Material";
 }
@@ -31,15 +31,21 @@
                             </thead>
                             <tbody>
                                 <tr>
+                                    <td>On The Water</td>
+                                    <td>
+                                        <a asp-controller="Rm" asp-action="List" asp-route-status="otw" class="btn btn-sm btn-primary">View</a>
+                                    </td>
+                                </tr>
+                                <tr>
                                     <td>In Plant</td>
                                     <td>
                                         <a asp-controller="Rm" asp-action="List" asp-route-status="in_plant" class="btn btn-sm btn-primary">View</a>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td>On The Water</td>
+                                    <td>Closed</td>
                                     <td>
-                                        <a asp-controller="Rm" asp-action="List" asp-route-status="otw" class="btn btn-sm btn-primary">View</a>
+                                        <a asp-controller="Rm" asp-action="List" asp-route-status="closed" class="btn btn-sm btn-primary">View</a>
                                     </td>
                                 </tr>
                             </tbody>

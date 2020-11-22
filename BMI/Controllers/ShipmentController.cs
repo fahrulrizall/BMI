@@ -217,11 +217,11 @@ namespace BMI.Controllers
                 _db.SaveChanges();
                 TempData["msg"] = "Item Succesfully Updated";
                 TempData["result"] = "success";
-                return RedirectToAction("Detail", "Shipment", new { id = shipmentDetailModel.id_shipment_detail });
+                return RedirectToAction("Detail", "Shipment", new { id = shipmentDetailModel.id_shipment });
             }
             TempData["msg"] = "Item Failed to Update";
             TempData["result"] = "failed";
-            return RedirectToAction("Detail", "Shipment", new { id= shipmentDetailModel.id_shipment_detail });
+            return RedirectToAction("Detail", "Shipment", new { id= shipmentDetailModel.id_shipment });
         }
 
 

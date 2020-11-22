@@ -1,4 +1,4 @@
-﻿@model IEnumerable<BMI.Models.Rmmodel>
+﻿@model IEnumerable<BMI.Models.RmDetailModel>
 @{string raw_source = ViewBag.raw_source; }
 @{
     ViewData["Title"] = raw_source;
@@ -136,10 +136,6 @@
                                 <input type="number" step="any" class="form-control" placeholder="Qty Received" asp-for="First().qty_received">
                             </div>
                         </div>
-                        <input type="hidden" asp-for="First().container">
-                        <input type="hidden" asp-for="First().etd">
-                        <input type="hidden" asp-for="First().eta">
-                        <input type="hidden" asp-for="First().status">
                         <input type="hidden" asp-for="First().raw_source">
                         <input type="hidden" asp-for="First().cases">
                     </div>

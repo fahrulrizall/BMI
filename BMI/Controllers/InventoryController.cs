@@ -39,7 +39,7 @@ namespace BMI.Controllers
                       bmi_code = k.Key.bmi_code,
                       MasterBMIModel = k.Max(m => m.MasterBMIModel),
                       PTModel = k.Max(m => m.PTModel),
-                      total = k.Sum(k => k.qty * 2.204 / k.MasterBMIModel.lbs) - _db.Shipment_detail.Where(c => c.bmi_code == k.Key.bmi_code && c.batch == k.Key.batch).Sum(a => a.qty) - _db.DestroyFG.Where(c => c.bmi_code == k.Key.bmi_code && c.PTModel.batch == k.Key.batch).Sum(a => a.qty)
+                      total = k.Sum(k => k.qty * 2.204 / k.MasterBMIModel.lbs) - _db.Shipment_detail.Where(c => c.bmi_code == k.Key.bmi_code && c.batch == k.Key.batch).Sum(a => a.qty) - _db.AdjustmentFG.Where(c => c.bmi_code == k.Key.bmi_code && c.PTModel.batch == k.Key.batch).Sum(a => a.qty)
                   })
                   .Where(k => k.total >= 0.9)
                   .ToList();
@@ -58,7 +58,7 @@ namespace BMI.Controllers
                  {
                      raw_source = k.Key.raw_source,
                      MasterBMIModel = k.Max(m => m.MasterBMIModel),
-                     total = Convert.ToDouble(k.Sum(k => k.qty) - _db.Rm.Where(c => c.raw_source == k.Key.raw_source && c.Masterdatamodel.sap_code == k.Key.MasterBMIModel.sap_code).Sum(a => a.qty_received))
+                     total = Convert.ToDouble(k.Sum(k => k.qty) - _db.Rm_detail.Where(c => c.raw_source == k.Key.raw_source && c.Masterdatamodel.sap_code == k.Key.MasterBMIModel.sap_code).Sum(a => a.qty_received))
                  })
                  .Where(k => k.total > 0)
                  .ToList();

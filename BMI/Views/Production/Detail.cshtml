@@ -85,23 +85,59 @@
                                     <div class="card-body">
                                         <input type="hidden" class="form-control" id="id_pt" name="id_pt">
                                         <input type="hidden" class="form-control" id="bmi_code" name="bmi_code">
-                                        <div class="form-group">
-                                            <label> Input Qty</label>
-                                            <input type="number" class="form-control" asp-for="qty"
-                                                   placeholder="Masukan Jumlah Qty">
-                                            <span asp-validation-for="qty" class="text-danger" style="font-size:smaller"> </span>
+                                        <div class="form-group row po">
+                                            <label class="col-sm-4 col-form-label">PO</label>
+                                            <div class="col-sm-8">
+                                                <input class="form-control" type="number" asp-for="po" />
+                                                <span asp-validation-for="po" class="text-danger" style="font-size:smaller"> </span>
+                                            </div>
                                         </div>
-                                        <div class="form-group destination-code">
-                                            <label>To Product</label>
-                                            <input type="text" class="form-control" asp-for="to_bmi_code"
-                                                   placeholder="Masukan Code BMI Tujuan">
-                                            <span asp-validation-for="to_bmi_code" class="text-danger" style="font-size:smaller"> </span>
+                                        <div class="form-group row date">
+                                            <label class="col-sm-4 col-form-label">Packing Date</label>
+                                            <div class="col-sm-8">
+                                                <input class="form-control" type="date" asp-for="date" />
+                                                <span asp-validation-for="date" class="text-danger" style="font-size:smaller"> </span>
+                                            </div>
                                         </div>
-                                        <div class="form-group destination-pt">
-                                            <label> Destination PT</label>
-                                            <input type="number" class="form-control" asp-for="destination_pt"
-                                                   placeholder="Masukan no PT Tujuan">
-                                            <span asp-validation-for="destination_pt" class="text-danger" style="font-size:smaller"> </span>
+                                        <div class="form-group row production-date">
+                                            <label class="col-sm-4">Production Date</label>
+                                            <div class="col-sm-8">
+                                                <select class="form-control" asp-for="production_date">
+                                                </select>
+                                                <span asp-validation-for="production_date" class="text-danger" style="font-size:smaller"> </span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row raw-source">
+                                            <label class="col-sm-4">Raw Source</label>
+                                            <div class="col-sm-8">
+                                                <select class="form-control" asp-for="raw_source">
+                                                </select>
+                                                <span asp-validation-for="raw_source" class="text-danger" style="font-size:smaller"> </span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-sm-4">Input Qty</label>
+                                            <div class="col-sm-8">
+                                                <input type="number" class="form-control" asp-for="qty"
+                                                       placeholder="Masukan Jumlah Qty">
+                                                <span asp-validation-for="qty" class="text-danger" style="font-size:smaller"> </span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row destination-code">
+                                            <label class="col-sm-4">To Product</label>
+                                            <div class="col-sm-8">
+                                                <input type="text" class="form-control" asp-for="to_bmi_code"
+                                                       placeholder="Masukan Code BMI Tujuan">
+                                                <span asp-validation-for="to_bmi_code" class="text-danger" style="font-size:smaller"> </span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row destination-pt">
+                                            <label class="col-sm-4">Destination PT</label>
+                                            <div class="col-sm-8">
+                                                <input type="number" class="form-control" asp-for="destination_pt"
+                                                       placeholder="Masukan no PT Tujuan">
+                                                <span asp-validation-for="destination_pt" class="text-danger" style="font-size:smaller"> </span>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="modal-footer">
@@ -117,7 +153,7 @@
 
 
                 @*production daily*@
-                <div class="col-md-4 table-production-daily">
+                <div class="col-md-5 table-production-daily">
                     <div class="card">
                         <div class="card-header">
                             <h3 class="card-title" id="card-title">Detail</h3>
@@ -129,22 +165,28 @@
                             <table class="table table-bordered table-striped table-sm">
                                 <thead>
                                     <tr>
-                                        <th style="width: 2%;font-size:small">
+                                        <th style="width: 3%;font-size:small">
                                             Date
                                         </th>
+                                        <th style="width: 2%;font-size:small">
+                                            Source
+                                        </th>
+                                        <th style="width: 2%;font-size:small">
+                                            Landing
+                                        </th>
                                         <th style="width: 1%;font-size:small">
-                                            Total KG
+                                            Lbs
                                         </th>
                                         <th style="width: 1%;font-size:small">
                                             Total CS
                                         </th>
                                     </tr>
                                 </thead>
-                                <tbody id="detail-table-daily" name="detail-table-daily" class="table-sm">
+                                <tbody id="detail-table-daily" name="detail-table-daily">
                                 </tbody>
                                 <tfoot>
                                     <tr>
-                                        <th style="width: 2%;font-size:small" colspan="2">Total</th>
+                                        <th style="width: 2%;font-size:small" colspan="4">Total</th>
                                         <th style="width: 2%;font-size:small" id="total" name="total" class="total"></th>
                                     </tr>
                                 </tfoot>
@@ -165,7 +207,7 @@
 
             @* production input *@
         <div class="row">
-            <div class="col-md-8" id="master-pt-table">
+            <div class="col-md-7" id="master-pt-table">
                 <div class="card">
                     <div class="card-header">
                         <h3 class="card-title" id="card-title">Raw Material</h3>
@@ -222,7 +264,7 @@
 
 
             @*report*@
-            <div class="col-md-4 report-category">
+            <div class="col-md-5 report-category">
                 <div class="card">
                     <div class="card-header">
                         <h3 class="card-title" id="card-title">Category</h3>

@@ -162,11 +162,11 @@ $(function () {
 
       //untuk bmi raws
     $('.change-container').on('click',function () {
-        var id = $(this).data('id');
+        var raw = $(this).data('raw');
         $('.modal-body form').attr('action','/Rm/Update');
         $.ajax({
             url: '/Rm/Getdata',
-            data: { id: id },
+            data: { raw_source: raw },
             method:'get',
             dataType : 'json',
             success: function (data) {
@@ -191,10 +191,12 @@ $(function () {
                 $('#eta').val(eta);
                 $('#container').val(data.container);
                 $('#reff').val(data.reff);
-                if (data.status== 'in_plant'){
+                if (data.status == 'in_plant') {
                     $('#status').val('In Plant');
-                }else{
+                } else if (data.status == 'otw') {
                     $('#status').val('On The Water');
+                } else {
+                    $('#status').val('Closed');
                 }
             }
         });
@@ -209,6 +211,8 @@ $(function () {
             method:'get',
             dataType : 'json',
             success: function (data) {
+                console.log(data);
+                $('#id_raw').val(data.id_raw);
                 $('#sap_code').val(data.sap_code);
                 $('#landing_site').val(data.landing_site);
                 $('#usd_price').val(data.usd_price);
@@ -309,7 +313,7 @@ $(function () {
     //table global pt
     $('.detail-pt-daily').on('click', function () {
         $('.table-production-daily').show();
-        $("#master-pt-table").attr('class', 'col-md-8');
+        $("#master-pt-table").attr('class', 'col-md-7');
         var code = $(this).data('code');
         var sap = $(this).data('sap');
         $('#card-title').html(sap);
@@ -322,7 +326,6 @@ $(function () {
             dataType: 'json',
             success: function (data) {
                 data.forEach(function (e) {
-                    console.log(e);
                     var date = new Date(e.date);
                     yr = date.getFullYear();
                     month = date.getMonth() + 1;
@@ -330,9 +333,9 @@ $(function () {
                     if (month < 10) {
                         month = "0" + month;
                     }
-                    newdate = yr + '-' + month + '-' + day;
+                    newdate = day + '-' + month + '-' + yr;
                     totaldaily = parseInt(e.qty * 2.204 / e.masterBMIModel.lbs);
-                    $('#detail-table-daily').append("<tr><td>" + newdate + "</td>" + "<td>" +  parseFloat(e.qty).toFixed(2) + "</td>" + "<td class='case'>" + totaldaily + "</td></tr>");
+                    $('#detail-table-daily').append("<tr><td style='font-size:small'>" + newdate + "</td>" + "<td style='font-size:small'>" + e.raw_source + "</td>" + "<td style='font-size:small'>" + e.landing_site + "</td>" + "<td style='font-size:small'>" + parseFloat(e.qty * 2.204).toFixed(2) + "</td>" + "<td class='case' style='font-size:small'>" + totaldaily + "</td></tr>");
                     calc_case();
                 })  
             }
@@ -375,7 +378,7 @@ $(function () {
             dataType: 'json',
             success: function (data) {
                 data.forEach(function (e) {
-                    $('#detail-raw-daily').append("<tr><td>"+e.raw_source+"</td>"+"<td>" + e.masterBMIModel.sap_code + "</td>" + "<td>" + e.masterBMIModel.description + "</td>" + "<td>" + e.landing_site + "</td>" + "<td class='qty'>" + e.qty + "</td></tr>");
+                    $('#detail-raw-daily').append("<tr><td style='font-size:small'>" + e.raw_source + "</td>" + "<td style='font-size:small'>" + e.masterBMIModel.sap_code + "</td>" + "<td style='font-size:small'>" + e.masterBMIModel.description + "</td>" + "<td style='font-size:small'>" + e.landing_site + "</td>" + "<td class='qty' style='font-size:small'>" + e.qty + "</td></tr>");
                     total_kg();
                 })
             }
@@ -396,7 +399,7 @@ $(function () {
             success: function (data) {
                 data.forEach(function (e) {
                     total_case = parseInt(e.qty * 2.204 / e.masterBMIModel.lbs);
-                    $('#detail-fg-daily').append("<tr><td>" + e.masterBMIModel.sap_code + "</td>" + "<td>" + e.masterBMIModel.description + "</td>" + "<td class='qty-kg'>" + parseFloat(e.qty).toFixed(2) + "</td>" + "<td class='qty-case'>" + total_case + "</td></tr>");
+                    $('#detail-fg-daily').append("<tr><td style='font-size:small'>" + e.masterBMIModel.sap_code + "</td>" + "<td style='font-size:small'>" + e.masterBMIModel.description + "</td>" + "<td class='qty-kg' style='font-size:small'>" + parseFloat(e.qty).toFixed(2) + "</td>" + "<td class='qty-case' style='font-size:small'>" + total_case + "</td></tr>");
                     calc_total_fg();
                     calc_total_case();
                 })
@@ -422,35 +425,49 @@ $(function () {
     });
 
 
-
     $('.adjustment-fg').on('click', function () {
+        $('#formModalLabel').html('Adjustment');
         var pt = $(this).data('pt');
         var code = $(this).data('code');
         $('#qty').val("");
         $('.destination-pt').hide();
         $('.destination-code').hide();
+        $('.production-date').hide();
+        $('.po').hide();
+        $('.date').hide();
+        $('.raw-source').hide();
+        $('.modal-body form').attr('action', '/Production/Adjustment');
         $.ajax({
             url: '/Production/Getitemdata',
             data: { pt: pt, code: code },
             method: 'get',
             dataType: 'json',
             success: function (data) {
-                $('#id_pt').val(pt);
-                $('#bmi_code').val(data[0].bmi_code)
+                data.forEach(function (e) {
+                    $('#id_pt').val(pt);
+                    $('#bmi_code').val(e.bmi_code)
+                })
             }
         });
-
     });
+
 
     $('.repack-fg').on('click', function () {
         $('#formModalLabel').html('Repack Item');
         $('.destination-pt').show();
         $('.destination-code').show();
+        $('.raw-source').show();
+        $('.production-date').show();
+        $('.date').show();
+        $('.po').show();
         var pt = $(this).data('pt');
         var code = $(this).data('code');
         $('#qty').val("");
         $('#destination_pt').val("");
         $('#to_bmi_code').val("");
+        $('#date').html("");
+        $('#production_date').html("");
+        $('#raw_source').html("");
         $('.modal-body form').attr('action', '/Production/Repack');
         $.ajax({
             url: '/Production/Getitemdata',
@@ -458,17 +475,102 @@ $(function () {
             method: 'get',
             dataType: 'json',
             success: function (data) {
-                $('#id_pt').val(pt);
-                $('#bmi_code').val(data[0].bmi_code)
+                data.forEach(function (e) {
+                    var date = new Date(e.date);
+                    yr = date.getFullYear();
+                    month = date.getMonth() + 1;
+                    day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate();
+                    if (month < 10) {
+                        month = "0" + month;
+                    }
+                    newdate = day + '-' + month + '-' + yr;
+                    $('#production_date').append("<option>"+ newdate +"</option>");
+                    $('#raw_source').append("<option>"+ e.raw_source+"</option>");
+                    $('#id_pt').val(pt);
+                    $('#bmi_code').val(e.bmi_code)
+                })
             }
         });
 
     });
 
 
+    $('.repack-table-date').on('change', function () {
+        $('#repack-table').html("")
+        var date = $(this).val()
+        $.ajax({
+            url: '/Repack/ByDate',
+            data: { date : date },
+            method: 'get',
+            dataType: 'json',
+            success: function (data) {
+                data.forEach(function (e) {
+                    var date = new Date(e.date);
+                    yr = date.getFullYear();
+                    month = date.getMonth() + 1;
+                    day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate();
+                    if (month < 10) {
+                        month = "0" + month;
+                    }
+                    newdate = day + '-' + month + '-' + yr;
+                    $('#repack-table').append("<tr><td style='font-size:small'>" + newdate +"</td><td style='font-size:small'>"+ e.po+"</td><td style='font-size:small'>" + e.fromPTModel.pt + "</td><td style='font-size:small'>" + e.fromMasterBMIModel.sap_code + "</td><td style='font-size:small'>" + e.fromMasterBMIModel.description + "</td><td style='font-size:small'>" + e.qty + "</td><td style='font-size:small'>" + e.toPTModel.pt + "</td><td style='font-size:small'>" + e.toMasterBMIModel.sap_code + "</td><td style='font-size:small'>" + e.toMasterBMIModel.description + "</td><td style='font-size:small'>" + e.qty + "</td><td>" +
+                        "<form action='/Repack/Delete?id="+e.id_repack+"' method='post'>" +
+                            "<a data-toggle='modal' data-target='#modal-default' data-id="+e.id_repack+" class='btn btn-sm btn-warning change-repack-modal' style='font-size:small' >Update</a>" +
+                            "<button type='submit'  onclick='return confirm('Delete Item Repack?');'   class='btn btn-sm btn-danger'  style='font-size:small'>Delete</button>" +
+                        "</form>"
+                        + "</td></tr>");
+                    $('.change-repack-modal').on('click', function () {
+                        var id = $(this).data('id');
+                        $.ajax({
+                            url: '/Repack/Getitemrepack',
+                            data: { id: id },
+                            method: 'get',
+                            dataType: 'json',
+                            success: function (data) {
+                                var date = new Date(data.date);
+                                yr = date.getFullYear();
+                                month = date.getMonth() + 1;
+                                day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate();
+                                if (month < 10) {
+                                    month = "0" + month;
+                                }
+                                newdate = yr + '-' + month + '-' + day;
+                                $('#id_repack').val(e.id_repack);
+                                $('#date').val(newdate);
+                                $('#po').val(data.po);
+                                $('#from_pt').val(e.fromPTModel.pt);
+                                $('#from_bmi_code').val(e.from_bmi_code);
+                                $('#qty').val(e.qty);
+                                $('#to_bmi_code').val(e.to_bmi_code);
+                                $('#to_pt').val(e.toPTModel.pt);
+                            }
+                        });
+
+                    })
+                })
+            }
 
 
-   
+        })
+    })
+
+    $('.change-pt').on('click', function () {
+        var id = $(this).data('id');
+        $.ajax({
+            url: '/Production/Getptdata',
+            data: { id:id },
+            method: 'get',
+            dataType: 'json',
+            success: function (data) {
+                console.log(data);
+                $('#id_pt').val(data.id_pt);
+                $('#pt').val(data.pt);
+                $('#plant').val(data.plant);
+                $('#batch').val(data.batch);
+                $('#status').val(data.status);
+            }
+        });
+    })
 
 
 

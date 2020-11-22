@@ -14,7 +14,7 @@ namespace BMI.Models
         public int id_productionoutput { get; set; }
         public string po { get; set; }
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
-        [Remote(action: "DateExist", controller: "Production", HttpMethod = "POST", AdditionalFields = "date", ErrorMessage = "Production Not Available")]
+       
         public DateTime date { get; set; }
         public PTModel PTModel { get; set; }
         [ForeignKey("PTModel")]
@@ -25,6 +25,7 @@ namespace BMI.Models
         public float qty { get; set; }
         
         #nullable enable
+        public string? landing_site { get; set; }
         public string? raw_source { get; set; }
         public string? saved { get; set; }
         public DateTime? created_at { get; set; }

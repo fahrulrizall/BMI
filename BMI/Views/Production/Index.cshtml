@@ -1,4 +1,4 @@
-﻿@model IEnumerable<BMI.Models.ProductionOutputModel>
+﻿@model IEnumerable<BMI.Models.PTModel>
 @{
     ViewData["Title"] = "Production";
 }
@@ -13,19 +13,18 @@
                 <div class="card">
                     <div class="card-header">
                         <div class="card-title">
-                            @if (Model.Count() > 0)
-                            {
-                                <form method="get" asp-action="Daily" asp-controller="Production">
-                                    <div class="input-group input-group-sm">
-                                        <input type="date" asp-for="First().date">
-                                        <span class="input-group-append">
-                                            <button type="submit" value="Create" class="btn btn-primary">Go!</button>
-                                        </span>
-                                        <span asp-validation-for="First().date" class="text-danger" style="font-size:smaller"></span>
-                                    </div>
-                                </form>
-                            }
-                            </div>
+
+                            <form method="get" asp-action="Daily" asp-controller="Production">
+                                <div class="input-group input-group-sm">
+                                    <input type="date" asp-for="First().date">
+                                    <span class="input-group-append">
+                                        <button type="submit" value="Create" class="btn btn-primary">Go!</button>
+                                    </span>
+                                    <span asp-validation-for="First().date" class="text-danger" style="font-size:smaller"></span>
+                                </div>
+                            </form>
+
+                        </div>
 
                         <div class="card-tools">
                             <a href="#" class="btn btn-sm btn-default upload-gr float-right "
@@ -60,27 +59,34 @@
                                     <th style="width: 4%">
                                         Batch
                                     </th>
-                                    <th style="width: 10%">
+                                    <th style="width: 4%">
+                                        Status
+                                    </th>
+                                    <th style="width: 4%">
                                         Actions
                                     </th>
                                 </tr>
                             </thead>
-                            @if (Model.Count() > 0)
-                            {
-                                <tbody>
-                                    @foreach (var obj in Model)
-                                    {
+                            <tbody>
+                                @foreach (var obj in Model)
+                                {
 
-                                        <tr>
-                                            <td style="font-size:smaller">@obj.PTModel.pt</td>
-                                            <td style="font-size:smaller">@obj.PTModel.batch</td>
-                                            <td>
-                                                <a asp-controller="Production" asp-action="Detail" asp-route-pt="@obj.PTModel.pt" class="btn btn-sm btn-primary">View</a>
-                                            </td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            }
+                                    <tr>
+                                        <td>
+                                            <a  style="font-size:smaller;color:black" asp-controller="Production" asp-action="Detail" asp-route-pt="@obj.pt">@obj.pt</a>
+                                        </td>
+                                        <td style="font-size:smaller">@obj.batch</td>
+                                        <td style="font-size:smaller">@obj.status</td>
+                                        <td>
+                                            <a style="font-size:small" class="btn btn-xs btn-warning change-pt"
+                                               data-toggle="modal" data-target="#modal-edit" data-id="@obj.pt">
+                                                <i class="fa fa-edit" style="color:ghostwhite;outline:thin"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+
                         </table>
                     </div>
                     <!-- /.card-body -->
@@ -124,6 +130,44 @@
             </div>
         </div>
     </div>
+</div>
+
+
+<div class="modal fade" id="modal-edit">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="formModalLabel">Edit Refference</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body mb-2">
+                <form method="POST" asp-controller="Production" asp-action="Updatept">
+                    <div class="card-body">
+                        <input type="hidden" class="form-control " asp-for="First().id_pt">
+                        <input type="hidden" class="form-control " asp-for="First().pt">
+                        <input type="hidden" class="form-control " asp-for="First().plant">
+                        <div class="form-group">
+                            <label>Batch</label>
+                            <input type="text" class="form-control" asp-for="First().batch">
+                        </div>
+                        <div class="form-group">
+                            <label>Status</label>
+                            <select class="form-control" asp-for="First().status">
+                                <option>Open</option>
+                                <option>Closed</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Update</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    @*/.modal-content*@
 </div>
 
 

@@ -12,7 +12,9 @@ namespace BMI.Models
     {
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime date { get; set; }
+        public DateTime production_date { get; set; }
         public int destination_pt { get;set; }
+        public string po { get;set; }
         public string bmi_code { get; set; }
         public string id_pt { get; set; }
         public double total { get; set; }

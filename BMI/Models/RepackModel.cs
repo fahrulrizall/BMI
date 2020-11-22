@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Mvc;
 
 namespace BMI.Models
 {
@@ -12,6 +13,7 @@ namespace BMI.Models
         [Key]
         public int id_repack { get; set; }
         public string po { get; set; }
+        [Remote(action: "DateExist", controller: "Repack", HttpMethod = "POST", AdditionalFields = "date", ErrorMessage = "Repack date Not Available")]
         public DateTime date { get; set; }
         public string raw_source { get; set; }
         public float qty { get; set; }

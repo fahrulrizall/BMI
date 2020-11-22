@@ -23,7 +23,7 @@ namespace BMI.Models
         public DateTime? created_at { get; set; }
         public DateTime? updated_at { get; set; }
         public ICollection<Fgmodel> Fgmodels { get; set; }
-        public ICollection<Rmmodel> Rmmodels { get; set; }
+        public ICollection<RmDetailModel> Rmmodels { get; set; }
 
     }
 }

@@ -1,0 +1,78 @@
+﻿@model IEnumerable<BMI.Models.Fgmodel>
+@{
+    ViewData["Title"] = "Deposit";
+}
+<div class="content-wrapper">
+    <section class="content-header">
+    </section>
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-12">
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title"> Deposit BMI</h3>
+                        <div class="card-tools ">
+                            <button class="btn btn-sm float-right mx-1 add-new-fg"
+                                    data-toggle="modal" data-target="#modal-default">
+                                <i class="fa fa-plus">
+                                </i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <table class="table table-bordered table-striped table-sm">
+                            <thead>
+                                <tr>
+                                    <th style="width: 10%;font-size:small">
+                                        Inventory
+                                    </th>
+                                    <th style="width: 23%;font-size:small">
+                                        Qty
+                                    </th>
+                                    <th style="width: 5%;font-size:small">
+                                        Amount
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="text text-sm">On The Water</td>
+                                    <td style="font-size:small">39,014.72</td>
+                                    <td style="font-size:small">$ 246,927.60</td>
+                                </tr>
+                                <tr>
+                                    <td class="text text-sm">Inventory RM at BMI</td>
+                                    <td style="font-size:small">140,382.00</td>
+                                    <td style="font-size:small">$ 894,081.82</td>
+                                </tr>
+                                <tr>
+                                    <td class="text text-sm">Inventory FGs</td>
+                                    <td style="font-size:small">193,618.21</td>
+                                    <td style="font-size:small">$ 594,193.03</td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="2"></td>
+                                    <td colspan="2">$1,735,202.45 </td>
+                                </tr>     
+                            </tfoot>   
+                        </table>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </section>
+    <!-- /.content -->
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

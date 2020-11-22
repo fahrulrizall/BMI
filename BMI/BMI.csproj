@@ -116,6 +116,34 @@
     <Compile Remove="Migrations\20201116004049_add_table_to_server.Designer.cs" />
     <Compile Remove="Migrations\20201116012007_asdasd.cs" />
     <Compile Remove="Migrations\20201116012007_asdasd.Designer.cs" />
+    <Compile Remove="Migrations\20201116015436_add_table.cs" />
+    <Compile Remove="Migrations\20201116015436_add_table.Designer.cs" />
+    <Compile Remove="Migrations\20201116033511_change_name_table.cs" />
+    <Compile Remove="Migrations\20201116033511_change_name_table.Designer.cs" />
+    <Compile Remove="Migrations\20201116034102_change_table.cs" />
+    <Compile Remove="Migrations\20201116034102_change_table.Designer.cs" />
+    <Compile Remove="Migrations\20201116035006_reset.cs" />
+    <Compile Remove="Migrations\20201116035006_reset.Designer.cs" />
+    <Compile Remove="Migrations\20201116035214_reset.cs" />
+    <Compile Remove="Migrations\20201116035214_reset.Designer.cs" />
+    <Compile Remove="Migrations\20201116035331_adada.cs" />
+    <Compile Remove="Migrations\20201116035331_adada.Designer.cs" />
+    <Compile Remove="Migrations\20201116035850_change_table.cs" />
+    <Compile Remove="Migrations\20201116035850_change_table.Designer.cs" />
+    <Compile Remove="Migrations\20201117065853_dada.cs" />
+    <Compile Remove="Migrations\20201117065853_dada.Designer.cs" />
+    <Compile Remove="Migrations\20201117065954_initial.cs" />
+    <Compile Remove="Migrations\20201117065954_initial.Designer.cs" />
+    <Compile Remove="Migrations\20201117070039_Initial.cs" />
+    <Compile Remove="Migrations\20201117070039_Initial.Designer.cs" />
+    <Compile Remove="Migrations\20201117070603_adadadad.cs" />
+    <Compile Remove="Migrations\20201117070603_adadadad.Designer.cs" />
+    <Compile Remove="Migrations\20201117071033_change_colum_fg.cs" />
+    <Compile Remove="Migrations\20201117071033_change_colum_fg.Designer.cs" />
+    <Compile Remove="Migrations\20201121134713_change_table_rm.cs" />
+    <Compile Remove="Migrations\20201121134713_change_table_rm.Designer.cs" />
+    <Compile Remove="Migrations\20201122021835_add_column_status_on_pt_table.cs" />
+    <Compile Remove="Migrations\20201122021835_add_column_status_on_pt_table.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

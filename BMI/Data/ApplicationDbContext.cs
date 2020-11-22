@@ -27,7 +27,8 @@ namespace BMI.Data
         //}
         public DbSet<Usermodel> User { get; set; }
         public DbSet<Fgmodel> Fg { get; set; }
-        public DbSet<Rmmodel> Rm { get; set; }
+        public DbSet<RmDetailModel> Rm_detail { get; set; }
+        public DbSet<RmModel> Rm { get; set; }
         public DbSet<Masterdatamodel> Master_data { get; set; }
         public DbSet<Shipmentmodel> Shipment { get; set; }
         public DbSet<MasterBMIModel> Master_BMI { get; set; }
@@ -35,8 +36,8 @@ namespace BMI.Data
         public DbSet<ProductionInputModel> Production_input { get; set; }
         public DbSet<ProductionOutputModel> Production_output { get; set; }
         public DbSet<PTModel> Pt { get; set; }
-        public DbSet<DestroyFGModel> DestroyFG { get; set; }
-        public DbSet<DestroyRawModel> DestroyRaw { get; set; }
+        public DbSet<AdjustmentFGModel> AdjustmentFG { get; set; }
+        public DbSet<AdjustmentRawModel> AdjustmentRaw { get; set; }
         public DbSet<RepackModel> Repack { get; set; }
 
     }

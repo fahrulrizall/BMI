@@ -4,14 +4,16 @@ using BMI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BMI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201121083724_change_name_rm_table")]
+    partial class change_name_rm_table
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -209,9 +211,6 @@ namespace BMI.Migrations
                     b.Property<int>("pt")
                         .HasColumnType("int");
 
-                    b.Property<string>("status")
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("id_pt");
 
                     b.ToTable("Pt");
@@ -369,7 +368,16 @@ namespace BMI.Migrations
                     b.Property<int?>("cases")
                         .HasColumnType("int");
 
+                    b.Property<string>("container")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime?>("created_at")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("eta")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("etd")
                         .HasColumnType("datetime2");
 
                     b.Property<float?>("ex_rate")
@@ -385,12 +393,15 @@ namespace BMI.Migrations
                         .HasColumnType("real");
 
                     b.Property<string>("raw_source")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("sap_code")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("saved")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("status")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("uom")
@@ -404,42 +415,9 @@ namespace BMI.Migrations
 
                     b.HasKey("id_raw");
 
-                    b.HasIndex("raw_source");
-
                     b.HasIndex("sap_code");
 
                     b.ToTable("Rm_detail");
-                });
-
-            modelBuilder.Entity("BMI.Models.RmModel", b =>
-                {
-                    b.Property<string>("raw_source")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("container")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("created_at")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("eta")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("etd")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("saved")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("status")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("updated_at")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("raw_source");
-
-                    b.ToTable("Rm");
                 });
 
             modelBuilder.Entity("BMI.Models.ShipmentDetailModel", b =>
@@ -626,10 +604,6 @@ namespace BMI.Migrations
 
             modelBuilder.Entity("BMI.Models.RmDetailModel", b =>
                 {
-                    b.HasOne("BMI.Models.RmModel", "RmModel")
-                        .WithMany()
-                        .HasForeignKey("raw_source");
-
                     b.HasOne("BMI.Models.Masterdatamodel", "Masterdatamodel")
                         .WithMany("Rmmodels")
                         .HasForeignKey("sap_code");

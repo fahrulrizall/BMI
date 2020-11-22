@@ -1,4 +1,4 @@
-﻿@model IEnumerable<BMI.Models.RepackModel>
+﻿@model RepackModel
 @{
     ViewData["Title"] = "Repack";
 }
@@ -13,28 +13,30 @@
                 <div class="card">
                     <div class="card-header">
                         <div class="card-title">
-                            @if (Model.Count() > 0)
-                            {
-                                <form method="get" asp-action="Daily" asp-controller="Production">
-                                    <div class="input-group input-group-sm">
-                                        <input type="date" asp-for="First().date">
-                                        <span class="input-group-append">
-                                            <button type="submit" value="Create" class="btn btn-primary">Go!</button>
-                                        </span>
-                                        <span asp-validation-for="First().date" class="text-danger" style="font-size:smaller"></span>
-                                    </div>
-                                </form>
-                            }
-                            </div>
+
+                            <form method="get">
+                                <div class="input-group input-group-sm">
+                                    <input type="date" asp-for="date" class="repack-table-date" id="repack-table-date">
+                                    <span class="input-group-append">
+                                        <button type="submit" value="Create" class="btn btn-primary go-repack">Go!</button>
+                                    </span>
+                                    <span asp-validation-for="date" class="text-danger" style="font-size:smaller"></span>
+                                </div>
+                            </form>
+
+                        </div>
                     </div>
                 </div>
 
                 <div class="card">
 
                     <div class="card-body">
-                        <table id="example1" class="table table-bordered table-striped table-sm">
+                        <table class="table table-bordered table-striped table-sm">
                             <thead>
                                 <tr>
+                                    <th colspan="1">
+
+                                    </th>
                                     <th colspan="1">
 
                                     </th>
@@ -44,45 +46,53 @@
                                     <th colspan="4" style="text-align:center">
                                         To
                                     </th>
-                                </tr>      
+                                    <th colspan="1">
+
+                                    </th>
+                                </tr>
                                 <tr>
-                                    <th style="width: 4%">
+                                    <th style="width: 3%">
+                                        Date
+                                    </th>
+                                    <th style="width: 2%">
                                         PO
                                     </th>
                                     <th style="width: 1%">
                                         PT
                                     </th>
-                                    <th style="width: 4%">
+                                    <th style="width: 2%">
                                         Item
                                     </th>
                                     <th style="width: 10%">
                                         Description
                                     </th>
-                                    <th style="width: 3%">
+                                    <th style="width: 1%">
                                         Qty
                                     </th>
                                     <th style="width: 1%">
                                         PT
                                     </th>
-                                    <th style="width: 4%">
+                                    <th style="width: 3%">
                                         Item
                                     </th>
                                     <th style="width: 10%">
                                         Description
                                     </th>
-                                    <th style="width: 3%">
+                                    <th style="width: 1%">
                                         Qty
+                                    </th>
+                                    <th style="width: 7%">
+                                        Action
                                     </th>
                                 </tr>
                             </thead>
-                            @if (Model.Count() > 0)
-                            {
-                                <tbody>
-                                    @foreach (var obj in Model)
+
+                            <tbody id="repack-table">
+                                @*@foreach (var obj in Model)
                                     {
 
                                     <tr>
-                                        <td style="font-size:smaller">@obj.po</td>
+                                        <td style="font-size:smaller">@obj.date</td>
                                         <td style="font-size:smaller">@obj.fromPTModel.pt</td>
                                         <td style="font-size:smaller">@obj.fromMasterBMIModel.sap_code</td>
                                         <td style="font-size:smaller">@obj.fromMasterBMIModel.description</td>
@@ -92,9 +102,9 @@
                                         <td style="font-size:smaller">@obj.toMasterBMIModel.description</td>
                                         <td style="font-size:smaller">@obj.qty</td>
                                     </tr>
-                                    }
-                                </tbody>
-                            }
+                                    }*@
+                            </tbody>
+
                         </table>
                     </div>
                     <!-- /.card-body -->
@@ -108,6 +118,87 @@
     <!-- /.content -->
 </div>
 
-@section Scripts {
+
+<div class="modal fade" id="modal-default">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="formModalLabel">Rounded Item</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body mb-2">
+                <form method="POST" asp-controller="Repack" asp-action="Update">
+                    <div class="card-body">
+
+                        <input type="hidden" class="form-control" asp-for="id_repack">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label">Packing Date</label>
+                            <div class="col-sm-8">
+                                <input class="form-control" type="date" asp-for="date" />
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label">PO</label>
+                            <div class="col-sm-8">
+                                <input class="form-control" type="number" asp-for="po" />
+                                <span asp-validation-for="po" class="text-danger" style="font-size:smaller"> </span>
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="form-group row">
+                            <label class="col-sm-4">Source PT</label>
+                            <div class="col-sm-8">
+                                <input type="number" class="form-control" asp-for="from_pt"
+                                       placeholder="Masukan no PT Tujuan">
+                                <span asp-validation-for="from_pt" class="text-danger" style="font-size:smaller"> </span>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-4">Source Code</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" asp-for="from_bmi_code"
+                                       placeholder="Masukan Sumber Code BMI">
+                                <span asp-validation-for="from_bmi_code" class="text-danger" style="font-size:smaller"> </span>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-4">Input Qty</label>
+                            <div class="col-sm-8">
+                                <input type="number" class="form-control" asp-for="qty"
+                                       placeholder="Masukan Jumlah Qty">
+                                <span asp-validation-for="qty" class="text-danger" style="font-size:smaller"> </span>
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="form-group row destination-pt">
+                            <label class="col-sm-4">Destination PT</label>
+                            <div class="col-sm-8">
+                                <input type="number" class="form-control" asp-for="to_pt"
+                                       placeholder="Masukan no PT Tujuan">
+                                <span asp-validation-for="to_pt" class="text-danger" style="font-size:smaller"> </span>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-4">To Product</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" asp-for="to_bmi_code"
+                                       placeholder="Masukan Code BMI Tujuan">
+                                <span asp-validation-for="to_bmi_code" class="text-danger" style="font-size:smaller"> </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" value="Create" class="btn btn-primary">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- /.modal-content -->
+</div>
+
+@*@section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+}*@
