@@ -12,8 +12,8 @@ namespace BMI.Models
         [Key]
         public int id_shipment_detail { get; set; }
 
-        [ForeignKey("Shipmentmodel")]
-        public int id_shipment { get; set; }
+        [ForeignKey("POModel")]
+        public string po { get; set; }
 
         [ForeignKey("MasterBMIModel")]
         public string bmi_code { get; set; }
@@ -28,7 +28,7 @@ namespace BMI.Models
         public DateTime created_at { get; set; }
         public DateTime updated_at { get; set; }
 
-        public Shipmentmodel? Shipmentmodel { get; set; }
+        public POModel? POModel { get; set; }
         public MasterBMIModel? MasterBMIModel { get; set; }
     }
 }

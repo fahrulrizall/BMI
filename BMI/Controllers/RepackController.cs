@@ -52,8 +52,8 @@ namespace BMI.Controllers
             var obj = _db.Repack
                 .Include(k => k.fromMasterBMIModel)
                 .Include(k => k.toMasterBMIModel)
-                .Include(k => k.fromPTModel)
-                .Include(k => k.toPTModel)
+                .Include(k => k.fromPOModel)
+                .Include(k => k.toPOModel)
                 .AsEnumerable()
                 .Where(m => m.date.Year == date.Year &&
                        m.date.Month == date.Month &&
@@ -67,16 +67,16 @@ namespace BMI.Controllers
         //[AutoValidateAntiforgeryToken]
         public IActionResult Delete(int id)
         {
-            //var remove = _db.Repack.Find(id);
-            //_db.Remove(remove);
-            //_db.SaveChanges();
+            var remove = _db.Repack.Find(id);
+            _db.Remove(remove);
+            _db.SaveChanges();
             return RedirectToAction("Index");
         }
 
 
         public IActionResult Getitemrepack(int id)
         {
-            var obj = _db.Repack.Find(id);
+            var obj = _db.Repack.Where(a=>a.id_repack==id).Include(a=> a.fromPOModel).Include(a=>a.toPOModel).First();
             return Json(obj);
         }
 
@@ -85,15 +85,19 @@ namespace BMI.Controllers
         {
             if (ModelState.IsValid)
             {
+                var from_getPO = _db.PO.Where(a => a.pt == Convert.ToInt32(repackModel.from_po)).Select(a => a.po).ToList();
+                var from_po = Convert.ToString(from_getPO[0]);
+                var to_getPO = _db.PO.Where(a => a.pt == Convert.ToInt32(repackModel.to_po)).Select(a => a.po).ToList();
+                var to_po = Convert.ToString(to_getPO[0]);
                 var repack = new RepackModel
                 {
                     id_repack = repackModel.id_repack,
                     po = repackModel.po,
                     date = repackModel.date,
                     qty = repackModel.qty,
-                    from_pt = repackModel.from_pt + "3700",
+                    from_po = from_po,
                     from_bmi_code = repackModel.from_bmi_code,
-                    to_pt = repackModel.to_pt + "3700",
+                    to_po = to_po,
                     to_bmi_code = repackModel.to_bmi_code
                 };
                 _db.Repack.Update(repack);

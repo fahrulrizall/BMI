@@ -12,17 +12,17 @@ namespace BMI.Models
     {
         [Key]
         public int id_productioninput { get; set; }
-        public string po { get; set; }
+        public string po_bmi { get; set; }
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime date { get; set; }
-        public PTModel PTModel { get; set; }
-        [ForeignKey("PTModel")]
-        public string id_pt { get; set; }
+        public POModel POModel { get; set; }
+        [ForeignKey("POModel")]
+        public string po { get; set; }
         public string raw_source { get; set; }
 
-        public MasterBMIModel MasterBMIModel { get; set; }
-        [ForeignKey("MasterBMIModel")]
-        public string bmi_code { get; set; }
+        public Masterdatamodel Masterdatamodel { get; set; }
+        [ForeignKey("Masterdatamodel")]
+        public string sap_code { get; set; }
         public float qty { get; set; }
         public string landing_site { get; set; }
         

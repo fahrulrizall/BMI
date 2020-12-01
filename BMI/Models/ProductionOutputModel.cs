@@ -12,13 +12,13 @@ namespace BMI.Models
     {
         [Key]
         public int id_productionoutput { get; set; }
-        public string po { get; set; }
+        public string po_bmi { get; set; }
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
        
         public DateTime date { get; set; }
-        public PTModel PTModel { get; set; }
-        [ForeignKey("PTModel")]
-        public string id_pt { get; set; }
+        public POModel POModel { get; set; }
+        [ForeignKey("POModel")]
+        public string po { get; set; }
         public MasterBMIModel MasterBMIModel { get; set; }
         [ForeignKey("MasterBMIModel")]
         public string bmi_code { get; set; }
@@ -34,5 +34,13 @@ namespace BMI.Models
         public double qty_production { get; set; }
         [NotMapped]
         public double available { get; set; }
+        [NotMapped]
+        public double cases { get; set; }
+        [NotMapped]
+        public double amount { get; set; }
+        [NotMapped]
+        public double lbs { get; set; }
+        [NotMapped]
+        public double rm_cost { get; set; }
     }
 }

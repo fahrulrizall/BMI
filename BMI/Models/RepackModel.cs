@@ -20,18 +20,18 @@ namespace BMI.Models
         public DateTime production_date { get; set; }
 
 
-        public PTModel fromPTModel { get; set; }
-        [ForeignKey("fromPTModel")]
-        public string from_pt { get; set; }
+        public POModel fromPOModel { get; set; }
+        [ForeignKey("fromPOModel")]
+        public string from_po { get; set; }
 
 
         public MasterBMIModel fromMasterBMIModel { get; set; }
         [ForeignKey("fromMasterBMIModel")]
         public string from_bmi_code { get; set; }
 
-        public PTModel toPTModel { get; set; }
-        [ForeignKey("toPTModel")]
-        public string to_pt { get; set; }
+        public POModel toPOModel { get; set; }
+        [ForeignKey("toPOModel")]
+        public string to_po { get; set; }
 
         public MasterBMIModel toMasterBMIModel { get; set; }
         [ForeignKey("toMasterBMIModel")]

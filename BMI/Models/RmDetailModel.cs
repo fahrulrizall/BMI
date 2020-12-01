@@ -54,7 +54,11 @@ namespace BMI.Models
         [NotMapped]
         public double total_qty { get; set; }
         [NotMapped]
+        public float qty { get; set; }
+        [NotMapped]
         public double total_amount { get; set; }
+        [NotMapped]
+        public string? reason { get; set; }
 
     }
 }

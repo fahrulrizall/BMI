@@ -72,10 +72,6 @@ namespace BMI.Controllers
                 .OrderByDescending(e => e.id_raw)
                 .ToList();
             ViewBag.raw_source = raw_source;
-            //var list = _db.Rm_detail
-            //    .Include(a => a.RmModel)
-            //    .Where(a => a.RmModel.status == "in_plant")
-            //    .Sum(k => k.qty_pl);
             return View(list);
         }
 
@@ -201,7 +197,7 @@ namespace BMI.Controllers
                                 {
                                     rowDataList = item.ItemArray.ToList();
                                     var raw_source = Convert.ToString(rowDataList[3]);
-                                    var unique = _db.Rm.FirstOrDefault(m => m.raw_source == raw_source );
+                                    var unique = _db.Rm.FirstOrDefault(m => m.raw_source == raw_source);
                                     if (unique == null)
                                     {
                                         var obj = new RmModel
@@ -318,5 +314,24 @@ namespace BMI.Controllers
             TempData["result"] = "success";
             return RedirectToAction("Detail", new { raw_source = raw_source });
         }
+
+
+        public IActionResult Adddestroy(AdjustmentRawModel adjustmentRawModel)
+        {
+            if (ModelState.IsValid)
+            {
+                _db.AdjustmentRaw.Add(adjustmentRawModel);
+                _db.SaveChanges();
+                TempData["msg"] = "Raw Material Succesfully Destroy";
+                TempData["result"] = "success";
+                return Redirect(Request.Headers["Referer"].ToString());
+            }
+            TempData["msg"] = "Raw Material Failed to Destroy";
+            TempData["result"] = "failed";
+            return Redirect(Request.Headers["Referer"].ToString());
+        }
+
+
+
     }
 }

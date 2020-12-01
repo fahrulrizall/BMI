@@ -15,7 +15,9 @@ namespace BMI.Models
         public DateTime production_date { get; set; }
         public int destination_pt { get;set; }
         public string po { get;set; }
+        public string po_bmi { get;set; }
         public string bmi_code { get; set; }
+        public string sap_code { get; set; }
         public string id_pt { get; set; }
         public double total { get; set; }
         public int qty { get; set; }
@@ -23,7 +25,8 @@ namespace BMI.Models
         public string raw_source { get; set; }
         public string to_bmi_code { get; set; }
         public MasterBMIModel MasterBMIModel { get; set; }
-        public PTModel PTModel { get; set; }
+        public Masterdatamodel Masterdatamodel { get; set; }
+        public POModel POModel { get; set; }
         public List<ProductionInputModel> ProductionInputModel { get; set; }
         public List<ProductionOutputModel> ProductionOutputModel { get; set; }
         public List<CategoryView> CategoryView { get; set; }

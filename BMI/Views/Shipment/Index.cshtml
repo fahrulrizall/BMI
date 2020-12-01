@@ -1,4 +1,4 @@
-﻿@model IEnumerable<BMI.Models.Shipmentmodel>
+﻿@model IEnumerable<BMI.Models.POModel>
 @{
     ViewData["Title"] = "Shipment";
 }
@@ -14,8 +14,8 @@
                     <div class="card-header">
                         <h3 class="card-title">Shipment List</h3>
                         <div class="card-tools">
-                            <a href="#" type="button" class="btn btn-sm btn-default float-right mx-1 add-shipment"
-                               data-toggle="modal" data-target="#modal-default">Add New Shipment</a>
+                            @*<a href="#" type="button" class="btn btn-sm btn-default float-right mx-1 add-shipment"
+                               data-toggle="modal" data-target="#modal-default">Add New Shipment</a>*@
                         </div>
                     </div>
 
@@ -24,18 +24,27 @@
                             <thead>
                                 <tr>
                                     <th style="width: 3%;font-size:small">
-                                        Shipment
-                                    </th>
-                                    <th style="width: 10%;font-size:small">
                                         PO
                                     </th>
-                                    <th style="width: 8%;font-size:small">
+                                    <th style="width: 5%;font-size:small">
                                         ETD
                                     </th>
-                                    <th style="width: 8%;font-size:small">
+                                    <th style="width: 5%;font-size:small">
                                         ETA
                                     </th>
-                                    <th style="width: 10%;font-size:small">
+                                    <th style="width: 8%;font-size:small">
+                                        Carrier
+                                    </th>
+                                    <th style="width: 8%;font-size:small">
+                                        Container
+                                    </th>
+                                    <th style="width: 8%;font-size:small">
+                                        BoL
+                                    </th>
+                                    <th style="width: 8%;font-size:small">
+                                        Vessel
+                                    </th>
+                                    <th style="width: 15%;font-size:small">
                                         Destination
                                     </th>
                                     <th style="width: 3%;font-size:small">
@@ -50,28 +59,27 @@
                                     {
                                         <tr>
                                             <td>
-                                                <a style="font-size:small;color:black" asp-controller="Shipment" asp-action="Detail" asp-route-id="@obj.id_shipment">
-                                                    @Html.DisplayFor(modelItem => obj.id_shipment)
-                                                </a>
-                                            </td>
-                                            <td>
-                                                <a style="font-size:small;color:black" asp-controller="Shipment" asp-action="Detail" asp-route-id="@obj.id_shipment">
+                                                <a style="font-size:small;color:black" asp-controller="Shipment" asp-action="Detail" asp-route-po="@obj.po">
                                                     @Html.DisplayFor(modelItem => obj.po)
                                                 </a>
                                             </td>
                                             <td style="font-size:small">@Html.DisplayFor(modelItem => obj.etd)</td>
                                             <td style="font-size:small">@Html.DisplayFor(modelItem => obj.eta)</td>
+                                            <td style="font-size:small">@obj.ocean_carrier</td>
+                                            <td style="font-size:small">@obj.container</td>
+                                            <td style="font-size:small">@obj.house_bol</td>
+                                            <td style="font-size:small">@obj.vessel_name</td>
                                             <td style="font-size:small">@obj.destination</td>
                                             <td>
-                                                <form asp-controller="Shipment" asp-route-id="@obj.id_shipment" asp-action="Delete" method="post">
-                                                    <a data-toggle="modal" data-target="#modal-default" data-id="@obj.id_shipment" class="btn btn-xs btn-warning update-shipment">
+                                                <form asp-controller="Shipment" asp-route-id="@obj.po" asp-action="Delete" method="post">
+                                                    <a data-toggle="modal" data-target="#modal-default" data-po="@obj.po" class="btn btn-xs btn-warning update-shipment">
                                                         <i class="fa fa-edit" style="color:ghostwhite;outline:thin">
                                                         </i>
                                                     </a>
-                                                    <button type="submit" onclick="return confirm ('Delete Shipment No @obj.id_shipment');" class="btn btn-xs btn-danger">
+                                                    @*<button type="submit" onclick="return confirm ('Delete Shipment No @obj.po');" class="btn btn-xs btn-danger">
                                                         <i class="fa fa-trash">
                                                         </i>
-                                                    </button>
+                                                    </button>*@
                                                 </form>
                                             </td>
                                         </tr>
@@ -105,31 +113,76 @@
                 <div class="modal-body mb-2">
                     <form method="POST" asp-action="Update" asp-controller="Shipment">
                         <div class="card-body">
-                            <div class="form-group">
-                                <label asp-for="First().id_shipment" class="shipment-id-label"></label>
-                                <input type="number" class="form-control shipment-id" asp-for="First().id_shipment"
+                            <input type="hidden" asp-for="First().updated_at" value="@DateTime.Now" />
+                            <input type="hidden" asp-for="First().po" />
+                            @*<div class="form-group row">
+                                <label class="col-sm-3 col-form-label shipment-no-label">Shipment No</label>
+                                <input type="number" class="col-sm-9 form-control shipment-no" asp-for="First().shipment_no"
                                        placeholder="Shipment Number">
-                                <span asp-validation-for="First().id_shipment" class="text-danger" style="font-size:smaller"> </span>
+                                <span asp-validation-for="First().shipment_no" class="text-danger" style="font-size:smaller"> </span>
+                            </div>*@
+                            <div class="form-group row">
+                                <label class="col-sm-3">ETD</label>
+                                <input type="date" class="col-sm-9 form-control" asp-for="First().etd">
                             </div>
-                            <div class="form-group">
-                                <label asp-for="First().po"></label>
-                                <input type="number" class="form-control" asp-for="First().po"
-                                       placeholder="PO Number">
-                                <span asp-validation-for="First().po" class="text-danger" style="font-size:smaller"> </span>
+                            <div class="form-group row">
+                                <label class="col-sm-3">ETA</label>
+                                <input type="date" class="col-sm-9 form-control" asp-for="First().eta">
                             </div>
-                            <div class="form-group">
-                                <label asp-for="First().etd"></label>
-                                <input type="date" class="form-control" asp-for="First().etd">
+                            <div class="form-group row">
+                                <label class="col-sm-3">Doc Date</label>
+                                <input type="date" class="col-sm-9 form-control" asp-for="First().document_date">
                             </div>
-                            <div class="form-group">
-                                <label asp-for="First().eta"></label>
-                                <input type="date" class="form-control" asp-for="First().eta">
+                            <div class="form-group row">
+                                <label class="col-sm-3">Carrier</label>
+                                <input type="text" class="col-sm-9 form-control" asp-for="First().ocean_carrier" placeholder="Ocean Carrier">
                             </div>
-                            <div class="form-group">
-                                <label asp-for="First().destination"></label>
-                                <input type="text" class="form-control" asp-for="First().destination"
-                                       placeholder="Destination">
-                                <span asp-validation-for="First().destination" class="text-danger" style="font-size:smaller"> </span>
+                            <div class="form-group row">
+                                <label class="col-sm-3">Container</label>
+                                <input type="text" class="col-sm-9 form-control" asp-for="First().container" placeholder="Container">
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-3">Voyage</label>
+                                <input type="text" class="col-sm-9 form-control" asp-for="First().voyage_no" placeholder="Voyage">
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-3">BoL</label>
+                                <input type="text" class="col-sm-9 form-control" asp-for="First().house_bol" placeholder="Bill of Lading">
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-3">Vessel</label>
+                                <input type="text" class="col-sm-9 form-control" asp-for="First().vessel_name" placeholder="Vessel Name">
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-3">INV No</label>
+                                <input type="text" class="col-sm-9 form-control" asp-for="First().inv_no" placeholder="Invoice No">
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-3">FDA No</label>
+                                <input type="text" class="col-sm-9 form-control" asp-for="First().fda_no" placeholder="FDA No">
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-3">Seal No</label>
+                                <input type="text" class="col-sm-9 form-control" asp-for="First().seal_no" placeholder="Seal">
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-3">Destination</label>
+                                <select class="col-sm-9 form-control" asp-for="First().destination">
+                                    <option>1700: Anova</option>
+                                    <option>1705: Americold Fogelsville</option>
+                                    <option>1710: Lineage Logistic, LLC LA</option>
+                                    <option>1720: Los Angeles Cold Storage</option>
+                                    <option>1730: Preferred Atlanta</option>
+                                    <option>1750: Lineage Cold Storage</option>
+                                    <option>1760: Hall's</option>
+                                    <option>1770: Preferred Perth Amboy</option>
+                                    <option>1780: Preferred Miami</option>
+                                    <option>1780: Preferred Long Beach Fwy</option>
+                                    <option>1782: Preferred Elizabeth</option>
+                                    <option>1782: Preferred Woodbridge</option>
+                                    <option>1782: Preferred Chicago</option>
+                                    <option>1790: Lineage Cold Storage</option>
+                                </select>
                             </div>
 
                         </div>

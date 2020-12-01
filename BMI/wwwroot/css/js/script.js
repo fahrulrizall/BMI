@@ -163,6 +163,7 @@ $(function () {
       //untuk bmi raws
     $('.change-container').on('click',function () {
         var raw = $(this).data('raw');
+        $('#formModalLabel').html(raw);
         $('.modal-body form').attr('action','/Rm/Update');
         $.ajax({
             url: '/Rm/Getdata',
@@ -170,7 +171,8 @@ $(function () {
             method:'get',
             dataType : 'json',
             success: function (data) {
-                    $('#po').val(data.po);
+                $('#raw_source').val(data.raw_source);
+                $('#po').val(data.po);
                     var date = new Date(data.etd);
                     yr = date.getFullYear();
                     month = date.getMonth() + 1;
@@ -211,7 +213,6 @@ $(function () {
             method:'get',
             dataType : 'json',
             success: function (data) {
-                console.log(data);
                 $('#id_raw').val(data.id_raw);
                 $('#sap_code').val(data.sap_code);
                 $('#landing_site').val(data.landing_site);
@@ -219,9 +220,26 @@ $(function () {
                 $('#ex_rate').val(data.ex_rate);
                 $('#qty_pl').val(data.qty_pl);
                 $('#qty_received').val(data.qty_received);
+                $('#raw_source').val(data.raw_source);
             }
         });
     });
+
+    $('.destroy-raw').on('click', function () {
+        var id = $(this).data('id');
+        $('.modal-body form').attr('action', '/Rm/Adddestroy');
+        $.ajax({
+            url: '/Rm/Getdetailitem',
+            data: { id: id },
+            method: 'get',
+            dataType: 'json',
+            success: function (data) {
+                $('#sap_code').val(data.sap_code);
+                $('#raw_source').val(data.raw_source);
+            }
+        });
+    });
+
     $('.duplicate-item').on('click', function () {
         $('#id_raw').val("");
         $('.modal-body form').attr('action', '/Rm/Duplicateitem');
@@ -238,32 +256,43 @@ $(function () {
 
 
     // untuk shipment
-    $('.add-shipment').on('click', function () {
-        $('#formModalLabel').html('New Shipment');
-        $('.modal-footer button[type=submit]').html('Create');
-        $('.modal-body form').attr('action', 'Shipment/Create');
-        $('.shipment-id-label').show();
-        $('.shipment-id').attr('type', 'number');
-        $('#id_shipment').val("");
-        $('#etd').val("");
-        $('#eta').val("");
-        $('#po').val("");
-        $('#destination').val("");
-    });
+    //$('.add-shipment').on('click', function () {
+    //    $('#formModalLabel').html('New Shipment');
+    //    $('.modal-footer button[type=submit]').html('Create');
+    //    $('.modal-body form').attr('action', 'Shipment/Create');
+    //    $('.shipment-no-label').show();
+    //    $('.shipment-no').attr('type', 'number');
+    //    $('#id_shipment').val("");
+    //    $('#po').val("");
+    //    $('#etd').val("");
+    //    $('#eta').val("");
+    //    $('#document_date').val("");
+    //    $('#ocean_carrier').val("");
+    //    $('#container').val("");
+    //    $('#voyage_no').val("");
+    //    $('#house_bol').val("");
+    //    $('#vessel_name').val("");
+    //    $('#inv_no').val("");
+    //    $('#fda_no').val("");
+    //    $('#seal_no').val("");
+    //    $('#destination').val("");
+    //    $('#updated_at').val("");
+    //});
     $('.update-shipment').on('click', function () {
         $('.modal-footer button[type=submit]').html('Update');
-        var id = $(this).data('id');
-        $('#formModalLabel').html('Update Shipment '+id);
+        var po = $(this).data('po');
+        $('#formModalLabel').html('Update Shipment -'+po);
         $('.modal-body form').attr('action', 'Shipment/Update');
+        $('#etd').val("");
+        $('#eta').val("");
+        $('#document_date').val("");
         $.ajax({
             url: '/Shipment/Getshipment',
-            data: { id: id },
+            data: { po: po },
             method: 'get',
             dataType: 'json',
             success: function (data) {
-                $('.shipment-id-label').hide();
-                $('.shipment-id').attr('type', 'hidden');
-                $('#id_shipment').val(data.id_shipment);
+                $('#shipment_no').val(data.shipment_no);
                 $('#po').val(data.po);
                     var date = new Date(data.etd);
                     yr = date.getFullYear();
@@ -283,6 +312,23 @@ $(function () {
                     }
                     eta = yr + '-' + month + '-' + day;
                 $('#eta').val(eta);
+                    var date = new Date(data.document_date);
+                    yr = date.getFullYear();
+                    month = date.getMonth() + 1;
+                    day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate();
+                    if (month < 10) {
+                        month = "0" + month;
+                    }
+                document_date = yr + '-' + month + '-' + day;
+                $('#document_date').val(document_date);
+                $('#ocean_carrier').val(data.ocean_carrier);
+                $('#container').val(data.container);
+                $('#voyage_no').val(data.voyage_no);
+                $('#house_bol').val(data.house_bol);
+                $('#vessel_name').val(data.vessel_name);
+                $('#inv_no').val(data.inv_no);
+                $('#fda_no').val(data.fda_no);
+                $('#seal_no').val(data.seal_no);
                 $('#destination').val(data.destination);
             }
         });
@@ -300,14 +346,11 @@ $(function () {
             dataType: 'json',
             success: function (data) {
                 $('#id_shipment_detail').val(data.id_shipment_detail);
-                $('#id_shipment').val(data.id_shipment);
                 $('#qty').val(data.qty);
                 $('#po').val(data.batch);
             }
         });
     });
-
-
 
 
     //table global pt
@@ -364,6 +407,8 @@ $(function () {
         $('.table-fg-daily').hide();
     });
 
+
+
     $('.detail-po-daily').on('click', function () {
         $('.table-raw-daily').show();
         $('.table-fg-daily').show();
@@ -378,7 +423,8 @@ $(function () {
             dataType: 'json',
             success: function (data) {
                 data.forEach(function (e) {
-                    $('#detail-raw-daily').append("<tr><td style='font-size:small'>" + e.raw_source + "</td>" + "<td style='font-size:small'>" + e.masterBMIModel.sap_code + "</td>" + "<td style='font-size:small'>" + e.masterBMIModel.description + "</td>" + "<td style='font-size:small'>" + e.landing_site + "</td>" + "<td class='qty' style='font-size:small'>" + e.qty + "</td></tr>");
+                    console.log(e);
+                    $('#detail-raw-daily').append("<tr><td style='font-size:small'>" + e.raw_source + "</td>" + "<td style='font-size:small'>" + e.sap_code + "</td>" + "<td style='font-size:small'>" + e.masterdatamodel.description + "</td>" + "<td style='font-size:small'>" + e.landing_site + "</td>" + "<td class='qty' style='font-size:small'>" + e.qty + "</td></tr>");
                     total_kg();
                 })
             }
@@ -424,8 +470,9 @@ $(function () {
 
     });
 
-
+    // adjust dan repack
     $('.adjustment-fg').on('click', function () {
+        console.log("dasdasd")
         $('#formModalLabel').html('Adjustment');
         var pt = $(this).data('pt');
         var code = $(this).data('code');
@@ -444,13 +491,12 @@ $(function () {
             dataType: 'json',
             success: function (data) {
                 data.forEach(function (e) {
-                    $('#id_pt').val(pt);
+                    $('#pt').val(pt);
                     $('#bmi_code').val(e.bmi_code)
                 })
             }
         });
     });
-
 
     $('.repack-fg').on('click', function () {
         $('#formModalLabel').html('Repack Item');
@@ -484,15 +530,47 @@ $(function () {
                         month = "0" + month;
                     }
                     newdate = day + '-' + month + '-' + yr;
-                    $('#production_date').append("<option>"+ newdate +"</option>");
-                    $('#raw_source').append("<option>"+ e.raw_source+"</option>");
-                    $('#id_pt').val(pt);
+                    $('#production_date').append("<option>" + newdate + "</option>");
+                    $('#raw_source').append("<option>" + e.raw_source + "</option>");
                     $('#bmi_code').val(e.bmi_code)
                 })
             }
         });
 
     });
+
+
+    $('.add-destroy-raw').on('click', function () {
+        $('#id_adjustmentRaw').val("");
+        $('#raw_source').val("");
+        $('#sap_code').val("");
+        $('#reason').val("");
+        $('#qty').val("");
+        $('.modal-body form').attr('action', '/Adjustment/AddDestroyRaw');
+    })
+
+    $('.update-destroy-raw').on('click', function () {
+        $('#formModalLabel').html('Update Destory');
+        var id = $(this).data('id');
+        $('.modal-body form').attr('action', '/Adjustment/UpdateRaw');
+        $.ajax({
+            url: '/Adjustment/Getitemraw',
+            data: { id: id,},
+            method: 'get',
+            dataType: 'json',
+            success: function (data) {
+                $('#id_adjustmentRaw').val(data.id_adjustmentRaw);
+                $('#raw_source').val(data.raw_source);
+                $('#sap_code').val(data.sap_code);
+                $('#reason').val(data.reason);
+                $('#qty').val(data.qty);
+            }
+        });
+
+    })
+
+
+   
 
 
     $('.repack-table-date').on('change', function () {
@@ -505,15 +583,24 @@ $(function () {
             dataType: 'json',
             success: function (data) {
                 data.forEach(function (e) {
-                    var date = new Date(e.date);
-                    yr = date.getFullYear();
-                    month = date.getMonth() + 1;
-                    day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate();
+                    var repack = new Date(e.date);
+                    yr = repack.getFullYear();
+                    month = repack.getMonth() + 1;
+                    day = repack.getDate() < 10 ? '0' + repack.getDate() : repack.getDate();
                     if (month < 10) {
                         month = "0" + month;
                     }
-                    newdate = day + '-' + month + '-' + yr;
-                    $('#repack-table').append("<tr><td style='font-size:small'>" + newdate +"</td><td style='font-size:small'>"+ e.po+"</td><td style='font-size:small'>" + e.fromPTModel.pt + "</td><td style='font-size:small'>" + e.fromMasterBMIModel.sap_code + "</td><td style='font-size:small'>" + e.fromMasterBMIModel.description + "</td><td style='font-size:small'>" + e.qty + "</td><td style='font-size:small'>" + e.toPTModel.pt + "</td><td style='font-size:small'>" + e.toMasterBMIModel.sap_code + "</td><td style='font-size:small'>" + e.toMasterBMIModel.description + "</td><td style='font-size:small'>" + e.qty + "</td><td>" +
+                    repack_date = day + '-' + month + '-' + yr;
+
+                    var pdc = new Date(e.production_date);
+                    yr = pdc.getFullYear();
+                    month = pdc.getMonth() + 1;
+                    day = pdc.getDate() < 10 ? '0' + pdc.getDate() : pdc.getDate();
+                    if (month < 10) {
+                        month = "0" + month;
+                    }
+                    pdc_date = day + '-' + month + '-' + yr;
+                    $('#repack-table').append("<tr><td style='font-size:small'>" + repack_date +"</td><td style='font-size:small'>"+ pdc_date+"</td><td style='font-size:small'>" + e.fromPOModel.pt + "</td><td style='font-size:small'>" + e.fromMasterBMIModel.sap_code + "</td><td style='font-size:small'>" + e.fromMasterBMIModel.description + "</td><td style='font-size:small'>" + e.qty + "</td><td style='font-size:small'>" + e.toPOModel.pt + "</td><td style='font-size:small'>" + e.toMasterBMIModel.sap_code + "</td><td style='font-size:small'>" + e.toMasterBMIModel.description + "</td><td style='font-size:small'>" + e.qty + "</td><td>" +
                         "<form action='/Repack/Delete?id="+e.id_repack+"' method='post'>" +
                             "<a data-toggle='modal' data-target='#modal-default' data-id="+e.id_repack+" class='btn btn-sm btn-warning change-repack-modal' style='font-size:small' >Update</a>" +
                             "<button type='submit'  onclick='return confirm('Delete Item Repack?');'   class='btn btn-sm btn-danger'  style='font-size:small'>Delete</button>" +
@@ -535,36 +622,32 @@ $(function () {
                                     month = "0" + month;
                                 }
                                 newdate = yr + '-' + month + '-' + day;
-                                $('#id_repack').val(e.id_repack);
+                                $('#id_repack').val(data.id_repack);
                                 $('#date').val(newdate);
                                 $('#po').val(data.po);
-                                $('#from_pt').val(e.fromPTModel.pt);
-                                $('#from_bmi_code').val(e.from_bmi_code);
-                                $('#qty').val(e.qty);
-                                $('#to_bmi_code').val(e.to_bmi_code);
-                                $('#to_pt').val(e.toPTModel.pt);
+                                $('#from_po').val(data.fromPOModel.pt);
+                                $('#from_bmi_code').val(data.from_bmi_code);
+                                $('#qty').val(data.qty);
+                                $('#to_bmi_code').val(data.to_bmi_code);
+                                $('#to_po').val(data.toPOModel.pt);
                             }
                         });
 
                     })
                 })
             }
-
-
         })
     })
 
     $('.change-pt').on('click', function () {
-        var id = $(this).data('id');
+        var po = $(this).data('po');
         $.ajax({
             url: '/Production/Getptdata',
-            data: { id:id },
+            data: { po:po },
             method: 'get',
             dataType: 'json',
             success: function (data) {
-                console.log(data);
-                $('#id_pt').val(data.id_pt);
-                $('#pt').val(data.pt);
+                $('#po').val(data.po);
                 $('#plant').val(data.plant);
                 $('#batch').val(data.batch);
                 $('#status').val(data.status);
@@ -572,6 +655,9 @@ $(function () {
         });
     })
 
+
+
+    
 
 
 

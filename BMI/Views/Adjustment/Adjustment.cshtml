@@ -55,10 +55,10 @@
                                 @foreach (var obj in Model)
                                 {
                                     <tr>
-                                        <td class="text text-sm">@obj.PTModel.pt</td>
+                                        <td class="text text-sm">@obj.POModel.pt</td>
                                         <td style="font-size:small">@obj.MasterBMIModel.sap_code</td>
                                         <td style="font-size:small">@obj.MasterBMIModel.description</td>
-                                        <td style="font-size:small">@obj.PTModel.batch</td>
+                                        <td style="font-size:small">@obj.POModel.batch</td>
                                         <td style="font-size:small">@obj.qty</td>
                                         <td style="font-size:small" class="reason-table">@obj.reason</td>
                                         <td>
@@ -67,7 +67,7 @@
                                                     <i class="fa fa-edit" style="color:whitesmoke;outline:thin">
                                                     </i>
                                                 </a>
-                                                <button type="submit" onclick="return confirm ('Delete Item @obj.MasterBMIModel.sap_code on PT @obj.PTModel.pt');" class="btn btn-xs btn-danger">
+                                                <button type="submit" onclick="return confirm ('Delete Item @obj.MasterBMIModel.sap_code on PT @obj.POModel.pt');" class="btn btn-xs btn-danger">
                                                     <i class="fa fa-trash">
                                                     </i>
                                                 </button>
@@ -107,9 +107,9 @@
                         <input type="hidden" class="form-control" asp-for="First().status" value="@ViewBag.status">
                         <div class="form-group">
                             <label>PT</label>
-                            <input type="text" class="form-control" asp-for="First().id_pt"
+                            <input type="text" class="form-control" asp-for="First().pt"
                                    placeholder="PT">
-                            <span asp-validation-for="First().id_pt" class="text-danger" style="font-size:smaller"> </span>
+                            <span asp-validation-for="First().pt" class="text-danger" style="font-size:smaller"> </span>
                         </div>
                         <div class="form-group">
                             <label>BMI Code</label>

@@ -32,25 +32,25 @@ namespace BMI.Controllers
 
         public IActionResult Index()
         {
-            var list = _db.Shipment.OrderByDescending(e=>e.id_shipment).ToList();
+            var list = _db.PO.OrderByDescending(e => e.po).ToList();
             return View(list);
         }
 
-        [HttpPost]
-        public IActionResult IdExist(Shipmentmodel shipmentmodel)
-        {
-            var unique = _db.Shipment.SingleOrDefault(m => m.id_shipment == shipmentmodel.id_shipment);
-            if (unique != null)
-            {
-                return Json(false);
-            }
-            return Json(true);
-        }
+        //[HttpPost]
+        //public IActionResult IdExist(Shipmentmodel shipmentmodel)
+        //{
+        //    var unique = _db.Shipment.SingleOrDefault(m => m.id_shipment == shipmentmodel.id_shipment);
+        //    if (unique != null)
+        //    {
+        //        return Json(false);
+        //    }
+        //    return Json(true);
+        //}
 
         [HttpPost]
-        public IActionResult POExist(Shipmentmodel shipmentmodel)
+        public IActionResult POExist(POModel POModel)
         {
-            var unique = _db.Shipment.SingleOrDefault(m => m.po == shipmentmodel.po);
+            var unique = _db.PO.SingleOrDefault(m => m.po == POModel.po);
             if (unique != null)
             {
                 return Json(false);
@@ -60,61 +60,78 @@ namespace BMI.Controllers
 
         [HttpPost]
         [AutoValidateAntiforgeryToken]
-        public IActionResult Create(Shipmentmodel shipmentmodel)
+        public IActionResult Create(POModel POModel)
         {
             if (ModelState.IsValid)
             {
-                _db.Shipment.Add(shipmentmodel);
+                _db.PO.Add(POModel);
                 _db.SaveChanges();
                 TempData["msg"] = "New Shipment Succesfully Added";
                 TempData["result"] = "success";
-                return RedirectToAction("Index");
+                return Redirect(Request.Headers["Referer"].ToString());
             }
             TempData["msg"] = "New Shipment Failed to Added";
             TempData["result"] = "failed";
-            return RedirectToAction("Index");
+            return Redirect(Request.Headers["Referer"].ToString());
         }
-        
+
         [HttpPost]
         [AutoValidateAntiforgeryToken]
-        public IActionResult Update(Shipmentmodel shipmentmodel)
+        public IActionResult Update(POModel POModel)
         {
             if (ModelState.IsValid)
             {
-                _db.Shipment.Update(shipmentmodel);
+                var po = _db.PO.Find(POModel.po);
+
+                po.etd = POModel.etd;
+                po.eta = POModel.eta;
+                po.document_date = POModel.document_date;
+                po.ocean_carrier = POModel.ocean_carrier;
+                po.container = POModel.container;
+                po.voyage_no = POModel.voyage_no;
+                po.house_bol = POModel.house_bol;
+                po.vessel_name = POModel.vessel_name;
+                po.inv_no = POModel.inv_no;
+                po.fda_no = POModel.fda_no;
+                po.seal_no = POModel.seal_no;
+                po.destination = POModel.destination;
+                po.port_loading = "Surabaya";
+                po.updated_at = DateTime.Now;
+                _db.Entry(po).State = EntityState.Modified;
                 _db.SaveChanges();
+
                 TempData["msg"] = "Shipment Succesfully Updated";
                 TempData["result"] = "success";
-                return RedirectToAction("Index");
+                return Redirect(Request.Headers["Referer"].ToString());
             }
             TempData["msg"] = "Shipment Failed to Updated";
             TempData["result"] = "failed";
-            return RedirectToAction("Index");
+            return Redirect(Request.Headers["Referer"].ToString());
         }
 
         [HttpPost]
         [AutoValidateAntiforgeryToken]
         public IActionResult Delete(int id)
         {
-            var obj = _db.Shipment.Find(id);
-            _db.Shipment.Remove(obj);
+            var obj = _db.Shipment_detail.Find(id);
+            _db.Shipment_detail.Remove(obj);
             _db.SaveChanges();
             TempData["msg"] = "Shipment Succesfully Deleted";
             TempData["result"] = "success";
-            return RedirectToAction("Index");
+            return Redirect(Request.Headers["Referer"].ToString());
         }
 
-        public IActionResult Getshipment(int id)
+        public IActionResult Getshipment(string po)
         {
-            var obj = _db.Shipment.Find(id);
+            var obj = _db.PO.Find(po);
             return Json(obj);
         }
 
-        public IActionResult Detail(int id)
+        public IActionResult Detail(string po)
         {
-            ViewBag.no = id;
+            ViewBag.po = po;
             var obj = _db.Shipment_detail
-                .Where(a => a.id_shipment == id)
+                .Where(a => a.po == po)
                 .Include(c => c.MasterBMIModel)
                 .ToList();
             return View(obj);
@@ -123,11 +140,11 @@ namespace BMI.Controllers
 
         [HttpPost]
         [AutoValidateAntiforgeryToken]
-        public IActionResult Import(IFormFile postedFile,int id)
+        public IActionResult Import(IFormFile postedFile, string po )
         {
             if (postedFile != null)
             {
-                var allowedExtensions = new[] { ".xls", ".xlsx"};
+                var allowedExtensions = new[] { ".xls", ".xlsx" };
                 string fileName = Path.GetFileName(postedFile.FileName);
                 var checkextension = Path.GetExtension(fileName).ToLower();
 
@@ -170,36 +187,37 @@ namespace BMI.Controllers
                                     rowDataList = item.ItemArray.ToList();
                                     shipmentdata.Add(new ShipmentDetailModel
                                     {
-                                        id_shipment = id,
+                                        po = po,
                                         bmi_code = Convert.ToString(rowDataList[0]),
                                         batch = Convert.ToString(rowDataList[1]),
                                         qty = Convert.ToInt32(rowDataList[2]),
-                                        index = Convert.ToSingle(rowDataList[3])
+                                        index = Convert.ToSingle(rowDataList[3]),
+                                        created_at = DateTime.Now
                                     });
                                 }
                                 _db.Shipment_detail.AddRange(shipmentdata);
                                 _db.SaveChanges();
                                 TempData["msg"] = "File Succesfully Uploaded";
                                 TempData["result"] = "success";
-                                return RedirectToAction("Detail", "Shipment", new { id = id });
+                                return Redirect(Request.Headers["Referer"].ToString());
                             }
                             //jika kolom lebih besar dari 4
                             TempData["msg"] = "Field Column not Match";
                             TempData["result"] = "failed";
-                            return RedirectToAction("Detail", "Shipment", new { id = id });
+                            return Redirect(Request.Headers["Referer"].ToString());
                         }
                     }
                 }
                 //jika tidak sesuai extension
                 TempData["msg"] = "Field Extension must excel file format 'xlsx or xls'";
                 TempData["result"] = "failed";
-                return RedirectToAction("Detail", "Shipment", new { id = id });
+                return Redirect(Request.Headers["Referer"].ToString());
 
             }
             //jika file kosong
             TempData["msg"] = "File Empty";
             TempData["result"] = "failed";
-            return RedirectToAction("Detail", "Shipment", new { id = id });
+            return Redirect(Request.Headers["Referer"].ToString());
         }
 
         public IActionResult Getitem(int id)
@@ -213,15 +231,19 @@ namespace BMI.Controllers
         {
             if (ModelState.IsValid)
             {
-                _db.Shipment_detail.Update(shipmentDetailModel);
+                var shipment = _db.Shipment_detail.Find(shipmentDetailModel.id_shipment_detail);
+                shipment.qty = shipmentDetailModel.qty;
+                shipment.batch = shipmentDetailModel.batch;
+                shipment.updated_at = DateTime.Now;
+                _db.Entry(shipment).State = EntityState.Modified;
                 _db.SaveChanges();
                 TempData["msg"] = "Item Succesfully Updated";
                 TempData["result"] = "success";
-                return RedirectToAction("Detail", "Shipment", new { id = shipmentDetailModel.id_shipment });
+                return Redirect(Request.Headers["Referer"].ToString());
             }
             TempData["msg"] = "Item Failed to Update";
             TempData["result"] = "failed";
-            return RedirectToAction("Detail", "Shipment", new { id= shipmentDetailModel.id_shipment });
+            return Redirect(Request.Headers["Referer"].ToString());
         }
 
 

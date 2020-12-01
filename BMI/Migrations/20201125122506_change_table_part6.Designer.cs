@@ -4,14 +4,16 @@ using BMI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BMI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201125122506_change_table_part6")]
+    partial class change_table_part6
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -29,7 +31,7 @@ namespace BMI.Migrations
                     b.Property<string>("bmi_code")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("id_pt")
+                    b.Property<string>("po")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("qty")
@@ -48,7 +50,7 @@ namespace BMI.Migrations
 
                     b.HasIndex("bmi_code");
 
-                    b.HasIndex("id_pt");
+                    b.HasIndex("po");
 
                     b.ToTable("AdjustmentFG");
                 });
@@ -192,29 +194,80 @@ namespace BMI.Migrations
                     b.ToTable("Master_data");
                 });
 
-            modelBuilder.Entity("BMI.Models.PTModel", b =>
+            modelBuilder.Entity("BMI.Models.POModel", b =>
                 {
-                    b.Property<string>("id_pt")
+                    b.Property<string>("po")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("batch")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("container")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("created_at")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("destination")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("document_date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("eta")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("etd")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("fda_no")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("house_bol")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("inv_no")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("master_bol")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ocean_carrier")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("plant")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("po")
+                    b.Property<string>("port_loading")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("pt")
+                    b.Property<string>("port_receipt")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("pt")
                         .HasColumnType("int");
+
+                    b.Property<string>("saved")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("seal_no")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("status")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("id_pt");
+                    b.Property<DateTime?>("updated_at")
+                        .HasColumnType("datetime2");
 
-                    b.ToTable("Pt");
+                    b.Property<string>("vessel_name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("voyage_no")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("po");
+
+                    b.ToTable("PO");
                 });
 
             modelBuilder.Entity("BMI.Models.ProductionInputModel", b =>
@@ -233,13 +286,13 @@ namespace BMI.Migrations
                     b.Property<DateTime>("date")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("id_pt")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("landing_site")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("po")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("po_bmi")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<float>("qty")
@@ -258,7 +311,7 @@ namespace BMI.Migrations
 
                     b.HasIndex("bmi_code");
 
-                    b.HasIndex("id_pt");
+                    b.HasIndex("po");
 
                     b.ToTable("Production_input");
                 });
@@ -279,13 +332,13 @@ namespace BMI.Migrations
                     b.Property<DateTime>("date")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("id_pt")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("landing_site")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("po")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("po_bmi")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<float>("qty")
@@ -304,7 +357,7 @@ namespace BMI.Migrations
 
                     b.HasIndex("bmi_code");
 
-                    b.HasIndex("id_pt");
+                    b.HasIndex("po");
 
                     b.ToTable("Production_output");
                 });
@@ -322,7 +375,7 @@ namespace BMI.Migrations
                     b.Property<string>("from_bmi_code")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("from_pt")
+                    b.Property<string>("from_po")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("po")
@@ -340,18 +393,18 @@ namespace BMI.Migrations
                     b.Property<string>("to_bmi_code")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("to_pt")
+                    b.Property<string>("to_po")
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("id_repack");
 
                     b.HasIndex("from_bmi_code");
 
-                    b.HasIndex("from_pt");
+                    b.HasIndex("from_po");
 
                     b.HasIndex("to_bmi_code");
 
-                    b.HasIndex("to_pt");
+                    b.HasIndex("to_po");
 
                     b.ToTable("Repack");
                 });
@@ -458,11 +511,11 @@ namespace BMI.Migrations
                     b.Property<DateTime>("created_at")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("id_shipment")
-                        .HasColumnType("int");
-
                     b.Property<float>("index")
                         .HasColumnType("real");
+
+                    b.Property<string>("po")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("qty")
                         .HasColumnType("int");
@@ -483,78 +536,9 @@ namespace BMI.Migrations
 
                     b.HasIndex("bmi_code");
 
-                    b.HasIndex("id_shipment");
+                    b.HasIndex("po");
 
                     b.ToTable("Shipment_detail");
-                });
-
-            modelBuilder.Entity("BMI.Models.Shipmentmodel", b =>
-                {
-                    b.Property<int>("id_shipment")
-                        .HasColumnType("int");
-
-                    b.Property<string>("container")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("created_at")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("destination")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("document_date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("eta")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("etd")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("fda_no")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("house_bol")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("inv_no")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("master_bol")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ocean_carrier")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("po")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("port_loading")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("port_receipt")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("saved")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("seal_no")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("updated_at")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("vessel_name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("voyage_no")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("id_shipment");
-
-                    b.ToTable("Shipment");
                 });
 
             modelBuilder.Entity("BMI.Models.Usermodel", b =>
@@ -598,9 +582,9 @@ namespace BMI.Migrations
                         .WithMany()
                         .HasForeignKey("bmi_code");
 
-                    b.HasOne("BMI.Models.PTModel", "PTModel")
+                    b.HasOne("BMI.Models.POModel", "POModel")
                         .WithMany()
-                        .HasForeignKey("id_pt");
+                        .HasForeignKey("po");
                 });
 
             modelBuilder.Entity("BMI.Models.AdjustmentRawModel", b =>
@@ -625,9 +609,9 @@ namespace BMI.Migrations
                         .WithMany()
                         .HasForeignKey("bmi_code");
 
-                    b.HasOne("BMI.Models.PTModel", "PTModel")
+                    b.HasOne("BMI.Models.POModel", "POModel")
                         .WithMany()
-                        .HasForeignKey("id_pt");
+                        .HasForeignKey("po");
                 });
 
             modelBuilder.Entity("BMI.Models.ProductionOutputModel", b =>
@@ -636,9 +620,9 @@ namespace BMI.Migrations
                         .WithMany()
                         .HasForeignKey("bmi_code");
 
-                    b.HasOne("BMI.Models.PTModel", "PTModel")
+                    b.HasOne("BMI.Models.POModel", "POModel")
                         .WithMany()
-                        .HasForeignKey("id_pt");
+                        .HasForeignKey("po");
                 });
 
             modelBuilder.Entity("BMI.Models.RepackModel", b =>
@@ -647,17 +631,17 @@ namespace BMI.Migrations
                         .WithMany()
                         .HasForeignKey("from_bmi_code");
 
-                    b.HasOne("BMI.Models.PTModel", "fromPTModel")
+                    b.HasOne("BMI.Models.POModel", "fromPOModel")
                         .WithMany()
-                        .HasForeignKey("from_pt");
+                        .HasForeignKey("from_po");
 
                     b.HasOne("BMI.Models.MasterBMIModel", "toMasterBMIModel")
                         .WithMany()
                         .HasForeignKey("to_bmi_code");
 
-                    b.HasOne("BMI.Models.PTModel", "toPTModel")
+                    b.HasOne("BMI.Models.POModel", "toPOModel")
                         .WithMany()
-                        .HasForeignKey("to_pt");
+                        .HasForeignKey("to_po");
                 });
 
             modelBuilder.Entity("BMI.Models.RmDetailModel", b =>
@@ -677,11 +661,9 @@ namespace BMI.Migrations
                         .WithMany()
                         .HasForeignKey("bmi_code");
 
-                    b.HasOne("BMI.Models.Shipmentmodel", "Shipmentmodel")
+                    b.HasOne("BMI.Models.POModel", "POModel")
                         .WithMany()
-                        .HasForeignKey("id_shipment")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("po");
                 });
 #pragma warning restore 612, 618
         }

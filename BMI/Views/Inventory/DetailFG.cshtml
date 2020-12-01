@@ -43,10 +43,10 @@
                                 @foreach (var obj in Model)
                                 {
                                     <tr>
-                                        <td class="text text-sm">@obj.PTModel.pt</td>
+                                        <td class="text text-sm">@obj.POModel.pt</td>
                                         <td style="font-size:small">@obj.MasterBMIModel.sap_code</td>
                                         <td style="font-size:small">@obj.MasterBMIModel.description</td>
-                                        <td style="font-size:small">@obj.PTModel.batch</td>
+                                        <td style="font-size:small">@obj.POModel.batch</td>
                                         <td style="font-size:small">@Convert.ToInt32(obj.total)</td>
                                     </tr>
                                 }

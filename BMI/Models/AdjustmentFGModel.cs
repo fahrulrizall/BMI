@@ -17,11 +17,14 @@ namespace BMI.Models
         public string bmi_code { get; set; }
         public string raw_source { get; set; }
         public int qty { get; set; }
-        public PTModel PTModel { get; set; }
-        [ForeignKey("PTModel")]
-        public string id_pt { get; set; }
+        public POModel POModel { get; set; }
+        [ForeignKey("POModel")]
+        public string po { get; set; }
         #nullable enable
         public string? reason { get; set; }
         public string? status { get; set; }
+
+        [NotMapped]
+        public string? pt { get; set; }
     }
 }

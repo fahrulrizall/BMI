@@ -60,9 +60,13 @@
                                     <td style="font-size:small">@obj.qty_received</td>
                                     <td>
                                         <form asp-controller="Rm" asp-action="Deleteitem" asp-route-id="@obj.id_raw" asp-route-raw_source="@obj.raw_source" method="post" class="d-inline">
-                                            <a href="#" class="btn btn-xs btn-warning change-item-detail"
-                                                data-toggle="modal" data-target="#modal-default" data-id="@obj.id_raw">
+                                            <a href="#" class="btn btn-xs btn-info change-item-detail"
+                                               data-toggle="modal" data-target="#modal-default" data-id="@obj.id_raw">
                                                 <i class="fa fa-edit" style="color:ghostwhite;outline:thin"></i>
+                                            </a>
+                                            <a href="#" class="btn btn-xs btn-warning destroy-raw"
+                                               data-toggle="modal" data-target="#modal-destroy" data-id="@obj.id_raw">
+                                                <i class="fa fa-times" style="color:ghostwhite;outline:thin"></i>
                                             </a>
                                             <button type="submit" onclick="return confirm ('Delete Item @obj.sap_code' );" class="btn btn-xs btn-danger">
                                                 <i class="fa fa-trash"></i>
@@ -142,6 +146,44 @@
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-primary">Update</button>
                         <button type="submit" class="btn btn-warning duplicate-item">Duplicate</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- /.modal-content -->
+</div>
+
+<div class="modal fade" id="modal-destroy">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="formModalLabel">Destroy Material</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="POST" asp-controller="Rm" asp-action="Adddestroy" class="form-horizontal">
+                    <div class="card-body">
+                        <input type="hidden" asp-for="First().sap_code">
+                        <input type="hidden" asp-for="First().raw_source">
+                        <input type="hidden" id="status" name="status" value="destroy">
+                        <div class="form-group">
+                            <label>Qty</label>
+                            <div>
+                                <input type="number" step="any" placeholder="Qty" class="form-control" asp-for="First().qty">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Reason</label>
+                            <div>
+                                <input type="text" step="any" placeholder="Please Input Reason" class="form-control" asp-for="First().reason">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Destroy</button>
                     </div>
                 </form>
             </div>

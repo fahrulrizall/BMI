@@ -2,7 +2,7 @@
 @{
     ViewData["Title"] = "Shipment";
 }
-@{int no = ViewBag.no; }
+@{string po = ViewBag.po; }
 
 <div class="content-wrapper">
     <section class="content-header">
@@ -14,7 +14,7 @@
 
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Shipment @no</h3>
+                        <h3 class="card-title">Shipment @po</h3>
                         <div class="card-tools">
                             <a href="#" type="button" class="btn btn-sm btn-default float-right mx-1"
                                data-toggle="modal" data-target="#modal-upload">
@@ -64,7 +64,7 @@
                                                     <a data-toggle="modal" data-target="#modal-default" data-id="@obj.id_shipment_detail" class="btn btn-xs btn-warning update-item-shipment">
                                                         <i class="fa fa-edit" style="color:ghostwhite;outline:thin"></i>
                                                     </a>
-                                                    <button type="submit" onclick="return confirm ('Delete Shipment No @obj.id_shipment_detail');" class="btn btn-xs btn-danger">
+                                                    <button type="submit" onclick="return confirm ('Delete item  @obj.MasterBMIModel.sap_code');" class="btn btn-xs btn-danger">
                                                         <i class="fa fa-trash"></i>
                                                     </button>
                                                 </form>
@@ -102,8 +102,6 @@
                     <form method="POST" asp-action="Update" asp-controller="Shipment">
                         <div class="card-body">
                             <input type="hidden" asp-for="First().id_shipment_detail" />
-                            <input type="hidden" asp-for="First().id_shipment" />
-                            <input type="hidden" asp-for="First().bmi_code" />
                             <div class="form-group">
                                 <label asp-for="First().qty"></label>
                                 <input type="number" class="form-control" asp-for="First().qty"
@@ -137,7 +135,7 @@
             <div class="modal-body mb-2">
                 <form method="POST" asp-controller="Shipment" asp-action="Import" enctype="multipart/form-data">
                     <div class="card-body">
-                        <input type="hidden" id="id" name="id" value="@no">
+                        <input type="hidden" id="po" name="po" value="@po">
                         <div class="form-group input-file">
                             <label for="exampleInputFile">File input</label>
                             <div class="input-group">

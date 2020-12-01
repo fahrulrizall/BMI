@@ -176,6 +176,12 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Fairtrade" asp-action="Index">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Fair Trade</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
                                     <a class="nav-link" asp-controller="Deposit" asp-action="Index">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Deposit</p>
@@ -252,7 +258,7 @@
                  $('#formModalLabel').html('Add New Item');
                  $('.modal-body form').attr('action', '/Adjustment/Create');
                  $('#id_adjustmentFG').val("");
-                 $('#id_pt').val("");
+                 $('#pt').val("");
                  $('#bmi_code').val("");
                  $('#qty').val("");
                  if (status == "destroy") {
@@ -289,8 +295,9 @@
                      method: 'get',
                      dataType: 'json',
                      success: function (data) {
-                         $('#id_destroy').val(data.id_destroy);
-                         $('#id_pt').val(data.id_pt.charAt(0));
+                         console.log(data);
+                         $('#id_adjustmentFG').val(data.id_adjustmentFG);
+                         $('#pt').val(data.poModel.pt);
                          $('#bmi_code').val(data.bmi_code);
                          $('#qty').val(data.qty);
                          $('#raw_source').val(data.raw_source);

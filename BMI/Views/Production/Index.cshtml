@@ -1,4 +1,4 @@
-﻿@model IEnumerable<BMI.Models.PTModel>
+﻿@model IEnumerable<BMI.Models.POModel>
 @{
     ViewData["Title"] = "Production";
 }
@@ -57,6 +57,9 @@
                                         PT
                                     </th>
                                     <th style="width: 4%">
+                                        PO
+                                    </th>
+                                    <th style="width: 4%">
                                         Batch
                                     </th>
                                     <th style="width: 4%">
@@ -75,11 +78,12 @@
                                         <td>
                                             <a  style="font-size:smaller;color:black" asp-controller="Production" asp-action="Detail" asp-route-pt="@obj.pt">@obj.pt</a>
                                         </td>
+                                        <td style="font-size:smaller">@obj.po</td>
                                         <td style="font-size:smaller">@obj.batch</td>
                                         <td style="font-size:smaller">@obj.status</td>
                                         <td>
                                             <a style="font-size:small" class="btn btn-xs btn-warning change-pt"
-                                               data-toggle="modal" data-target="#modal-edit" data-id="@obj.pt">
+                                               data-toggle="modal" data-target="#modal-edit" data-po="@obj.po">
                                                 <i class="fa fa-edit" style="color:ghostwhite;outline:thin"></i>
                                             </a>
                                         </td>
@@ -137,7 +141,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="formModalLabel">Edit Refference</h5>
+                <h5 class="modal-title" id="formModalLabel">Edit Status</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -145,13 +149,7 @@
             <div class="modal-body mb-2">
                 <form method="POST" asp-controller="Production" asp-action="Updatept">
                     <div class="card-body">
-                        <input type="hidden" class="form-control " asp-for="First().id_pt">
-                        <input type="hidden" class="form-control " asp-for="First().pt">
-                        <input type="hidden" class="form-control " asp-for="First().plant">
-                        <div class="form-group">
-                            <label>Batch</label>
-                            <input type="text" class="form-control" asp-for="First().batch">
-                        </div>
+                        <input type="hidden" class="form-control " asp-for="First().po">
                         <div class="form-group">
                             <label>Status</label>
                             <select class="form-control" asp-for="First().status">
