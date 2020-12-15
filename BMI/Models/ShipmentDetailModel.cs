@@ -10,25 +10,24 @@ namespace BMI.Models
     public class ShipmentDetailModel
     {
         [Key]
-        public int id_shipment_detail { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public string id_shipment_detail { get; set; }
 
-        [ForeignKey("POModel")]
-        public string po { get; set; }
-
-        [ForeignKey("MasterBMIModel")]
-        public string bmi_code { get; set; }
-
-        #nullable enable
-        public string? raw_source { get; set; }
-        public string? reff { get; set; }
-        public string? batch { get; set; }
+        [ForeignKey("ShipmentModel")]
+        public string id_shipment { get; set; }
+        public DateTime pdc { get; set; }
+        public string raw_source { get; set; }
+        public string landing_site { get; set; }
         public int qty { get; set; }
-        public float index { get; set; }
-        public string? saved { get; set; }
-        public DateTime created_at { get; set; }
-        public DateTime updated_at { get; set; }
 
-        public POModel? POModel { get; set; }
-        public MasterBMIModel? MasterBMIModel { get; set; }
+        public ShipmentModel ShipmentModel { get; set; }
+        #nullable enable
+        public string? CS_location { get; set; }
+        public string? created_by { get; set; }
+        public string? updated_by { get; set; }
+        public DateTime? created_at { get; set; }
+        public DateTime? updated_at { get; set; }
+
+        
     }
 }

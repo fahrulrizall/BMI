@@ -31,7 +31,7 @@ namespace BMI.Controllers
             var fg = _db.Production_output
                 .Include(k => k.MasterBMIModel)
                 .Include(k => k.POModel)
-                .Where(k => k.POModel.status == "Open")
+                .Where(k => k.POModel.pt_status == "Open")
                 .AsEnumerable()
                 .GroupBy(k => new { k.po, k.bmi_code, k.POModel.batch })
                 .Select(k => new ProductionView
@@ -40,7 +40,7 @@ namespace BMI.Controllers
                     MasterBMIModel = k.Max(m => m.MasterBMIModel),
                     POModel = k.Max(m => m.POModel),
                     total = k.Sum(k => k.qty * 2.204 / k.MasterBMIModel.lbs) -
-                    _db.Shipment_detail.Where(c => c.bmi_code == k.Key.bmi_code && c.batch == k.Key.batch).Sum(a => a.qty) -
+                   // _db.Shipment_detail.Include(a=>a.ShipmentModel).Where(c => c.ShipmentModel.bmi_code == k.Key.bmi_code && c.ShipmentModel.batch == k.Key.batch).Sum(a => a.qty) -
                     _db.AdjustmentFG.Where(c => c.bmi_code == k.Key.bmi_code && c.po == k.Key.po).Sum(a => a.qty)
                 })
                 .Where(k => k.total >= 0.9)

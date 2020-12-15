@@ -28,6 +28,7 @@ namespace BMI.Models
         public string? landing_site { get; set; }
         public string? raw_source { get; set; }
         public string? saved { get; set; }
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime? created_at { get; set; }
         public DateTime? updated_at { get; set; }
         [NotMapped]
@@ -42,5 +43,10 @@ namespace BMI.Models
         public double lbs { get; set; }
         [NotMapped]
         public double rm_cost { get; set; }
+
+        [NotMapped]
+        public int hour { get; set; }
+        [NotMapped]
+        public int minute { get; set; }
     }
 }

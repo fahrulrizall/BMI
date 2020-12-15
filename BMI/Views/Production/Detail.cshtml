@@ -36,9 +36,6 @@
                                         <th style="width: 1%;font-size:small">
                                             Total CS
                                         </th>
-                                        <th style="width: 1%;font-size:small">
-                                            Available CS
-                                        </th>
                                     </tr>
                                 </thead>
                                 @if (Model.ProductionOutputModel.Count() > 0)
@@ -47,11 +44,10 @@
                                         @foreach (var obj in Model.ProductionOutputModel)
                                         {
                                             <tr>
-                                                <td style="font-size:small" id="sumdaily" name="sumdaily" class="btn detail-pt-daily" data-pt="@pt" data-code="@obj.bmi_code" data-sap="@obj.MasterBMIModel.sap_code">@obj.MasterBMIModel.sap_code</td>
+                                                <td style="font-size:small" id="sumdaily" name="sumdaily" class="btn detail-pt-daily" data-pt="@pt" data-sap="@obj.MasterBMIModel.sap_code" data-bmicode="@obj.bmi_code" data-source="@obj.raw_source" >@obj.MasterBMIModel.sap_code</td>
                                                 <td style="font-size:small">@obj.MasterBMIModel.description</td>
-                                                <td style="font-size:small">@((obj.qty_production * 2.204).ToString("0.00"))</td>
-                                                <td style="font-size:small" class="btn adjustment-fg" data-toggle="modal" data-target="#modal-default" data-pt="@pt" data-code="@obj.bmi_code">@Convert.ToInt32(((obj.qty_production * 2.204) / obj.MasterBMIModel.lbs))</td>
-                                                <td style="font-size:small" class="repack-fg" data-toggle="modal" data-target="#modal-default" data-pt="@pt" data-code="@obj.bmi_code">@Convert.ToInt32(obj.available)</td>
+                                                <td style="font-size:small" class="btn adjustment-fg" data-toggle="modal" data-target="#modal-default" data-pt="@pt" data-code="@obj.bmi_code" >@((obj.qty_production * 2.204).ToString("0.00"))</td>
+                                                <td style="font-size:small" class="repack-fg" data-toggle="modal" data-target="#modal-default" data-pt="@pt" data-code="@obj.bmi_code"> @Convert.ToInt32(((obj.qty_production * 2.204) / obj.MasterBMIModel.lbs))</td>
                                             </tr>
                                         }
                                     </tbody>
@@ -61,10 +57,8 @@
                                         <th style="width: 2%;font-size:small" colspan="2">Total</th>
                                         <th style="width: 2%;font-size:small">@(ViewBag.totaloutput)</th>
                                         <th style="width: 2%;font-size:small"></th>
-                                        <th style="width: 2%;font-size:small"></th>
                                     </tr>
                                 </tfoot>
-
                             </table>
                         </div>
                     </div>
@@ -172,13 +166,10 @@
                                             Source
                                         </th>
                                         <th style="width: 2%;font-size:small">
-                                            Landing
+                                            Cases
                                         </th>
                                         <th style="width: 1%;font-size:small">
-                                            Lbs
-                                        </th>
-                                        <th style="width: 1%;font-size:small">
-                                            Total CS
+                                            Available CS
                                         </th>
                                     </tr>
                                 </thead>
@@ -186,7 +177,7 @@
                                 </tbody>
                                 <tfoot>
                                     <tr>
-                                        <th style="width: 2%;font-size:small" colspan="4">Total</th>
+                                        <th style="width: 2%;font-size:small" colspan="3">Total</th>
                                         <th style="width: 2%;font-size:small" id="total" name="total" class="total"></th>
                                     </tr>
                                 </tfoot>
@@ -194,13 +185,6 @@
                         </div>
                     </div>
                 </div>
-
-
-
-
-
-
-
             </div>
 
 

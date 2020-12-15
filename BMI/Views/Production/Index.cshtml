@@ -27,20 +27,7 @@
                         </div>
 
                         <div class="card-tools">
-                            <a href="#" class="btn btn-sm btn-default upload-gr float-right "
-                               data-toggle="modal" data-target="#modal-default">
-                                GR
-                                <i class="fa fa-upload">
-                                </i>
-                            </a>
-                            <a href="#" class="btn btn-sm btn-default upload-gi float-right mx-2"
-                               data-toggle="modal" data-target="#modal-default">
-                                GI
-                                <i class="fa fa-upload">
-                                </i>
-                            </a>
-                            <a href="#" class="btn btn-sm btn-default upload-gr float-right mx-2"
-                               data-toggle="modal" data-target="#modal-default">
+                            <a href="Production/History" class="btn btn-sm btn-default upload-gr float-right mx-2">
                                 <i class="fa fa-history"></i>
                             </a>
                         </div>
@@ -80,7 +67,7 @@
                                         </td>
                                         <td style="font-size:smaller">@obj.po</td>
                                         <td style="font-size:smaller">@obj.batch</td>
-                                        <td style="font-size:smaller">@obj.status</td>
+                                        <td style="font-size:smaller">@obj.pt_status</td>
                                         <td>
                                             <a style="font-size:small" class="btn btn-xs btn-warning change-pt"
                                                data-toggle="modal" data-target="#modal-edit" data-po="@obj.po">
@@ -105,36 +92,7 @@
 </div>
 
 
-<div class="modal fade" id="modal-default">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="formModalLabel">Add New Item</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body mb-2">
-                <form method="POST" asp-controller="Production" asp-action="ImportGI" enctype="multipart/form-data">
-                    <div class="card-body">
-                        <div class="form-group input-file">
-                            <label for="exampleInputFile">File input</label>
-                            <div class="input-group">
-                                <div class="custom-file">
-                                    <input type="file" class="custom-file-input" name="postedFile" id="postedFile" accept="application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
-                                    <label class="custom-file-label" for="exampleInputFile">Choose file</label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary">Upload</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
+
 
 
 <div class="modal fade" id="modal-edit">
@@ -152,7 +110,7 @@
                         <input type="hidden" class="form-control " asp-for="First().po">
                         <div class="form-group">
                             <label>Status</label>
-                            <select class="form-control" asp-for="First().status">
+                            <select class="form-control" asp-for="First().pt_status">
                                 <option>Open</option>
                                 <option>Closed</option>
                             </select>

@@ -21,33 +21,23 @@ namespace BMI.Controllers
 
         public IActionResult Index()
         {
-            //var obj = _db.Repack
-            //    .Include(k=>k.fromMasterBMIModel)
-            //    .Include(k=>k.toMasterBMIModel)
-            //    .Include(k=>k.fromPTModel)
-            //    .Include(k=>k.toPTModel)
-            //    //.AsEnumerable()
-            //    //.GroupBy(k => k.date).First()
-            //    .ToList();
-            //return View(obj);
             return View();
         }
 
-        public IActionResult DateExist(DateTime date)
+        public JsonResult DateExist(DateTime date)
         {
             var unique = _db.Repack.FirstOrDefault(m => m.date.Year == date.Year &&
                                                                     m.date.Month == date.Month &&
                                                                     m.date.Day == date.Day);
             if (unique != null)
             {
-                //Bydate(date);
                 return Json(true);
             }
             return Json(false);
         }
 
 
-        public IActionResult Bydate(DateTime date)
+        public JsonResult Bydate(DateTime date)
         {
             var obj = _db.Repack
                 .Include(k => k.fromMasterBMIModel)
@@ -74,7 +64,7 @@ namespace BMI.Controllers
         }
 
 
-        public IActionResult Getitemrepack(int id)
+        public JsonResult Getitemrepack(int id)
         {
             var obj = _db.Repack.Where(a=>a.id_repack==id).Include(a=> a.fromPOModel).Include(a=>a.toPOModel).First();
             return Json(obj);

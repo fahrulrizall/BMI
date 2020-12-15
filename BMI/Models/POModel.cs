@@ -17,7 +17,7 @@ namespace BMI.Models
         
         public string? plant  { get; set; }
         public string? batch  { get; set; }
-        public string? status  { get; set; }
+        public string? pt_status  { get; set; }
 
         [Display(Name = "Estimated Time of Departure")]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
@@ -45,6 +45,7 @@ namespace BMI.Models
         public string? port_loading { get; set; }
         public string? port_receipt { get; set; }
         public int? shipment_no { get; set; }
+        public string? shipment_status { get; set; }
 
         public string? saved { get; set; }
         public DateTime? created_at { get; set; }

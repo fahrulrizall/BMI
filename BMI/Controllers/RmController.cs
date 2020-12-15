@@ -75,7 +75,7 @@ namespace BMI.Controllers
             return View(list);
         }
 
-        public IActionResult Getdata(string raw_source)
+        public JsonResult Getdata(string raw_source)
         {
             var obj = _db.Rm.Find(raw_source);
             return Json(obj);
@@ -297,7 +297,7 @@ namespace BMI.Controllers
             }
         }
 
-        public IActionResult Getdetailitem(int id)
+        public JsonResult Getdetailitem(int id)
         {
             var obj = _db.Rm_detail.Find(id);
             return Json(obj);

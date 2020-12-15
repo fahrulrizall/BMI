@@ -1,0 +1,161 @@
+﻿@model ProductionView
+@{
+    ViewData["Title"] = "Roleback";
+}
+
+<div class="content-wrapper">
+    <section class="content-header">
+    </section>
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+
+
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title" id="card-title">Production Input</h3>
+                            <a href="#" class="btn btn-sm btn-default upload-gi float-right mx-2"
+                               data-toggle="modal" data-target="#modal-default">
+                                <i class="fa fa-upload">
+                                </i>
+                            </a>
+                        </div>
+
+                        <div class="card-body">
+                            <table id="example3" class="table table-bordered table-striped table-sm">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 2%;font-size:small">
+                                            Created at
+                                        </th>
+                                        <th style="width: 1%;font-size:small">
+                                            Saved by
+                                        </th>
+                                        <th style="width: 1%;font-size:small">
+                                            Action
+                                        </th>
+                                    </tr>
+                                </thead>
+                                @if (Model.ProductionInputModel.Count() > 0)
+                                {
+                                    <tbody>
+                                        @foreach (var obj in Model.ProductionInputModel)
+                                        {
+                                            <tr>
+                                                <td style="font-size:small">@Html.DisplayFor(model => obj.created_at)/ @obj.hour O'Clock/ @obj.minute Minute</td>
+                                                <td style="font-size:small">@obj.saved</td>
+                                                <td>
+                                                    <form asp-controller="Production" asp-action="DeleteGI" asp-route-date="@obj.created_at" asp-route-hour="@obj.hour" asp-route-minute="@obj.minute" method="post">
+                                                        <button type="submit" onclick="return confirm ('Delete Data GI Created on @obj.raw_source');" class="btn btn-xs btn-danger">
+                                                            <i class="fa fa-trash"></i>
+                                                        </button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                }
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Production Output</h3>
+                            <a href="#" class="btn btn-sm btn-default upload-gr float-right "
+                               data-toggle="modal" data-target="#modal-default">
+                                <i class="fa fa-upload">
+                                </i>
+                            </a>
+                        </div>
+
+                        <div class="card-body">
+                            <table id="example1" class="table table-bordered table-striped table-sm">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 2%;font-size:small">
+                                            Created at
+                                        </th>
+                                        <th style="width: 1%;font-size:small">
+                                            Saved by
+                                        </th>
+                                        <th style="width: 1%;font-size:small">
+                                            Action
+                                        </th>
+                                    </tr>
+                                </thead>
+                                @if (Model.ProductionOutputModel.Count() > 0)
+                                {
+                                    <tbody>
+                                        @foreach (var obj in Model.ProductionOutputModel)
+                                        {
+                                            <tr>
+                                                <td style="font-size:small">@Html.DisplayFor(model => obj.created_at)/ @obj.hour O'Clock/ @obj.minute Minute</td>
+                                                <td style="font-size:small">@obj.saved</td>
+                                                <td>
+                                                    <form asp-controller="Production" asp-action="DeleteGR" asp-route-date="@obj.created_at" asp-route-hour="@obj.hour" asp-route-minute="@obj.minute" method="post">
+                                                        <button type="submit" onclick="return confirm ('Delete Data GR Created on @obj.raw_source');" class="btn btn-xs btn-danger">
+                                                            <i class="fa fa-trash"></i>
+                                                        </button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                }
+                            </table>
+                        </div>
+
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+</div>
+
+
+<div class="modal fade" id="modal-default">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="formModalLabel">Add New Item</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body mb-2">
+                <form method="POST" asp-controller="Production" asp-action="ImportGI" enctype="multipart/form-data">
+                    <div class="card-body">
+                        <div class="form-group input-file">
+                            <label for="exampleInputFile">File input</label>
+                            <div class="input-group">
+                                <div class="custom-file">
+                                    <input type="file" class="custom-file-input" name="postedFile" id="postedFile" accept="application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+                                    <label class="custom-file-label" for="exampleInputFile">Choose file</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Upload</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -1,25 +1,39 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
+using System.Data;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using BMI.Models;
 using BMI.Data;
+using Newtonsoft.Json;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Hosting;
+using ExcelDataReader;
+using Microsoft.EntityFrameworkCore.Internal;
+using Microsoft.EntityFrameworkCore.Scaffolding.Metadata;
+using System.Dynamic;
 using BMI.UtilityModels;
-using Microsoft.EntityFrameworkCore;
 
 namespace BMI.Controllers
 {
     public class DepositController : Controller
     {
         private readonly ApplicationDbContext _db;
+        private IWebHostEnvironment Environment;
+        private IConfiguration Configuration;
 
-        public DepositController(ApplicationDbContext db)
+        public DepositController(ApplicationDbContext db, IWebHostEnvironment _environment, IConfiguration _configuration)
         {
             _db = db;
+            Environment = _environment;
+            Configuration = _configuration;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             var model = new DepositView();
             model.otw = _db.Rm_detail
@@ -63,7 +77,7 @@ namespace BMI.Controllers
             var fg = _db.Production_output
                 .Include(k => k.POModel)
                 .Include(k=>k.MasterBMIModel)
-                .Where(k => k.POModel.status == "Open")
+                .Where(k => k.POModel.pt_status == "Open")
                 .AsEnumerable()
                 .GroupBy(k => new { k.POModel ,k.raw_source,k.bmi_code })
                 .Select(k => new ProductionOutputModel
@@ -72,28 +86,11 @@ namespace BMI.Controllers
                     raw_source = k.Key.raw_source,
                     bmi_code = k.Key.bmi_code,
                     MasterBMIModel = k.Max(a=>a.MasterBMIModel),
-                    lbs = k.Sum(k => k.qty * 2.20462),
-                    //cases = k.Sum(k => k.qty * 2.20462 / k.MasterBMIModel.lbs) -
-                    //    _db.Shipment_detail.Where(c => c.bmi_code == k.Key.bmi_code && c.batch == k.Key.POModel.batch).Sum(a => a.qty) -
-                    //    _db.AdjustmentFG.Where(c => c.bmi_code == k.Key.bmi_code && c.po == k.Key.POModel.po).Sum(a => a.qty),
-                    //amount = Convert.ToDouble( ((k.Sum(k => k.qty * 2.204 / k.MasterBMIModel.lbs) -
-                    //    _db.Shipment_detail.Where(c => c.bmi_code == k.Key.bmi_code && c.batch == k.Key.POModel.batch).Sum(a => a.qty) -
-                    //    _db.AdjustmentFG.Where(c => c.bmi_code == k.Key.bmi_code && c.po == k.Key.POModel.po).Sum(a => a.qty)) * k.Max(a=>a.MasterBMIModel.lbs)) *
-                    //    (_db.Rm_detail.Where(a => a.raw_source == k.Key.raw_source).Sum(a => a.qty_received * a.usd_price) /  _db.Rm_detail.Where(a=>a.raw_source == k.Key.raw_source).Sum(a=>a.qty_received))
-                    //    *0.45359237 /  
-                    //    ( _db.Production_output.Where(a=>a.po == k.Key.POModel.po).Sum(a=>a.qty) / (_db.Production_input.Where(a => a.po == k.Key.POModel.po).Sum(a => a.qty)) ) 
-                    //    ),
-                    //amount = Convert.ToDouble(((k.Sum(k => k.qty * 2.20462) -
-                    //    _db.Shipment_detail.Where(c => c.bmi_code == k.Key.bmi_code && c.batch == k.Key.POModel.batch).Sum(a => a.qty) -
-                    //    _db.AdjustmentFG.Where(c => c.bmi_code == k.Key.bmi_code && c.po == k.Key.POModel.po).Sum(a => a.qty)) * k.Max(a => a.MasterBMIModel.lbs)) *
-                    //    ( _db.Rm_detail.Where(a => a.raw_source == k.Key.raw_source).Sum(a => a.qty_received * a.usd_price) / _db.Rm_detail.Where(a => a.raw_source == k.Key.raw_source).Sum(a => a.qty_received))
-                    //    * 0.45359237 /
-                    //    (_db.Production_output.Where(a => a.po == k.Key.POModel.po).Sum(a => a.qty) / (_db.Production_input.Where(a => a.po == k.Key.POModel.po).Sum(a => a.qty))) 
-                    //    ),
+                    lbs = k.Sum(k => k.qty * 2.20462) ,
                     rm_cost = Convert.ToDouble(
                         (_db.Rm_detail.Where(a => a.raw_source == k.Key.raw_source).Sum(a => a.qty_received * a.usd_price) / _db.Rm_detail.Where(a => a.raw_source == k.Key.raw_source).Sum(a => a.qty_received))
                         * 0.45359237 /
-                        (_db.Production_input.Where(a => a.raw_source == k.Key.raw_source).Sum(a => a.qty) / (_db.Rm_detail.Where(a => a.raw_source == k.Key.raw_source).Sum(a => a.qty_received)))
+                        (  (_db.Production_output.Where(a => a.raw_source == k.Key.raw_source).Sum(a => a.qty) + (float?)_db.Pending.Where(a=>a.raw_source == k.Key.raw_source).Sum(a=>a.qty) ?? 0 )  / (_db.Production_input.Where(a => a.raw_source == k.Key.raw_source).Sum(a => a.qty)) )
                         )
                 })
                 .ToList();
@@ -102,7 +99,7 @@ namespace BMI.Controllers
                 .Select(a => new ProductionOutputModel
                 {
                     raw_source = a.Key,
-                    lbs = a.Sum(k=>k.lbs),
+                    lbs = a.Sum(k=>k.lbs) + (float?)_db.Pending.Where(k => k.raw_source == a.Key).Sum(k => k.qty * 2.20462) ?? 0 - (float?)_db.Shipment.Include(a=>a.MasterBMIModel).Where(k => k.raw_source == a.Key).Sum(k => k.qty * k.MasterBMIModel.lbs ) ?? 0,
                     rm_cost = a.Average(k=>k.rm_cost),
                     amount = a.Sum(k=>k.lbs * k.rm_cost)
                 })
@@ -110,7 +107,89 @@ namespace BMI.Controllers
 
             ViewBag.amount = (model.otw.Sum(a => a.total_amount) + model.in_plant.Sum(a => a.total_amount) + model.fg.Sum(a => a.amount)).ToString("0.00");
 
-            return View(model);
+            return await Task.Run(() => View(model));
         }
+
+
+
+        [HttpPost]
+        [AutoValidateAntiforgeryToken]
+        public IActionResult Import(IFormFile postedFile)
+        {
+            if (postedFile != null)
+            {
+                var allowedExtensions = new[] { ".xls", ".xlsx" };
+                string fileName = Path.GetFileName(postedFile.FileName);
+                var checkextension = Path.GetExtension(fileName).ToLower();
+
+                if (allowedExtensions.Contains(checkextension))
+                {
+                    List<PendingModel> Pending = new List<PendingModel>();
+                    string path = Path.Combine(this.Environment.WebRootPath, "Uploads");
+
+                    string filePath = Path.Combine(path, fileName);
+                    using (FileStream stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        postedFile.CopyTo(stream);
+                    }
+                    // For .net core, the next line requires the NuGet package, 
+                    //System.Text.Encoding.CodePages
+                    System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+
+                    using (var stream = System.IO.File.Open(filePath, FileMode.Open, FileAccess.Read))
+                    {
+                        {
+                            IExcelDataReader excelDataReader = ExcelDataReader.ExcelReaderFactory.CreateReader(stream);
+                            if (excelDataReader.FieldCount == 2)
+                            {
+
+                                var conf = new ExcelDataSetConfiguration()
+                                {
+                                    ConfigureDataTable = a => new ExcelDataTableConfiguration
+                                    {
+                                        UseHeaderRow = true
+                                    }
+                                };
+
+                                DataSet dataSet = excelDataReader.AsDataSet(conf);
+                                DataRowCollection row = dataSet.Tables["Pending"].Rows;
+                                List<object> rowDataList = null;
+
+                                foreach (DataRow item in row)
+                                {
+                                    rowDataList = item.ItemArray.ToList();
+                                    Pending.Add(new PendingModel
+                                    {
+                                        raw_source = Convert.ToString(rowDataList[0]),
+                                        qty = Convert.ToSingle(rowDataList[1])
+                                    });
+                                }
+                                _db.Pending.AddRange(Pending);
+                                _db.SaveChanges();
+                                TempData["msg"] = "File Succesfully Uploaded";
+                                TempData["result"] = "success";
+                                return RedirectToAction("Index");
+                            }
+                            TempData["msg"] = "Field Column not Match";
+                            TempData["result"] = "failed";
+                            return RedirectToAction("Index");
+                        }
+                    }
+                }
+                //jika tidak sesuai extension
+                TempData["msg"] = "File Extension must excel file format 'xlsx or xls'";
+                TempData["result"] = "failed";
+                return RedirectToAction("Index");
+            }
+            TempData["msg"] = "File Empty";
+            TempData["result"] = "failed";
+            return RedirectToAction("Index");
+        }
+
+
+
+
+
+
     }
 }

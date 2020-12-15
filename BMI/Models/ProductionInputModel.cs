@@ -29,9 +29,15 @@ namespace BMI.Models
         
         #nullable enable
         public string? saved { get; set; }
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime? created_at { get; set; }
         public DateTime? updated_at { get; set; }
 
-        
+        [NotMapped]
+        public int hour { get; set; }
+        [NotMapped]
+        public int minute { get; set; }
+
+
     }
 }

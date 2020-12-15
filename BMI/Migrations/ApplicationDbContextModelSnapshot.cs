@@ -29,7 +29,7 @@ namespace BMI.Migrations
                     b.Property<string>("bmi_code")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("id_pt")
+                    b.Property<string>("po")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("qty")
@@ -48,7 +48,7 @@ namespace BMI.Migrations
 
                     b.HasIndex("bmi_code");
 
-                    b.HasIndex("id_pt");
+                    b.HasIndex("po");
 
                     b.ToTable("AdjustmentFG");
                 });
@@ -80,6 +80,77 @@ namespace BMI.Migrations
                     b.HasIndex("sap_code");
 
                     b.ToTable("AdjustmentRaw");
+                });
+
+            modelBuilder.Entity("BMI.Models.ApplicationUser", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Department")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(256)")
+                        .HasMaxLength(256);
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasColumnType("nvarchar(256)")
+                        .HasMaxLength(256);
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasColumnType("nvarchar(256)")
+                        .HasMaxLength(256);
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Position")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserName")
+                        .HasColumnType("nvarchar(256)")
+                        .HasMaxLength(256);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedEmail")
+                        .HasName("EmailIndex");
+
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasName("UserNameIndex")
+                        .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.ToTable("AspNetUsers");
                 });
 
             modelBuilder.Entity("BMI.Models.Fgmodel", b =>
@@ -192,29 +263,106 @@ namespace BMI.Migrations
                     b.ToTable("Master_data");
                 });
 
-            modelBuilder.Entity("BMI.Models.PTModel", b =>
+            modelBuilder.Entity("BMI.Models.POModel", b =>
                 {
-                    b.Property<string>("id_pt")
+                    b.Property<string>("po")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("batch")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("container")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("created_at")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("destination")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("document_date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("eta")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("etd")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("fda_no")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("house_bol")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("inv_no")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("master_bol")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ocean_carrier")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("plant")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("po")
+                    b.Property<string>("port_loading")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("pt")
+                    b.Property<string>("port_receipt")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("pt")
                         .HasColumnType("int");
 
-                    b.Property<string>("status")
+                    b.Property<string>("pt_status")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("id_pt");
+                    b.Property<string>("saved")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.ToTable("Pt");
+                    b.Property<string>("seal_no")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("shipment_no")
+                        .HasColumnType("int");
+
+                    b.Property<string>("shipment_status")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("updated_at")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("vessel_name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("voyage_no")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("po");
+
+                    b.ToTable("PO");
+                });
+
+            modelBuilder.Entity("BMI.Models.PendingModel", b =>
+                {
+                    b.Property<int>("id_pending")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<float>("qty")
+                        .HasColumnType("real");
+
+                    b.Property<string>("raw_source")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("id_pending");
+
+                    b.HasIndex("raw_source");
+
+                    b.ToTable("Pending");
                 });
 
             modelBuilder.Entity("BMI.Models.ProductionInputModel", b =>
@@ -224,22 +372,19 @@ namespace BMI.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("bmi_code")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<DateTime?>("created_at")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("date")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("id_pt")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("landing_site")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("po")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("po_bmi")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<float>("qty")
@@ -247,6 +392,9 @@ namespace BMI.Migrations
 
                     b.Property<string>("raw_source")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("sap_code")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("saved")
                         .HasColumnType("nvarchar(max)");
@@ -256,9 +404,9 @@ namespace BMI.Migrations
 
                     b.HasKey("id_productioninput");
 
-                    b.HasIndex("bmi_code");
+                    b.HasIndex("po");
 
-                    b.HasIndex("id_pt");
+                    b.HasIndex("sap_code");
 
                     b.ToTable("Production_input");
                 });
@@ -279,13 +427,13 @@ namespace BMI.Migrations
                     b.Property<DateTime>("date")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("id_pt")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("landing_site")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("po")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("po_bmi")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<float>("qty")
@@ -304,9 +452,45 @@ namespace BMI.Migrations
 
                     b.HasIndex("bmi_code");
 
-                    b.HasIndex("id_pt");
+                    b.HasIndex("po");
 
                     b.ToTable("Production_output");
+                });
+
+            modelBuilder.Entity("BMI.Models.RegisterView", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("ConfirmPassword")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Department")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(100)")
+                        .HasMaxLength(100);
+
+                    b.Property<string>("Position")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("id");
+
+                    b.ToTable("User");
                 });
 
             modelBuilder.Entity("BMI.Models.RepackModel", b =>
@@ -322,7 +506,7 @@ namespace BMI.Migrations
                     b.Property<string>("from_bmi_code")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("from_pt")
+                    b.Property<string>("from_po")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("po")
@@ -340,18 +524,18 @@ namespace BMI.Migrations
                     b.Property<string>("to_bmi_code")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("to_pt")
+                    b.Property<string>("to_po")
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("id_repack");
 
                     b.HasIndex("from_bmi_code");
 
-                    b.HasIndex("from_pt");
+                    b.HasIndex("from_po");
 
                     b.HasIndex("to_bmi_code");
 
-                    b.HasIndex("to_pt");
+                    b.HasIndex("to_po");
 
                     b.ToTable("Repack");
                 });
@@ -442,12 +626,11 @@ namespace BMI.Migrations
                     b.ToTable("Rm");
                 });
 
-            modelBuilder.Entity("BMI.Models.ShipmentDetailModel", b =>
+            modelBuilder.Entity("BMI.Models.ShipmentModel", b =>
                 {
-                    b.Property<int>("id_shipment_detail")
+                    b.Property<string>("id_shipment")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("batch")
                         .HasColumnType("nvarchar(max)");
@@ -458,11 +641,17 @@ namespace BMI.Migrations
                     b.Property<DateTime>("created_at")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("id_shipment")
-                        .HasColumnType("int");
+                    b.Property<string>("created_by")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<float>("index")
                         .HasColumnType("real");
+
+                    b.Property<DateTime>("pdc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("po")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("qty")
                         .HasColumnType("int");
@@ -470,126 +659,150 @@ namespace BMI.Migrations
                     b.Property<string>("raw_source")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("reff")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("saved")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("updated_at")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("id_shipment_detail");
-
-                    b.HasIndex("bmi_code");
-
-                    b.HasIndex("id_shipment");
-
-                    b.ToTable("Shipment_detail");
-                });
-
-            modelBuilder.Entity("BMI.Models.Shipmentmodel", b =>
-                {
-                    b.Property<int>("id_shipment")
-                        .HasColumnType("int");
-
-                    b.Property<string>("container")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("created_at")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("destination")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("document_date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("eta")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("etd")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("fda_no")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("house_bol")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("inv_no")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("master_bol")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ocean_carrier")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("po")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("port_loading")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("port_receipt")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("saved")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("seal_no")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("updated_at")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("vessel_name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("voyage_no")
+                    b.Property<string>("updated_by")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("id_shipment");
 
+                    b.HasIndex("bmi_code");
+
+                    b.HasIndex("po");
+
                     b.ToTable("Shipment");
                 });
 
-            modelBuilder.Entity("BMI.Models.Usermodel", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
-                    b.Property<int>("UserId")
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(256)")
+                        .HasMaxLength(256);
+
+                    b.Property<string>("NormalizedName")
+                        .HasColumnType("nvarchar(256)")
+                        .HasMaxLength(256);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasName("RoleNameIndex")
+                        .HasFilter("[NormalizedName] IS NOT NULL");
+
+                    b.ToTable("AspNetRoles");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+                {
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("ConfirmEmail")
+                    b.Property<string>("ClaimType")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ConfirmPassword")
+                    b.Property<string>("ClaimValue")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("EmailAddress")
+                    b.Property<string>("RoleId")
                         .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetRoleClaims");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("ClaimType")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("FirstName")
-                        .IsRequired()
+                    b.Property<string>("ClaimValue")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("LastName")
+                    b.Property<string>("UserId")
                         .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserClaims");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+                {
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ProviderKey")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Password")
+                    b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("UserId");
+                    b.HasKey("LoginProvider", "ProviderKey");
 
-                    b.ToTable("User");
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserLogins");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("RoleId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetUserRoles");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("UserId", "LoginProvider", "Name");
+
+                    b.ToTable("AspNetUserTokens");
                 });
 
             modelBuilder.Entity("BMI.Models.AdjustmentFGModel", b =>
@@ -598,9 +811,9 @@ namespace BMI.Migrations
                         .WithMany()
                         .HasForeignKey("bmi_code");
 
-                    b.HasOne("BMI.Models.PTModel", "PTModel")
+                    b.HasOne("BMI.Models.POModel", "POModel")
                         .WithMany()
-                        .HasForeignKey("id_pt");
+                        .HasForeignKey("po");
                 });
 
             modelBuilder.Entity("BMI.Models.AdjustmentRawModel", b =>
@@ -613,21 +826,28 @@ namespace BMI.Migrations
             modelBuilder.Entity("BMI.Models.Fgmodel", b =>
                 {
                     b.HasOne("BMI.Models.Masterdatamodel", "Masterdatamodel")
-                        .WithMany("Fgmodels")
+                        .WithMany()
                         .HasForeignKey("sap_code")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("BMI.Models.PendingModel", b =>
+                {
+                    b.HasOne("BMI.Models.RmModel", "RmModel")
+                        .WithMany()
+                        .HasForeignKey("raw_source");
+                });
+
             modelBuilder.Entity("BMI.Models.ProductionInputModel", b =>
                 {
-                    b.HasOne("BMI.Models.MasterBMIModel", "MasterBMIModel")
+                    b.HasOne("BMI.Models.POModel", "POModel")
                         .WithMany()
-                        .HasForeignKey("bmi_code");
+                        .HasForeignKey("po");
 
-                    b.HasOne("BMI.Models.PTModel", "PTModel")
+                    b.HasOne("BMI.Models.Masterdatamodel", "Masterdatamodel")
                         .WithMany()
-                        .HasForeignKey("id_pt");
+                        .HasForeignKey("sap_code");
                 });
 
             modelBuilder.Entity("BMI.Models.ProductionOutputModel", b =>
@@ -636,9 +856,9 @@ namespace BMI.Migrations
                         .WithMany()
                         .HasForeignKey("bmi_code");
 
-                    b.HasOne("BMI.Models.PTModel", "PTModel")
+                    b.HasOne("BMI.Models.POModel", "POModel")
                         .WithMany()
-                        .HasForeignKey("id_pt");
+                        .HasForeignKey("po");
                 });
 
             modelBuilder.Entity("BMI.Models.RepackModel", b =>
@@ -647,17 +867,17 @@ namespace BMI.Migrations
                         .WithMany()
                         .HasForeignKey("from_bmi_code");
 
-                    b.HasOne("BMI.Models.PTModel", "fromPTModel")
+                    b.HasOne("BMI.Models.POModel", "fromPOModel")
                         .WithMany()
-                        .HasForeignKey("from_pt");
+                        .HasForeignKey("from_po");
 
                     b.HasOne("BMI.Models.MasterBMIModel", "toMasterBMIModel")
                         .WithMany()
                         .HasForeignKey("to_bmi_code");
 
-                    b.HasOne("BMI.Models.PTModel", "toPTModel")
+                    b.HasOne("BMI.Models.POModel", "toPOModel")
                         .WithMany()
-                        .HasForeignKey("to_pt");
+                        .HasForeignKey("to_po");
                 });
 
             modelBuilder.Entity("BMI.Models.RmDetailModel", b =>
@@ -667,19 +887,68 @@ namespace BMI.Migrations
                         .HasForeignKey("raw_source");
 
                     b.HasOne("BMI.Models.Masterdatamodel", "Masterdatamodel")
-                        .WithMany("Rmmodels")
+                        .WithMany()
                         .HasForeignKey("sap_code");
                 });
 
-            modelBuilder.Entity("BMI.Models.ShipmentDetailModel", b =>
+            modelBuilder.Entity("BMI.Models.ShipmentModel", b =>
                 {
                     b.HasOne("BMI.Models.MasterBMIModel", "MasterBMIModel")
                         .WithMany()
                         .HasForeignKey("bmi_code");
 
-                    b.HasOne("BMI.Models.Shipmentmodel", "Shipmentmodel")
+                    b.HasOne("BMI.Models.POModel", "POModel")
                         .WithMany()
-                        .HasForeignKey("id_shipment")
+                        .HasForeignKey("po");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+                {
+                    b.HasOne("BMI.Models.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+                {
+                    b.HasOne("BMI.Models.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BMI.Models.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+                {
+                    b.HasOne("BMI.Models.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

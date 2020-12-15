@@ -6,9 +6,11 @@ using BMI.Data;
 using BMI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BMI.Controllers
 {
+    [Authorize]
     public class FgController : Controller
     {
         private readonly ApplicationDbContext _db;
@@ -17,6 +19,8 @@ namespace BMI.Controllers
         {
             _db = db;
         }
+
+  
         public IActionResult Index(int? plant)
         {
             if (plant== 3770 || plant == 3710)
@@ -33,6 +37,7 @@ namespace BMI.Controllers
             return NotFound();
         }
 
+       
         [HttpPost]
         [AutoValidateAntiforgeryToken]
         public IActionResult Create(Fgmodel obj)
@@ -54,7 +59,7 @@ namespace BMI.Controllers
             
         }
 
-        public IActionResult Getdata(int id)
+        public JsonResult Getdata(int id)
         {
             var obj = _db.Fg.Find(id);
             return Json(obj);

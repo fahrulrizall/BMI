@@ -146,12 +146,24 @@
     <Compile Remove="Migrations\20201122021835_add_column_status_on_pt_table.Designer.cs" />
     <Compile Remove="Migrations\20201126144807_change_table_pt_to_po.cs" />
     <Compile Remove="Migrations\20201126144807_change_table_pt_to_po.Designer.cs" />
+    <Compile Remove="Migrations\20201201065911_add_pending_table.cs" />
+    <Compile Remove="Migrations\20201201065911_add_pending_table.Designer.cs" />
+    <Compile Remove="Migrations\20201203120359_add_identity.cs" />
+    <Compile Remove="Migrations\20201203120359_add_identity.Designer.cs" />
+    <Compile Remove="Migrations\20201203120658_add_identity.cs" />
+    <Compile Remove="Migrations\20201203120658_add_identity.Designer.cs" />
+    <Compile Remove="Migrations\20201204064614_add_extend_identity.cs" />
+    <Compile Remove="Migrations\20201204064614_add_extend_identity.Designer.cs" />
+    <Compile Remove="Migrations\20201210021602_change_database.cs" />
+    <Compile Remove="Migrations\20201210021602_change_database.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="ExcelDataReader" Version="3.6.0" />
     <PackageReference Include="ExcelDataReader.DataSet" Version="3.6.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authorization.Policy" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.2.7" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.8" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.8" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.8" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.8">

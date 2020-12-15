@@ -1,0 +1,63 @@
+﻿@model List<UserRoleView>
+@{
+    ViewData["Title"] = "Role Manager";
+}
+<div class="content-wrapper">
+    <section class="content-header">
+    </section>
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <form asp-action="UpdateUserRole" asp-controller="Administration" asp-route-id="@ViewBag.id" method="post">
+                        <div class="card-header">
+                            <h3 class="card-title">Select User Model</h3>
+                            <div class="card-tools ">
+                                <button class="btn btn-sm float-right mx-1" type="submit" >
+                                    <i class="fa fa-save">
+                                     </i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="card-body">
+                            <table id="example1" class="table table-bordered table-striped table-sm table-responsive">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 20%;font-size:small">
+                                            Email
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @for (int i = 0; i < Model.Count; i++)
+                                    {
+                                        <tr>
+                                            <td style="font-size:small">
+                                                <div class="custom-control custom-checkbox">
+                                                    <input type="hidden" asp-for="@Model[i].UserId" />
+                                                    <input type="hidden" asp-for="@Model[i].UserName" />
+                                                    <input class="form-check-input" type="checkbox" asp-for="@Model[i].IsSelected">
+                                                    <label asp-for="@Model[i].IsSelected" class="form-check-label">@Model[i].UserName</label>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </form>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+        </div>
+        <!-- /.row -->
+    </section>
+</div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

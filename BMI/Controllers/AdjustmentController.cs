@@ -24,16 +24,21 @@ namespace BMI.Controllers
             return View();
         }
 
-        public IActionResult Adjustment(string status)
+        public async Task< IActionResult> Adjustment(string status)
         {
             var obj = _db.AdjustmentFG
                 .Where(k => k.status == status)
                 .Include(k => k.MasterBMIModel)
                 .Include(k => k.POModel)
                 .ToList();
-            ViewBag.status = status;
-            TempData["status"] = status;
-            return View(obj);
+
+            if (obj != null) {
+                ViewBag.status = status;
+                TempData["status"] = status;
+                return await Task.Run(()=> View(obj));
+            }
+            return await Task.Run(() => View("NotFound"));
+            
         }
 
 
@@ -79,13 +84,13 @@ namespace BMI.Controllers
         }
 
 
-        public IActionResult Getdataitem(int id)
+        public JsonResult Getdataitem(int id)
         {
             var obj = _db.AdjustmentFG.Include(a=>a.POModel).Where(a=>a.id_adjustmentFG == id).First();
             return Json(obj);
         }
 
-        public IActionResult Getitemraw(int id)
+        public JsonResult Getitemraw(int id)
         {
             var obj = _db.AdjustmentRaw.Find(id);
             return Json(obj);

@@ -1,0 +1,149 @@
+﻿@model IEnumerable<BMI.Models.MasterBMIModel>
+@{
+    ViewData["Title"] = "Master BMI";
+}
+<div class="content-wrapper">
+    <section class="content-header">
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-12">
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">BMI Master List</h3>
+                        <div class="card-tools ">
+                            <button class="btn btn-sm float-right mx-1 add-master-bmi"
+                                    data-toggle="modal" data-target="#modal-default">
+                                <i class="fa fa-plus">
+                                </i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <table id="example1" class="table table-bordered table-striped table-sm">
+                            <thead>
+                                <tr>
+                                    <th style="width: 7%;font-size:small">
+                                        BMI Code
+                                    </th>
+                                    <th style="width: 7%;font-size:small">
+                                        SAP Code
+                                    </th>
+                                    <th style="width: 23%;font-size:small">
+                                        Description
+                                    </th>
+                                    <th style="width: 3%;font-size:small">
+                                        Lbs
+                                    </th>
+                                    <th style="width: 8%;font-size:small">
+                                        Category
+                                    </th>
+                                    <th style="width: 3%;font-size:small">
+                                        Action
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var obj in Model)
+                                {
+                                    <tr>
+                                        <td class="text text-sm">@obj.bmi_code</td>
+                                        <td style="font-size:small">@obj.sap_code</td>
+                                        <td style="font-size:small">@obj.description</td>
+                                        <td style="font-size:small">@obj.lbs</td>
+                                        <td style="font-size:small">@obj.daily_category</td>
+                                        <td>
+                                            <form asp-controller="MasterBMI" asp-route-id="@obj.bmi_code" asp-action="Delete" method="post">
+                                                <a data-toggle="modal" data-target="#modal-default" data-id="@obj.bmi_code" class="btn btn-xs btn-warning update-master-bmi">
+                                                    <i class="fa fa-edit" style="color:whitesmoke;outline:thin">
+                                                    </i>
+                                                </a>
+                                                <button type="submit" onclick="return confirm ('Delete Item @obj.bmi_code');" class="btn btn-xs btn-danger">
+                                                    <i class="fa fa-trash">
+                                                    </i>
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </section>
+    <!-- /.content -->
+</div>
+
+
+<div class="modal fade" id="modal-default">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="formModalLabel">Add Item</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body mb-2">
+                <form method="POST" asp-action="Create">
+                    <div class="card-body">
+                        <div class="form-group bmi-code">
+                            <label>BMI Code</label>
+                            <input type="text" class="form-control" asp-for="First().bmi_code"
+                                   placeholder="BMI Code">
+                            <span asp-validation-for="First().bmi_code" class="text-danger" style="font-size:smaller"> </span>
+                        </div>
+                        <div class="form-group">
+                            <label>SAP Code</label>
+                            <input type="number" step="any" class="form-control" asp-for="First().sap_code"
+                                   placeholder="SAP Code">
+                            <span asp-validation-for="First().sap_code" class="text-danger" style="font-size:smaller"> </span>
+                        </div>
+                        <div class="form-group">
+                            <label>Description</label>
+                            <input type="text" class="form-control" asp-for="First().description"
+                                   placeholder="Description">
+                            <span asp-validation-for="First().description" class="text-danger" style="font-size:smaller"> </span>
+                        </div>
+                        <div class="form-group">
+                            <label>Lbs</label>
+                            <input type="number" step="any" class="form-control" asp-for="First().lbs"
+                                   placeholder="Lbs">
+                            <span asp-validation-for="First().lbs" class="text-danger" style="font-size:smaller"> </span>
+                        </div>
+                        <div class="form-group">
+                            <label>Category</label>
+                            <select class="form-control" asp-for="First().daily_category">
+                                <option>Saku</option>
+                                <option>Loin</option>
+                                <option>10, 8, 6 Oz Steaks</option>
+                                <option>4 Oz Steak</option>
+                                <option>Poke & By Products</option>
+                                <option>Raw Material</option>
+                            </select>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" value="Create" class="btn btn-primary">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- /.modal-content -->
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

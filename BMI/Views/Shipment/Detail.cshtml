@@ -1,4 +1,4 @@
-﻿@model IEnumerable<BMI.Models.ShipmentDetailModel>
+﻿@model IEnumerable<BMI.Models.ShipmentModel>
 @{
     ViewData["Title"] = "Shipment";
 }
@@ -10,7 +10,9 @@
     <!-- Main content -->
     <section class="content">
         <div class="row">
-            <div class="col-12">
+
+
+            <div class="col-md-12" id="shipment-table">
 
                 <div class="card">
                     <div class="card-header">
@@ -25,25 +27,22 @@
                     </div>
 
                     <div class="card-body">
-                        <table id="example1" class="table table-bordered table-striped table-sm">
+                        <table class="table table-bordered table-striped table-sm">
                             <thead>
                                 <tr>
                                     <th style="width: 3%;font-size:small">
-                                        BMI Code
-                                    </th>
-                                    <th style="width: 3%;font-size:small">
                                         SAP Code
                                     </th>
-                                    <th style="width: 15%;font-size:small">
+                                    <th style="width: 18%;font-size:small">
                                         Description
                                     </th>
-                                    <th style="width: 5%;font-size:small">
+                                    <th style="width: 2%;font-size:small">
                                         Qty
                                     </th>
-                                    <th style="width: 6%;font-size:small">
+                                    <th style="width: 3%;font-size:small">
                                         Batch
                                     </th>
-                                    <th style="width: 5%;font-size:small">
+                                    <th style="width: 2%;font-size:small">
                                         Action
                                     </th>
                                 </tr>
@@ -54,14 +53,13 @@
                                     @foreach (var obj in Model)
                                     {
                                         <tr>
-                                            <td style="font-size:small">@obj.bmi_code</td>
-                                            <td style="font-size:small">@obj.MasterBMIModel.sap_code</td>
+                                            <td style="font-size:small" class="btn shipment-item-detail" data-code="@obj.bmi_code" data-po="@po" data-batch="@obj.batch">@obj.MasterBMIModel.sap_code</td>
                                             <td style="font-size:small">@obj.MasterBMIModel.description</td>
                                             <td style="font-size:small">@obj.qty</td>
                                             <td style="font-size:small">@obj.batch</td>
                                             <td>
-                                                <form asp-controller="Shipment" asp-route-id="@obj.id_shipment_detail" asp-action="Delete" method="post">
-                                                    <a data-toggle="modal" data-target="#modal-default" data-id="@obj.id_shipment_detail" class="btn btn-xs btn-warning update-item-shipment">
+                                                <form asp-controller="Shipment" asp-route-id="@obj.id_shipment" asp-action="Delete" method="post">
+                                                    <a data-toggle="modal" data-target="#modal-default" data-batch="@obj.batch" data-id="@obj.id_shipment" data-code="@obj.bmi_code" data-lbs="@obj.MasterBMIModel.lbs" class="btn btn-xs btn-warning update-item-shipment">
                                                         <i class="fa fa-edit" style="color:ghostwhite;outline:thin"></i>
                                                     </a>
                                                     <button type="submit" onclick="return confirm ('Delete item  @obj.MasterBMIModel.sap_code');" class="btn btn-xs btn-danger">
@@ -79,6 +77,47 @@
                 </div>
                 <!-- /.card -->
             </div>
+
+                <div class="col-md-5 detail-pdc">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title" id="card-title">Detail</h3>
+                            <button type="button" class="btn btn-tool float-right close-detail-pdc">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <table class="table table-bordered table-striped table-sm">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 3%;font-size:small">
+                                            PDC
+                                        </th>
+                                        <th style="width: 2%;font-size:small">
+                                            Source
+                                        </th>
+                                        <th style="width: 2%;font-size:small">
+                                            Cases
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody id="table-detail-pdc" name="table-detail-pdc">
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th style="width: 2%;font-size:small" colspan="2">Total</th>
+                                        <th style="width: 2%;font-size:small" id="total" name="total" class="total"></th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+            
             <!-- /.col -->
         </div>
         <!-- /.row -->
@@ -101,18 +140,28 @@
                 <div class="modal-body mb-2">
                     <form method="POST" asp-action="Update" asp-controller="Shipment">
                         <div class="card-body">
-                            <input type="hidden" asp-for="First().id_shipment_detail" />
-                            <div class="form-group">
-                                <label asp-for="First().qty"></label>
-                                <input type="number" class="form-control" asp-for="First().qty"
-                                       placeholder="PO Number">
-                                <span asp-validation-for="First().qty" class="text-danger" style="font-size:smaller"> </span>
-                            </div>
-                            <div class="form-group">
-                                <label asp-for="First().batch"></label>
-                                <input type="text" class="form-control" asp-for="First().batch">
+                            <input type="hidden" asp-for="First().id_shipment" />
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label>Production Date</label>
+                                        <div class="form-group pdc">
+                                            <div class="custom-control custom-checkbox">
+                                                <input class="custom-control-input" type="checkbox" id="aaa">
+                                                <label for="aaa" class="custom-control-label">12-12-20 - HS20_B14 - MTW</label>
+                                                <input type="number" class="form-control-sm" id="qty" name="qty">
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input class="custom-control-input" type="checkbox" id="bbb">
+                                                <label for="bbb" class="custom-control-label">12-12-20 - HS20_B14 - MTW</label>
+                                                <input type="number" class="form-control-sm" id="qty" name="qty">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
+
                         <div class="modal-footer">
                             <button type="submit" value="Create" class="btn btn-primary">Add</button>
                         </div>

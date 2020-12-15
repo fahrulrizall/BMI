@@ -1,0 +1,76 @@
+﻿@model RegisterView
+@{
+    ViewData["Title"] = "List";
+}
+<div class="content-wrapper">
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>3770 Finished Good Item</h1>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-12">
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Finish Good List</h3>
+                        <!-- <div class="card-tools">
+                        <a href="#" type="button" class="btn btn-default float-right upload-file "
+                        data-toggle="modal" data-target="#modal-default">Upload File</a>
+                        </div> -->
+                        <div class="card-tools">
+                            <a href="#" type="button" class="btn btn-default float-right mx-1 tombolTambahDataFgs"
+                               data-toggle="modal" data-target="#modal-default">Add Item</a>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <table id="example1" class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th style="width: 8%">
+                                        SAP Code
+                                    </th>
+                                    <th style="width: 25%">
+                                        Description
+                                    </th>
+                                    <th style="width: 10%">
+                                        Action
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @*@foreach (var obj in Model) {
+                                <tr>
+                                    <td>@obj.FirstName</td>
+                                    <td>@obj.LastName</td>
+                                    <td>
+                                        <form action="" method="post" class="d-inline">
+                                           
+                                            <a href="" class="btn btn-sm btn-primary tampilModalUbahFgs"
+                                               data-toggle="modal" data-target="#modal-default" data-id="">Edit</a>
+                                            <button type="submit" onclick="" class="btn btn-sm btn-danger">Hapus</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                }*@
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </section>
+    <!-- /.content -->
+</div>

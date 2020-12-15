@@ -1,0 +1,115 @@
+﻿@model IEnumerable<IdentityRole>
+@{
+    ViewData["Title"] = "Role Manager";
+}
+<div class="content-wrapper">
+    <section class="content-header">
+    </section>
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-md-5">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Role Model</h3>
+                        <div class="card-tools ">
+                            <button class="btn btn-sm float-right mx-1 add-new-role"
+                                    data-toggle="modal" data-target="#modal-default">
+                                <i class="fa fa-plus">
+                                </i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <table id="example1" class="table table-bordered table-striped table-sm table-responsive">
+                            <thead>
+                                <tr>
+                                    <th style="width: 20%;font-size:small">
+                                        Name
+                                    </th>
+                                    <th style="width: 5%;font-size:small">
+                                        Action
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var obj in Model)
+                                {
+                                    <tr>
+                                        <td style="font-size:small">@obj.Name </td>
+                                        <td>
+                                            <form asp-controller="Administration" asp-route-id="@obj.Id" asp-action="DeleteRole" method="post">
+                                                <a data-toggle="modal" data-target="#modal-default" data-id="@obj.Id" class="btn btn-xs btn-warning update-role">
+                                                    <i class="fa fa-edit" style="color:whitesmoke;outline:thin">
+                                                    </i>
+                                                </a>
+                                                @*<a data-toggle="modal" data-target="#modal-default" data-id="@obj.Id" class="btn btn-xs btn-primary update-role user-role">*@
+                                                <a asp-action="GetUserRole" asp-controller="Administration" asp-route-id="@obj.Id" class="btn btn-xs btn-primary">
+                                                    <i class="fa fa-users" style="color:whitesmoke;outline:thin">
+                                                    </i>
+                                                </a>
+                                                <button type="submit" onclick="return confirm ('Delete Role @obj.Name');" class="btn btn-xs btn-danger">
+                                                    <i class="fa fa-trash">
+                                                    </i>
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+
+
+
+
+        </div>
+        <!-- /.row -->
+    </section>
+</div>
+
+
+<div class="modal fade" id="modal-default">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="formModalLabel">Add New Role</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body mb-2">
+                <form method="POST" asp-controller="Administration" asp-action="CreateRole">
+                    <div class="card-body">
+                        <input type="hidden" class="form-control" id="Id" name="Id">
+                        <div class="form-group RoleName">
+                            <label> Name</label>
+                            <input type="text" class="form-control RoleName" id="RoleName" name="RoleName"
+                                   placeholder="Role Name">
+                        </div>
+                        @*<div class="form-group user-list">
+                            <div class="custom-control custom-checkbox">
+                                <input class="custom-control-input" type="checkbox" id="aaa">
+                                <label for="aaa" class="custom-control-label">Custom Checkbox</label>
+                            </div>
+                        </div>*@
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" value="Create" class="btn btn-primary">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

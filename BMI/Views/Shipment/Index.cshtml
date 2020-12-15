@@ -26,6 +26,9 @@
                                     <th style="width: 3%;font-size:small">
                                         PO
                                     </th>
+                                    <th style="width: 3%;font-size:small">
+                                        No
+                                    </th>
                                     <th style="width: 5%;font-size:small">
                                         ETD
                                     </th>
@@ -37,9 +40,6 @@
                                     </th>
                                     <th style="width: 8%;font-size:small">
                                         Container
-                                    </th>
-                                    <th style="width: 8%;font-size:small">
-                                        BoL
                                     </th>
                                     <th style="width: 8%;font-size:small">
                                         Vessel
@@ -57,32 +57,32 @@
                                 <tbody>
                                     @foreach (var obj in Model)
                                     {
-                                        <tr>
-                                            <td>
-                                                <a style="font-size:small;color:black" asp-controller="Shipment" asp-action="Detail" asp-route-po="@obj.po">
-                                                    @Html.DisplayFor(modelItem => obj.po)
+                                    <tr>
+                                        <td>
+                                            <a style="font-size:small;color:black" asp-controller="Shipment" asp-action="Detail" asp-route-po="@obj.po">
+                                                @Html.DisplayFor(modelItem => obj.po)
+                                            </a>
+                                        </td>
+                                        <td style="font-size:small">@obj.shipment_no</td>
+                                        <td style="font-size:small">@Html.DisplayFor(modelItem => obj.etd)</td>
+                                        <td style="font-size:small">@Html.DisplayFor(modelItem => obj.eta)</td>
+                                        <td style="font-size:small">@obj.ocean_carrier</td>
+                                        <td style="font-size:small">@obj.container</td>
+                                        <td style="font-size:small">@obj.vessel_name</td>
+                                        <td style="font-size:small">@obj.destination</td>
+                                        <td>
+                                            <form asp-controller="Shipment" asp-route-id="@obj.po" asp-action="Delete" method="post">
+                                                <a data-toggle="modal" data-target="#modal-default" data-po="@obj.po" class="btn btn-xs btn-warning update-shipment">
+                                                    <i class="fa fa-edit" style="color:ghostwhite;outline:thin">
+                                                    </i>
                                                 </a>
-                                            </td>
-                                            <td style="font-size:small">@Html.DisplayFor(modelItem => obj.etd)</td>
-                                            <td style="font-size:small">@Html.DisplayFor(modelItem => obj.eta)</td>
-                                            <td style="font-size:small">@obj.ocean_carrier</td>
-                                            <td style="font-size:small">@obj.container</td>
-                                            <td style="font-size:small">@obj.house_bol</td>
-                                            <td style="font-size:small">@obj.vessel_name</td>
-                                            <td style="font-size:small">@obj.destination</td>
-                                            <td>
-                                                <form asp-controller="Shipment" asp-route-id="@obj.po" asp-action="Delete" method="post">
-                                                    <a data-toggle="modal" data-target="#modal-default" data-po="@obj.po" class="btn btn-xs btn-warning update-shipment">
-                                                        <i class="fa fa-edit" style="color:ghostwhite;outline:thin">
-                                                        </i>
-                                                    </a>
-                                                    @*<button type="submit" onclick="return confirm ('Delete Shipment No @obj.po');" class="btn btn-xs btn-danger">
-                                                        <i class="fa fa-trash">
-                                                        </i>
-                                                    </button>*@
-                                                </form>
-                                            </td>
-                                        </tr>
+                                                @*<button type="submit" onclick="return confirm ('Delete Shipment No @obj.po');" class="btn btn-xs btn-danger">
+                    <i class="fa fa-trash">
+                    </i>
+                </button>*@
+                                            </form>
+                                        </td>
+                                    </tr>
                                     }
                                 </tbody>
                             }
@@ -115,12 +115,12 @@
                         <div class="card-body">
                             <input type="hidden" asp-for="First().updated_at" value="@DateTime.Now" />
                             <input type="hidden" asp-for="First().po" />
-                            @*<div class="form-group row">
+                            <div class="form-group row">
                                 <label class="col-sm-3 col-form-label shipment-no-label">Shipment No</label>
                                 <input type="number" class="col-sm-9 form-control shipment-no" asp-for="First().shipment_no"
                                        placeholder="Shipment Number">
                                 <span asp-validation-for="First().shipment_no" class="text-danger" style="font-size:smaller"> </span>
-                            </div>*@
+                            </div>
                             <div class="form-group row">
                                 <label class="col-sm-3">ETD</label>
                                 <input type="date" class="col-sm-9 form-control" asp-for="First().etd">

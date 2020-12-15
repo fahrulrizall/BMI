@@ -30,59 +30,24 @@ namespace BMI.Controllers
         }
 
 
-        public IActionResult Index()
+        public async Task< IActionResult> Index()
         {
-            var list = _db.PO.OrderByDescending(e => e.po).ToList();
-            return View(list);
+            var list = _db.PO
+                .OrderByDescending(e => e.shipment_no)
+                .ToList();
+            return await Task.Run(()=> View(list)) ;
         }
 
-        //[HttpPost]
-        //public IActionResult IdExist(Shipmentmodel shipmentmodel)
-        //{
-        //    var unique = _db.Shipment.SingleOrDefault(m => m.id_shipment == shipmentmodel.id_shipment);
-        //    if (unique != null)
-        //    {
-        //        return Json(false);
-        //    }
-        //    return Json(true);
-        //}
-
-        [HttpPost]
-        public IActionResult POExist(POModel POModel)
-        {
-            var unique = _db.PO.SingleOrDefault(m => m.po == POModel.po);
-            if (unique != null)
-            {
-                return Json(false);
-            }
-            return Json(true);
-        }
 
         [HttpPost]
         [AutoValidateAntiforgeryToken]
-        public IActionResult Create(POModel POModel)
-        {
-            if (ModelState.IsValid)
-            {
-                _db.PO.Add(POModel);
-                _db.SaveChanges();
-                TempData["msg"] = "New Shipment Succesfully Added";
-                TempData["result"] = "success";
-                return Redirect(Request.Headers["Referer"].ToString());
-            }
-            TempData["msg"] = "New Shipment Failed to Added";
-            TempData["result"] = "failed";
-            return Redirect(Request.Headers["Referer"].ToString());
-        }
-
-        [HttpPost]
-        [AutoValidateAntiforgeryToken]
-        public IActionResult Update(POModel POModel)
+        public async Task< IActionResult> Update(POModel POModel)
         {
             if (ModelState.IsValid)
             {
                 var po = _db.PO.Find(POModel.po);
 
+                po.shipment_no = POModel.shipment_no;
                 po.etd = POModel.etd;
                 po.eta = POModel.eta;
                 po.document_date = POModel.document_date;
@@ -102,45 +67,55 @@ namespace BMI.Controllers
 
                 TempData["msg"] = "Shipment Succesfully Updated";
                 TempData["result"] = "success";
-                return Redirect(Request.Headers["Referer"].ToString());
+                return await Task.Run(()=> Redirect(Request.Headers["Referer"].ToString()));
             }
             TempData["msg"] = "Shipment Failed to Updated";
             TempData["result"] = "failed";
-            return Redirect(Request.Headers["Referer"].ToString());
+            return await Task.Run(() => Redirect(Request.Headers["Referer"].ToString()));
         }
 
         [HttpPost]
         [AutoValidateAntiforgeryToken]
-        public IActionResult Delete(int id)
+        public async Task< IActionResult> Delete(string id)
         {
-            var obj = _db.Shipment_detail.Find(id);
-            _db.Shipment_detail.Remove(obj);
-            _db.SaveChanges();
-            TempData["msg"] = "Shipment Succesfully Deleted";
-            TempData["result"] = "success";
-            return Redirect(Request.Headers["Referer"].ToString());
+            var obj = _db.Shipment.Find(id);
+            if (obj != null) {
+                _db.Shipment.Remove(obj);
+                _db.SaveChanges();
+                TempData["msg"] = "Shipment Succesfully Deleted";
+                TempData["result"] = "success";
+                return await Task.Run(() => Redirect(Request.Headers["Referer"].ToString()));
+            }
+            TempData["msg"] = "Shipment Failed to Delete";
+            TempData["result"] = "failed";
+            return await Task.Run(() => Redirect(Request.Headers["Referer"].ToString()));
+
         }
 
-        public IActionResult Getshipment(string po)
+        public async Task<JsonResult> Getshipment(string po)
         {
             var obj = _db.PO.Find(po);
-            return Json(obj);
+            return await Task.Run(()=> Json(obj));
         }
 
-        public IActionResult Detail(string po)
+        public async Task< IActionResult> Detail(string po)
         {
             ViewBag.po = po;
-            var obj = _db.Shipment_detail
+            var obj = _db.Shipment
                 .Where(a => a.po == po)
                 .Include(c => c.MasterBMIModel)
                 .ToList();
-            return View(obj);
+            if (obj != null)
+            {
+                return await Task.Run(() => View(obj));
+            }
+            return await Task.Run(() => View("NotFound"));
         }
 
 
         [HttpPost]
         [AutoValidateAntiforgeryToken]
-        public IActionResult Import(IFormFile postedFile, string po )
+        public async Task<IActionResult> Import(IFormFile postedFile, string po)
         {
             if (postedFile != null)
             {
@@ -150,7 +125,7 @@ namespace BMI.Controllers
 
                 if (allowedExtensions.Contains(checkextension))
                 {
-                    List<ShipmentDetailModel> shipmentdata = new List<ShipmentDetailModel>();
+                    List<ShipmentModel> shipmentdata = new List<ShipmentModel>();
                     string path = Path.Combine(this.Environment.WebRootPath, "Uploads");
 
                     string filePath = Path.Combine(path, fileName);
@@ -167,7 +142,7 @@ namespace BMI.Controllers
                     {
                         {
                             IExcelDataReader excelDataReader = ExcelDataReader.ExcelReaderFactory.CreateReader(stream);
-                            if (excelDataReader.FieldCount == 4)
+                            if (excelDataReader.FieldCount == 5)
                             {
 
                                 var conf = new ExcelDataSetConfiguration()
@@ -185,71 +160,70 @@ namespace BMI.Controllers
                                 foreach (DataRow item in row)
                                 {
                                     rowDataList = item.ItemArray.ToList();
-                                    shipmentdata.Add(new ShipmentDetailModel
+                                    //    .ToList();
+                                    shipmentdata.Add(new ShipmentModel
                                     {
                                         po = po,
-                                        bmi_code = Convert.ToString(rowDataList[0]),
-                                        batch = Convert.ToString(rowDataList[1]),
-                                        qty = Convert.ToInt32(rowDataList[2]),
-                                        index = Convert.ToSingle(rowDataList[3]),
+                                        pdc = Convert.ToDateTime(rowDataList[0]),
+                                        bmi_code = Convert.ToString(rowDataList[1]),
+                                        batch = Convert.ToString(rowDataList[2]),
+                                        qty = Convert.ToInt32(rowDataList[3]),
+                                        raw_source = Convert.ToString(rowDataList[4]),
                                         created_at = DateTime.Now
                                     });
                                 }
-                                _db.Shipment_detail.AddRange(shipmentdata);
+                                _db.Shipment.AddRange(shipmentdata);
                                 _db.SaveChanges();
                                 TempData["msg"] = "File Succesfully Uploaded";
                                 TempData["result"] = "success";
-                                return Redirect(Request.Headers["Referer"].ToString());
+                                return await Task.Run(() => Redirect(Request.Headers["Referer"].ToString()));
                             }
                             //jika kolom lebih besar dari 4
                             TempData["msg"] = "Field Column not Match";
                             TempData["result"] = "failed";
-                            return Redirect(Request.Headers["Referer"].ToString());
+                            return await Task.Run(() => Redirect(Request.Headers["Referer"].ToString()));
                         }
                     }
                 }
                 //jika tidak sesuai extension
                 TempData["msg"] = "Field Extension must excel file format 'xlsx or xls'";
                 TempData["result"] = "failed";
-                return Redirect(Request.Headers["Referer"].ToString());
+                return await Task.Run(() => Redirect(Request.Headers["Referer"].ToString()));
 
             }
             //jika file kosong
             TempData["msg"] = "File Empty";
             TempData["result"] = "failed";
-            return Redirect(Request.Headers["Referer"].ToString());
-        }
-
-        public IActionResult Getitem(int id)
-        {
-            var obj = _db.Shipment_detail.Find(id);
-            return Json(obj);
+            return await Task.Run(() => Redirect(Request.Headers["Referer"].ToString()));
         }
 
 
-        public IActionResult Updateitem(ShipmentDetailModel shipmentDetailModel)
+        public async Task<IActionResult> Updateitem(ShipmentModel shipmentModel)
         {
             if (ModelState.IsValid)
             {
-                var shipment = _db.Shipment_detail.Find(shipmentDetailModel.id_shipment_detail);
-                shipment.qty = shipmentDetailModel.qty;
-                shipment.batch = shipmentDetailModel.batch;
+                var shipment = _db.Shipment.Find(shipmentModel.id_shipment);
+                shipment.batch = shipment.batch;
                 shipment.updated_at = DateTime.Now;
                 _db.Entry(shipment).State = EntityState.Modified;
                 _db.SaveChanges();
                 TempData["msg"] = "Item Succesfully Updated";
                 TempData["result"] = "success";
-                return Redirect(Request.Headers["Referer"].ToString());
+                return await Task.Run (()=> Redirect(Request.Headers["Referer"].ToString()));
             }
             TempData["msg"] = "Item Failed to Update";
             TempData["result"] = "failed";
-            return Redirect(Request.Headers["Referer"].ToString());
+            return await Task.Run(() => Redirect(Request.Headers["Referer"].ToString()));
         }
 
-
-
-
-
+        public async Task<JsonResult> Getpdc(string batch, string po, string code )
+        {
+            var obj = _db.Shipment
+                .Where(a => a.po == po && a.bmi_code == code && a.batch == batch)
+                .Select(a => new { a.pdc,a.raw_source,a.qty})
+                .ToList();
+            return await Task.Run(() => Json(obj));
+        }
 
 
 

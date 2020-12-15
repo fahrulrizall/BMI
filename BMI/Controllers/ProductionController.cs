@@ -33,7 +33,7 @@ namespace BMI.Controllers
             Configuration = _configuration;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             var obj = _db.PO
                 .Where(a => a.plant == "3700" && a.pt != null)
@@ -41,34 +41,34 @@ namespace BMI.Controllers
                     pt = a.pt,
                     po = a.po,
                     batch = a.batch,
-                    status = a.status
+                    pt_status = a.pt_status
                 })
                 .OrderByDescending(a => a.pt).ToList();
-            return View(obj);
+            return await Task.Run(()=>View(obj));
         }
 
 
-        public IActionResult Getptdata(string po)
+        public async Task<JsonResult> Getptdata(string po)
         {
             var obj = _db.PO.Find(po);
-            return Json(obj);
+            return await Task.Run(()=> Json(obj));
         }
 
-        public IActionResult Updatept(POModel POModel)
+        public async Task<IActionResult> Updatept(POModel POModel)
         {
-            var po = new POModel() { po = POModel.po, status = POModel.status };
+            var po = new POModel() { po = POModel.po, pt_status = POModel.pt_status };
             _db.PO.Attach(po);
-            _db.Entry(po).Property(x => x.status).IsModified = true; 
+            _db.Entry(po).Property(x => x.pt_status).IsModified = true; 
             _db.SaveChanges();
             TempData["msg"] = "File Succesfully Updated";
             TempData["result"] = "success";
-            return RedirectToAction("Index");
+            return await Task.Run(()=> RedirectToAction("Index"));
         }
 
 
         [HttpPost]
         [AutoValidateAntiforgeryToken]
-        public IActionResult ImportGI(IFormFile postedFile)
+        public async Task<IActionResult> ImportGI(IFormFile postedFile)
         {
             if (postedFile != null)
             {
@@ -130,28 +130,28 @@ namespace BMI.Controllers
                                 _db.SaveChanges();
                                 TempData["msg"] = "File Succesfully Uploaded";
                                 TempData["result"] = "success";
-                                return RedirectToAction("Index");
+                                return await Task.Run(() => Redirect(Request.Headers["Referer"].ToString()));
                             }
                             TempData["msg"] = "Field Column not Match";
                             TempData["result"] = "failed";
-                            return RedirectToAction("Index");
+                            return await Task.Run(() => Redirect(Request.Headers["Referer"].ToString()));
                         }
                     }
                 }
                 //jika tidak sesuai extension
                 TempData["msg"] = "File Extension must excel file format 'xlsx or xls'";
                 TempData["result"] = "failed";
-                return RedirectToAction("Index");
+                return await Task.Run(() => Redirect(Request.Headers["Referer"].ToString()));
             }
             TempData["msg"] = "File Empty";
             TempData["result"] = "failed";
-            return RedirectToAction("Index");
+            return await Task.Run(() => Redirect(Request.Headers["Referer"].ToString()));
         }
 
 
         [HttpPost]
         [AutoValidateAntiforgeryToken]
-        public IActionResult ImportGR(IFormFile postedFile)
+        public async Task< IActionResult> ImportGR(IFormFile postedFile)
         {
             if (postedFile != null)
             {
@@ -213,25 +213,25 @@ namespace BMI.Controllers
                                 _db.SaveChanges();
                                 TempData["msg"] = "File Succesfully Uploaded";
                                 TempData["result"] = "success";
-                                return RedirectToAction("Index");
+                                return await Task.Run(() => Redirect(Request.Headers["Referer"].ToString()));
                             }
                             TempData["msg"] = "Field Column not Match";
                             TempData["result"] = "failed";
-                            return RedirectToAction("Index");
+                            return await Task.Run(() => Redirect(Request.Headers["Referer"].ToString()));
                         }
                     }
                 }
                 //jika tidak sesuai extension
                 TempData["msg"] = "File Extension must excel file format 'xlsx or xls'";
                 TempData["result"] = "failed";
-                return RedirectToAction("Index");
+                return await Task.Run(() => Redirect(Request.Headers["Referer"].ToString()));
             }
             TempData["msg"] = "File Empty";
             TempData["result"] = "failed";
-            return RedirectToAction("Index");
+            return await Task.Run(() => Redirect(Request.Headers["Referer"].ToString()));
         }
 
-        public IActionResult Detail(string pt)
+        public async Task<IActionResult> Detail(string pt)
         {
             var po = Convert.ToString(_db.PO.Where(a => a.pt == Convert.ToInt32(pt)).Select(a => a.po).First());
             var model = new ProductionView();
@@ -245,13 +245,10 @@ namespace BMI.Controllers
                 {
                     bmi_code = a.Key.bmi_code,
                     MasterBMIModel = a.Max(m => m.MasterBMIModel),
-                    qty_production = a.Sum(x => x.qty) - _db.AdjustmentFG.Where(c => c.status == "rounded" && c.bmi_code == a.Key.bmi_code && c.po == a.Key.po).Sum(a => a.qty * a.MasterBMIModel.lbs / 2.204),
-                    available = a.Sum(k => k.qty * 2.204 / k.MasterBMIModel.lbs)
-                    - _db.Shipment_detail.Where(c => c.bmi_code == a.Key.bmi_code && c.po == a.Key.po).Sum(a => a.qty)
-                    - _db.AdjustmentFG.Where(c => c.bmi_code == a.Key.bmi_code && c.po == a.Key.po).Sum(a => a.qty)
-                    - _db.Repack.Where(c => c.from_bmi_code == a.Key.bmi_code && c.from_po == a.Key.po).Sum(a => a.qty)
-                    + _db.Repack.Where(c => c.to_bmi_code == a.Key.bmi_code && c.to_po == a.Key.po).Sum(a => a.qty)
+                    qty_production = a.Sum(x => x.qty) 
+                    - _db.AdjustmentFG.Where(c => c.status == "rounded" && c.bmi_code == a.Key.bmi_code && c.po == a.Key.po).Sum(a => a.qty * a.MasterBMIModel.lbs / 2.204)
                 })
+                .OrderByDescending(a=>a.bmi_code)
                 .ToList();
             ViewBag.totaloutput = model.ProductionOutputModel.Sum(a => a.qty_production * 2.204).ToString("0.00");
 
@@ -266,6 +263,7 @@ namespace BMI.Controllers
                     qty = a.Sum(x => x.qty * 2.204),
                     yield = a.Sum(x => x.qty * 2.204) / _db.Production_output.Where(a => a.po == po).Sum(k => k.qty * 2.204)
                 })
+                .OrderByDescending(a=>a.category)
                 .ToList();
 
             model.ProductionInputModel = _db.Production_input
@@ -280,6 +278,7 @@ namespace BMI.Controllers
                     Masterdatamodel = a.Max(m => m.Masterdatamodel),
                     qty = a.Sum(x => x.qty)
                 })
+                .OrderByDescending(a=>a.raw_source)
                 .ToList();
             ViewBag.totalinputkg = model.ProductionInputModel.Sum(k => k.qty).ToString("0.00");
             ViewBag.totalinputlbs = model.ProductionInputModel.Sum(k => k.qty * 2.204).ToString("0.00");
@@ -288,44 +287,66 @@ namespace BMI.Controllers
 
             ViewBag.pt = pt;
             ViewBag.po = po;
-            return View(model);
+            return await Task.Run(()=> View(model));
         }
 
-        public IActionResult Detailperitem(int pt, string code)
+        public async Task<JsonResult> Detailperitem(int pt, string bmicode)
         {
             var po = Convert.ToString(_db.PO.Where(a => a.pt == Convert.ToInt32(pt)).Select(a => a.po).First());
 
             var obj = _db.Production_output
-                .Where(a => a.po == po && a.bmi_code == code)
+                .Where(a => a.po == po && a.bmi_code == bmicode)
                 .Include(k => k.MasterBMIModel)
                 .AsEnumerable()
-                .GroupBy(k => new { k.date, k.raw_source, k.landing_site })
+                .GroupBy(k => new { k.date, k.raw_source })
                 .Select(a => new ProductionOutputModel
                 {
                     date = a.Key.date,
                     raw_source = a.Key.raw_source,
-                    landing_site = a.Key.landing_site,
-                    MasterBMIModel = a.Max(m => m.MasterBMIModel),
-                    qty = a.Sum(x => x.qty)
+                    cases = Convert.ToInt32( a.Sum(x => x.qty *2.204) / a.Max(b=>b.MasterBMIModel.lbs)) ,
+                    available = Convert.ToInt32(a.Sum(x => x.qty * 2.204) / a.Max(b => b.MasterBMIModel.lbs)) 
+                    - _db.Shipment.Where(i=>i.bmi_code == bmicode && i.raw_source == a.Key.raw_source).Sum(i=>i.qty) 
+                    - _db.AdjustmentFG.Where(i=>i.bmi_code == bmicode && i.raw_source == a.Key.raw_source).Sum(i=>i.qty) 
                 })
                 .OrderByDescending(a => a.date)
                 .ToList();
-            return Json(obj);
+            return await Task.Run(()=> Json(obj));
         }
 
-        public IActionResult DateExist(DateTime date)
+        public async Task<JsonResult> Detaillandingsite(int pt, string bmicode, string pdc, string raw_source)
+        {
+            var date = Convert.ToDateTime(pdc);
+
+            var po = Convert.ToString(_db.PO.Where(a => a.pt == Convert.ToInt32(pt)).Select(a => a.po).First());
+            var obj = _db.Production_output
+                .Include(a=>a.MasterBMIModel)
+                .Where(a => a.po == po && a.bmi_code == bmicode && a.raw_source == raw_source && a.date.Year == date.Year &&
+                       a.date.Month == date.Month &&
+                       a.date.Day == date.Day)
+                .AsEnumerable()
+                .GroupBy(a => a.landing_site)
+                .Select(a => new
+                {
+                    landing_site = a.Key,
+                    cases = Convert.ToInt32(a.Sum(x => x.qty * 2.204) / a.Max(b => b.MasterBMIModel.lbs))
+                }).ToList();
+            return await Task.Run(() => Json(obj));
+            
+        }
+
+        public async Task<JsonResult> DateExist(DateTime date)
         {
             var unique = _db.Production_input.FirstOrDefault(m => m.date.Year == date.Year &&
                                                                     m.date.Month == date.Month &&
                                                                     m.date.Day == date.Day);
             if (unique != null)
             {
-                return Json(true);
+                return await Task.Run(()=> Json(true));
             }
-            return Json(false);
+            return await Task.Run(() => Json(false));
         }
 
-        public IActionResult Daily(DateTime date)
+        public async Task<IActionResult> Daily(DateTime date)
         {
             var obj = _db.Production_input
                 .Include(k => k.POModel)
@@ -343,10 +364,10 @@ namespace BMI.Controllers
                 })
                 .ToList();
             ViewBag.date = date.Date;
-            return View(obj);
+            return await Task.Run(() => View(obj));
         }
 
-        public IActionResult RawMaterial(string po, DateTime date)
+        public async Task<JsonResult> RawMaterial(string po, DateTime date)
         {
             var obj = _db.Production_input
                 .Include(k => k.Masterdatamodel)
@@ -364,10 +385,10 @@ namespace BMI.Controllers
                     qty = a.Sum(k => k.qty)
                 })
                 .ToList();
-            return Json(obj);
+            return await Task.Run(() => Json(obj));
         }
 
-        public IActionResult FinishedGood(string po, DateTime date)
+        public async Task<JsonResult> FinishedGood(string po, DateTime date)
         {
             var obj = _db.Production_output
                 .Include(k => k.MasterBMIModel)
@@ -383,11 +404,11 @@ namespace BMI.Controllers
                     qty = a.Sum(k => k.qty)
                 })
                 .ToList();
-            return Json(obj);
+            return await Task.Run(() => Json(obj));
         }
 
 
-        public IActionResult Getitemdata(string code, string pt)
+        public async Task<JsonResult> Getitemdata(string code, string pt)
         {
             var po = Convert.ToString(_db.PO.Where(a => a.pt == Convert.ToInt32(pt)).Select(a => a.po).First());
             var obj = _db.Production_output
@@ -401,10 +422,10 @@ namespace BMI.Controllers
                     po = a.Max(k => k.po)
                 })
                 .ToList();
-            return Json(obj);
+            return await Task.Run(()=> Json(obj));
         }
 
-        public IActionResult Adjustment(AdjustmentFGModel destroyFGModel)
+        public async Task<IActionResult> Adjustment(AdjustmentFGModel destroyFGModel)
         {
             if (ModelState.IsValid)
             {
@@ -419,14 +440,14 @@ namespace BMI.Controllers
                 _db.SaveChanges();
                 TempData["msg"] = "Item Succesfully Destroyed";
                 TempData["result"] = "success";
-                return Redirect(Request.Headers["Referer"].ToString());
+                return await Task.Run(()=> Redirect(Request.Headers["Referer"].ToString()));
             }
             TempData["msg"] = "Item Failded to Destroyed";
             TempData["result"] = "failed";
-            return Redirect(Request.Headers["Referer"].ToString());
+            return await Task.Run(() => Redirect(Request.Headers["Referer"].ToString()));
         }
 
-        public IActionResult Repack(ProductionView productionView)
+        public async Task<IActionResult> Repack(ProductionView productionView)
         {
             var to_po = Convert.ToString(_db.PO.Where(a => a.pt == Convert.ToInt32(productionView.destination_pt)).Select(a => a.po).First());
 
@@ -448,11 +469,80 @@ namespace BMI.Controllers
                 _db.SaveChanges();
                 TempData["msg"] = "Item Succesfully Repacked";
                 TempData["result"] = "success";
-                return Redirect(Request.Headers["Referer"].ToString());
+                return await Task.Run(() => Redirect(Request.Headers["Referer"].ToString()));
             }
             TempData["msg"] = "Item Failded to Repack";
             TempData["result"] = "failed";
-            return Redirect(Request.Headers["Referer"].ToString());
+            return await Task.Run(() => Redirect(Request.Headers["Referer"].ToString()));
+        }
+
+        public async Task<IActionResult> History()
+        {
+            var model = new ProductionView();
+            model.ProductionInputModel = _db.Production_input
+                .Where(a=>a.created_at != null)
+                .AsEnumerable()
+                .GroupBy(a => new { a.created_at.Value.Date , a.created_at.Value.Hour, a.created_at.Value.Minute})
+                .Select(a=> new ProductionInputModel
+                { 
+                   created_at = a.Key.Date,
+                   hour = a.Key.Hour,
+                   minute = a.Key.Minute,
+                   saved = a.Max(b=>b.saved)
+                })
+                .OrderByDescending(a=>a.created_at)
+                .ToList();
+
+            model.ProductionOutputModel = _db.Production_output
+                .Where(a => a.created_at != null)
+               .AsEnumerable()
+               .GroupBy(a => new { a.created_at.Value.Date, a.created_at.Value.Hour, a.created_at.Value.Minute })
+               .Select(a => new ProductionOutputModel
+               {
+                   created_at = a.Key.Date,
+                   hour = a.Key.Hour,
+                   minute = a.Key.Minute,
+                   saved = a.Max(b => b.saved)
+               })
+               .OrderByDescending(a => a.created_at)
+               .ToList();
+
+            return await Task.Run(() => View(model));
+        }
+
+
+        public async Task<IActionResult> DeleteGI(DateTime date, int hour,int minute)
+        {
+            var datetime = _db.Production_input.Where(a => a.created_at.Value.Date == date && a.created_at.Value.Hour == hour && a.created_at.Value.Minute == minute).ToList();
+            
+            if (datetime.Count>0)
+            {
+                _db.Production_input.RemoveRange(datetime);
+                _db.SaveChanges();
+                TempData["msg"] = "Data Successfuly Deleted";
+                TempData["result"] = "success";
+                return await Task.Run(() => Redirect(Request.Headers["Referer"].ToString()));
+            }
+            TempData["msg"] = "Data Failed to Delete";
+            TempData["result"] = "failed";
+            return await Task.Run(() => Redirect(Request.Headers["Referer"].ToString()));
+        }
+
+
+        public async Task<IActionResult> DeleteGR(DateTime date, int hour, int minute)
+        {
+            var datetime = _db.Production_output.Where(a => a.created_at.Value.Date == date && a.created_at.Value.Hour == hour && a.created_at.Value.Minute == minute).ToList();
+            if(datetime.Count > 0)
+            {
+                _db.Production_output.RemoveRange(datetime);
+                _db.SaveChanges();
+                TempData["msg"] = "Data Successfuly Deleted";
+                TempData["result"] = "success";
+                return await Task.Run(() => Redirect(Request.Headers["Referer"].ToString()));
+            }
+            TempData["msg"] = "Data Failed to Delete";
+            TempData["result"] = "failed";
+            return await Task.Run(() => Redirect(Request.Headers["Referer"].ToString()));
         }
 
 
