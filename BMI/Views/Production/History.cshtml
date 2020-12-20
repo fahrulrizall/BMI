@@ -1,6 +1,6 @@
 ﻿@model ProductionView
 @{
-    ViewData["Title"] = "Roleback";
+    ViewData["Title"] = "History";
 }
 
 <div class="content-wrapper">
@@ -48,7 +48,7 @@
                                                 <td style="font-size:small">@obj.saved</td>
                                                 <td>
                                                     <form asp-controller="Production" asp-action="DeleteGI" asp-route-date="@obj.created_at" asp-route-hour="@obj.hour" asp-route-minute="@obj.minute" method="post">
-                                                        <button type="submit" onclick="return confirm ('Delete Data GI Created on @obj.raw_source');" class="btn btn-xs btn-danger">
+                                                        <button type="submit" onclick="return confirm ('Delete Data GI Created on  @Html.DisplayFor(model => obj.created_at)/ @obj.hour Clock/ @obj.minute Minute');" class="btn btn-xs btn-danger">
                                                             <i class="fa fa-trash"></i>
                                                         </button>
                                                     </form>
@@ -133,7 +133,7 @@
                 </button>
             </div>
             <div class="modal-body mb-2">
-                <form method="POST" asp-controller="Production" asp-action="ImportGI" enctype="multipart/form-data">
+                <form method="POST" asp-controller="Production" asp-action="Import" enctype="multipart/form-data">
                     <div class="card-body">
                         <div class="form-group input-file">
                             <label for="exampleInputFile">File input</label>

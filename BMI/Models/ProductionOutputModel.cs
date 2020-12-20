@@ -31,6 +31,8 @@ namespace BMI.Models
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime? created_at { get; set; }
         public DateTime? updated_at { get; set; }
+        public string? created_by { get; set; }
+        public string? updated_by { get; set; }
         [NotMapped]
         public double qty_production { get; set; }
         [NotMapped]
@@ -47,6 +49,8 @@ namespace BMI.Models
         [NotMapped]
         public int hour { get; set; }
         [NotMapped]
-        public int minute { get; set; }
+        public int minute { get; set; } 
+        [NotMapped]
+        public DateTime production_date { get; set; }
     }
 }

@@ -29,5 +29,7 @@ namespace BMI.Models
         public string? saved { get; set; }
         public DateTime? created_at { get; set; }
         public DateTime? updated_at { get; set; }
+        public string? created_by { get; set; }
+        public string? updated_by { get; set; }
     }
 }

@@ -32,7 +32,7 @@ namespace BMI.Models
         [StringLength(100,MinimumLength =10,ErrorMessage ="masukan sesuai ketentuan")]
         public string Password { get; set; }
 
-        [Compare("Password", ErrorMessage = "password and confirm must match")]
+        [Compare("Password", ErrorMessage = "Password and Confirm Password not Match")]
         public string ConfirmPassword { get; set; }
 
     }

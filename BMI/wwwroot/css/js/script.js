@@ -16,6 +16,9 @@ $(function () {
         $("#example3").DataTable({
             "aaSorting": [],
         });
+        $(document).ready(function () {
+            bsCustomFileInput.init();
+        });
     });
     
 
@@ -159,9 +162,7 @@ $(function () {
     //    });
     //});
 
-    $(document).ready(function () {
-        bsCustomFileInput.init();
-    });
+    
 
 
     //$('.user-role').on('click', function () {

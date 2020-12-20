@@ -1,6 +1,6 @@
 ﻿@model List<UserRoleView>
 @{
-    ViewData["Title"] = "Role Manager";
+    ViewData["Title"] = ViewBag.name + " Role";
 }
 <div class="content-wrapper">
     <section class="content-header">
@@ -12,7 +12,7 @@
                 <div class="card">
                     <form asp-action="UpdateUserRole" asp-controller="Administration" asp-route-id="@ViewBag.id" method="post">
                         <div class="card-header">
-                            <h3 class="card-title">Select User Model</h3>
+                            <h3 class="card-title">@ViewBag.name Role</h3>
                             <div class="card-tools ">
                                 <button class="btn btn-sm float-right mx-1" type="submit" >
                                     <i class="fa fa-save">

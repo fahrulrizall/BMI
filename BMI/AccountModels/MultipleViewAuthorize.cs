@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace BMI.Models
 {
@@ -20,7 +21,8 @@ namespace BMI.Models
 
     public class MultipleViewAuthorize
     {
-        public IQueryableRoleStore<IdentityRole> roles  { get; set; }
-        public IQueryableUserStore<ApplicationUser> users { get; set; }
+        public IQueryable<IdentityRole> roles  { get; set; }
+        public IQueryable<ApplicationUser> users { get; set; }
+        public RegisterView register { get; set; }
     }
 }

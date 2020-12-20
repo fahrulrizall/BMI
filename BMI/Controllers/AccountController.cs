@@ -47,8 +47,8 @@ namespace BMI.Controllers
 
                 if (result.Succeeded)
                 {
-                    await signInManager.SignInAsync(user, isPersistent: false);
-                    return RedirectToAction("Index", "Home");
+                    //await signInManager.SignInAsync(user, isPersistent: false);
+                    return RedirectToAction("Index", "Administration");
                 }
 
                 foreach (var error in result.Errors)
@@ -117,6 +117,24 @@ namespace BMI.Controllers
         public IActionResult AccessDenied()
         {
             return View();
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteUser(string id)
+        {
+            var user = await userManager.FindByIdAsync(id);
+            var delete = await userManager.DeleteAsync(user);
+
+            if (delete.Succeeded)
+            {
+                TempData["msg"] = "User Succesfully Deleted";
+                TempData["result"] = "success";
+                return RedirectToAction("Index","Administration");
+            }
+            TempData["msg"] = "User Failed to Delete";
+            TempData["result"] = "failed";
+            return RedirectToAction("Index", "Administration");
         }
 
 

@@ -36,7 +36,18 @@ namespace BMI.Models
         public MasterBMIModel toMasterBMIModel { get; set; }
         [ForeignKey("toMasterBMIModel")]
         public string to_bmi_code { get; set; }
+        #nullable enable
+        public string? landing_site { get; set; }
+        public string? created_by { get; set; }
+        public string? updated_by { get; set; }
+        public DateTime? created_at { get; set; }
+        public DateTime? updated_at { get; set; }
 
-        
+        [NotMapped]
+        public  double cases { get; set; }
+        [NotMapped]
+        public  double available { get; set; }
+
+
     }
 }

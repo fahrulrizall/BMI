@@ -230,12 +230,16 @@ namespace BMI.Controllers
                                         created_at = DateTime.Now
                                     });
                                 }
+                                stream.Close();
+                                System.IO.File.Delete(filePath);
                                 _db.Rm_detail.AddRange(rm_detail);
                                 _db.SaveChanges();
                                 TempData["msg"] = "File Succesfully Uploaded";
                                 TempData["result"] = "success";
                                 return RedirectToAction("List", new { status = "otw" });
                             }
+                            stream.Close();
+                            System.IO.File.Delete(filePath);
                             TempData["msg"] = "Field Column not Match";
                             TempData["result"] = "failed";
                             return RedirectToAction("List", new { status = "otw" });

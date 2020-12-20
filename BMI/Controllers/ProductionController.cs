@@ -68,7 +68,7 @@ namespace BMI.Controllers
 
         [HttpPost]
         [AutoValidateAntiforgeryToken]
-        public async Task<IActionResult> ImportGI(IFormFile postedFile)
+        public async Task<IActionResult> Import(IFormFile postedFile)
         {
             if (postedFile != null)
             {
@@ -79,6 +79,7 @@ namespace BMI.Controllers
                 if (allowedExtensions.Contains(checkextension))
                 {
                     List<ProductionInputModel> prod_input = new List<ProductionInputModel>();
+                    List<ProductionOutputModel> prod_output = new List<ProductionOutputModel>();
                     List<POModel> bmi_po = new List<POModel>();
                     string path = Path.Combine(this.Environment.WebRootPath, "Uploads");
 
@@ -95,20 +96,20 @@ namespace BMI.Controllers
                     {
                         {
                             IExcelDataReader excelDataReader = ExcelDataReader.ExcelReaderFactory.CreateReader(stream);
-                            if (excelDataReader.FieldCount == 7)
+                            var conf = new ExcelDataSetConfiguration()
                             {
-
-                                var conf = new ExcelDataSetConfiguration()
+                                ConfigureDataTable = a => new ExcelDataTableConfiguration
                                 {
-                                    ConfigureDataTable = a => new ExcelDataTableConfiguration
-                                    {
-                                        UseHeaderRow = true
-                                    }
-                                };
+                                    UseHeaderRow = true
+                                }
+                            };
 
-                                DataSet dataSet = excelDataReader.AsDataSet(conf);
+                            DataSet dataSet = excelDataReader.AsDataSet(conf);
+                            List<object> rowDataList = null;
+
+                            if (excelDataReader.FieldCount == 7)
+                            {  
                                 DataRowCollection row = dataSet.Tables["GI"].Rows;
-                                List<object> rowDataList = null;
 
                                 foreach (DataRow item in row)
                                 {
@@ -126,71 +127,17 @@ namespace BMI.Controllers
                                         created_at = DateTime.Now
                                     });
                                 }
+                                stream.Close();
+                                System.IO.File.Delete(filePath);
                                 _db.Production_input.AddRange(prod_input);
                                 _db.SaveChanges();
                                 TempData["msg"] = "File Succesfully Uploaded";
                                 TempData["result"] = "success";
                                 return await Task.Run(() => Redirect(Request.Headers["Referer"].ToString()));
                             }
-                            TempData["msg"] = "Field Column not Match";
-                            TempData["result"] = "failed";
-                            return await Task.Run(() => Redirect(Request.Headers["Referer"].ToString()));
-                        }
-                    }
-                }
-                //jika tidak sesuai extension
-                TempData["msg"] = "File Extension must excel file format 'xlsx or xls'";
-                TempData["result"] = "failed";
-                return await Task.Run(() => Redirect(Request.Headers["Referer"].ToString()));
-            }
-            TempData["msg"] = "File Empty";
-            TempData["result"] = "failed";
-            return await Task.Run(() => Redirect(Request.Headers["Referer"].ToString()));
-        }
-
-
-        [HttpPost]
-        [AutoValidateAntiforgeryToken]
-        public async Task< IActionResult> ImportGR(IFormFile postedFile)
-        {
-            if (postedFile != null)
-            {
-                var allowedExtensions = new[] { ".xls", ".xlsx" };
-                string fileName = Path.GetFileName(postedFile.FileName);
-                var checkextension = Path.GetExtension(fileName).ToLower();
-
-                if (allowedExtensions.Contains(checkextension))
-                {
-                    List<ProductionOutputModel> prod_output = new List<ProductionOutputModel>();
-                    string path = Path.Combine(this.Environment.WebRootPath, "Uploads");
-
-                    string filePath = Path.Combine(path, fileName);
-                    using (FileStream stream = new FileStream(filePath, FileMode.Create))
-                    {
-                        postedFile.CopyTo(stream);
-                    }
-                    // For .net core, the next line requires the NuGet package, 
-                    //System.Text.Encoding.CodePages
-                    System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
-
-                    using (var stream = System.IO.File.Open(filePath, FileMode.Open, FileAccess.Read))
-                    {
-                        {
-                            IExcelDataReader excelDataReader = ExcelDataReader.ExcelReaderFactory.CreateReader(stream);
-                            if (excelDataReader.FieldCount == 5)
+                            else if (excelDataReader.FieldCount == 5)
                             {
-
-                                var conf = new ExcelDataSetConfiguration()
-                                {
-                                    ConfigureDataTable = a => new ExcelDataTableConfiguration
-                                    {
-                                        UseHeaderRow = true
-                                    }
-                                };
-
-                                DataSet dataSet = excelDataReader.AsDataSet(conf);
                                 DataRowCollection row = dataSet.Tables["GR"].Rows;
-                                List<object> rowDataList = null;
 
                                 foreach (DataRow item in row)
                                 {
@@ -209,12 +156,17 @@ namespace BMI.Controllers
                                         created_at = DateTime.Now
                                     });
                                 }
+                                stream.Close();
+                                System.IO.File.Delete(filePath);
                                 _db.Production_output.AddRange(prod_output);
                                 _db.SaveChanges();
+
                                 TempData["msg"] = "File Succesfully Uploaded";
                                 TempData["result"] = "success";
                                 return await Task.Run(() => Redirect(Request.Headers["Referer"].ToString()));
                             }
+                            stream.Close();
+                            System.IO.File.Delete(filePath);
                             TempData["msg"] = "Field Column not Match";
                             TempData["result"] = "failed";
                             return await Task.Run(() => Redirect(Request.Headers["Referer"].ToString()));
@@ -294,35 +246,62 @@ namespace BMI.Controllers
         {
             var po = Convert.ToString(_db.PO.Where(a => a.pt == Convert.ToInt32(pt)).Select(a => a.po).First());
 
-            var obj = _db.Production_output
+            var output = _db.Production_output
                 .Where(a => a.po == po && a.bmi_code == bmicode)
                 .Include(k => k.MasterBMIModel)
                 .AsEnumerable()
                 .GroupBy(k => new { k.date, k.raw_source })
                 .Select(a => new ProductionOutputModel
                 {
-                    date = a.Key.date,
+                    production_date = a.Key.date,
                     raw_source = a.Key.raw_source,
                     cases = Convert.ToInt32( a.Sum(x => x.qty *2.204) / a.Max(b=>b.MasterBMIModel.lbs)) ,
-                    available = Convert.ToInt32(a.Sum(x => x.qty * 2.204) / a.Max(b => b.MasterBMIModel.lbs)) 
-                    - _db.Shipment.Where(i=>i.bmi_code == bmicode && i.raw_source == a.Key.raw_source).Sum(i=>i.qty) 
-                    - _db.AdjustmentFG.Where(i=>i.bmi_code == bmicode && i.raw_source == a.Key.raw_source).Sum(i=>i.qty) 
+                    available = Convert.ToInt32(a.Sum(x => x.qty * 2.204) / a.Max(b => b.MasterBMIModel.lbs))
+                    - _db.Shipment.Where(i=>i.batch == po &&  i.pdc == a.Key.date &&  i.bmi_code == bmicode && i.raw_source == a.Key.raw_source ).Sum(i=>i.qty) 
+                    - _db.AdjustmentFG.Where(i=>i.bmi_code == bmicode && i.raw_source == a.Key.raw_source).Sum(i=>i.qty)
+                    - _db.Repack.Where(i =>i.from_po == po && i.production_date == a.Key.date && i.from_bmi_code == bmicode && i.raw_source == a.Key.raw_source).Sum(i => i.qty)
                 })
-                .OrderByDescending(a => a.date)
+                .OrderByDescending(a => a.production_date)
                 .ToList();
-            return await Task.Run(()=> Json(obj));
+
+            var repack = _db.Repack
+                .Where(a => a.to_po == po && a.to_bmi_code == bmicode)
+                .Include(a=>a.toMasterBMIModel)
+                .AsEnumerable()
+                .GroupBy(a => new { a.production_date, a.raw_source })
+                .Select(a => new ProductionOutputModel
+                {
+                    production_date = a.Key.production_date,
+                    raw_source = a.Key.raw_source,
+                    cases = a.Sum(a => a.qty),
+                    available = a.Sum(a=>a.qty)
+                })
+                .ToList();
+
+            var union = new List<ProductionOutputModel> (output);
+            union.AddRange(repack);
+
+            var result = union.GroupBy(a => new { a.production_date, a.raw_source })
+                .Select(a => new
+                {
+                    date = a.Key.production_date,
+                    raw_source = a.Key.raw_source,
+                    cases = a.Sum(b => b.cases),
+                    available = a.Sum(b => b.available)
+                }).ToList();
+          
+
+            return await Task.Run(()=> Json(result));
         }
 
-        public async Task<JsonResult> Detaillandingsite(int pt, string bmicode, string pdc, string raw_source)
+        public async Task<JsonResult> Detaillandingsite(int pt, string bmicode, DateTime pdc, string raw_source)
         {
-            var date = Convert.ToDateTime(pdc);
-
             var po = Convert.ToString(_db.PO.Where(a => a.pt == Convert.ToInt32(pt)).Select(a => a.po).First());
             var obj = _db.Production_output
-                .Include(a=>a.MasterBMIModel)
-                .Where(a => a.po == po && a.bmi_code == bmicode && a.raw_source == raw_source && a.date.Year == date.Year &&
-                       a.date.Month == date.Month &&
-                       a.date.Day == date.Day)
+                .Include(a => a.MasterBMIModel)
+                .Where(a => a.po == po && a.bmi_code == bmicode && a.raw_source == raw_source && a.date.Year == pdc.Year &&
+                       a.date.Month == pdc.Month &&
+                       a.date.Day == pdc.Day)
                 .AsEnumerable()
                 .GroupBy(a => a.landing_site)
                 .Select(a => new
@@ -331,7 +310,7 @@ namespace BMI.Controllers
                     cases = Convert.ToInt32(a.Sum(x => x.qty * 2.204) / a.Max(b => b.MasterBMIModel.lbs))
                 }).ToList();
             return await Task.Run(() => Json(obj));
-            
+
         }
 
         public async Task<JsonResult> DateExist(DateTime date)
@@ -413,12 +392,13 @@ namespace BMI.Controllers
             var po = Convert.ToString(_db.PO.Where(a => a.pt == Convert.ToInt32(pt)).Select(a => a.po).First());
             var obj = _db.Production_output
                 .Where(k => k.po == po && k.bmi_code == code)
-                .GroupBy(x => new { x.date, x.bmi_code, x.raw_source })
+                .GroupBy(x => x.date )
                 .Select(a => new ProductionOutputModel
                 {
-                    date = a.Key.date,
-                    bmi_code = a.Key.bmi_code,
-                    raw_source = a.Key.raw_source,
+                    date = a.Key,
+                    bmi_code = a.Max(b=>b.bmi_code),
+                    raw_source = a.Max(b=>b.raw_source),
+                    landing_site = a.Max(b=>b.landing_site),
                     po = a.Max(k => k.po)
                 })
                 .ToList();
@@ -463,7 +443,8 @@ namespace BMI.Controllers
                     from_po = productionView.po,
                     from_bmi_code = productionView.bmi_code,
                     to_po = to_po,
-                    to_bmi_code = productionView.to_bmi_code
+                    to_bmi_code = productionView.to_bmi_code,
+                    landing_site = productionView.landing_site
                 };
                 _db.Repack.Add(repack);
                 _db.SaveChanges();

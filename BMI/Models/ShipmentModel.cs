@@ -21,6 +21,8 @@ namespace BMI.Models
         [ForeignKey("MasterBMIModel")]
         public string bmi_code { get; set; }
         public int qty { get; set; }
+
+        [ForeignKey("POModelBatch")]
         public string batch { get; set; }
         public string raw_source { get; set; }
         public float index { get; set; }
@@ -30,6 +32,7 @@ namespace BMI.Models
         public DateTime updated_at { get; set; }
 
         public POModel POModel { get; set; }
+        public POModel POModelBatch { get; set; }
         public MasterBMIModel MasterBMIModel { get; set; }
     }
 }

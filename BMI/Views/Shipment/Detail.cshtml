@@ -42,7 +42,7 @@
                                     <th style="width: 3%;font-size:small">
                                         Batch
                                     </th>
-                                    <th style="width: 2%;font-size:small">
+                                    <th style="width: 1%;font-size:small">
                                         Action
                                     </th>
                                 </tr>
@@ -56,12 +56,12 @@
                                             <td style="font-size:small" class="btn shipment-item-detail" data-code="@obj.bmi_code" data-po="@po" data-batch="@obj.batch">@obj.MasterBMIModel.sap_code</td>
                                             <td style="font-size:small">@obj.MasterBMIModel.description</td>
                                             <td style="font-size:small">@obj.qty</td>
-                                            <td style="font-size:small">@obj.batch</td>
+                                            <td style="font-size:small">@obj.POModelBatch.batch</td>
                                             <td>
-                                                <form asp-controller="Shipment" asp-route-id="@obj.id_shipment" asp-action="Delete" method="post">
-                                                    <a data-toggle="modal" data-target="#modal-default" data-batch="@obj.batch" data-id="@obj.id_shipment" data-code="@obj.bmi_code" data-lbs="@obj.MasterBMIModel.lbs" class="btn btn-xs btn-warning update-item-shipment">
-                                                        <i class="fa fa-edit" style="color:ghostwhite;outline:thin"></i>
-                                                    </a>
+                                                <form asp-controller="Shipment" asp-action="Delete" asp-route-po="@po" asp-route-code="@obj.bmi_code" asp-route-batch="@obj.batch" method="post">
+                                                    @*<a data-toggle="modal" data-target="#modal-default" data-batch="@obj.batch" data-id="@obj.id_shipment" data-code="@obj.bmi_code" data-lbs="@obj.MasterBMIModel.lbs" class="btn btn-xs btn-warning update-item-shipment">
+                                    <i class="fa fa-edit" style="color:ghostwhite;outline:thin"></i>
+                                </a>*@
                                                     <button type="submit" onclick="return confirm ('Delete item  @obj.MasterBMIModel.sap_code');" class="btn btn-xs btn-danger">
                                                         <i class="fa fa-trash"></i>
                                                     </button>
@@ -70,6 +70,14 @@
                                         </tr>
                                     }
                                 </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th style="width: 2%;font-size:small" colspan="2">Total</th>
+                                        <th style="width: 2%;font-size:small" > @ViewBag.totalcase</th>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                </tfoot>
                             }
                         </table>
                     </div>

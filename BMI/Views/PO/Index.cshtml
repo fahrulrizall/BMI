@@ -1,0 +1,118 @@
+﻿@model IEnumerable<BMI.Models.POModel>
+@{
+    ViewData["Title"] = "Master BMI";
+}
+<div class="content-wrapper">
+    <section class="content-header">
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-12">
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">@ViewBag.plant-@ViewBag.factory PO List</h3>
+                        <div class="card-tools ">
+                            <button class="btn btn-sm float-right mx-1 add-po"
+                                    data-toggle="modal" data-target="#modal-default">
+                                <i class="fa fa-plus">
+                                </i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <table id="example1" class="table table-bordered table-striped table-sm">
+                            <thead>
+                                <tr>
+                                    <th style="width: 7%;font-size:small">
+                                        PO
+                                    </th>
+                                    <th style="width: 23%;font-size:small">
+                                        PT
+                                    </th>
+                                    <th style="width: 23%;font-size:small">
+                                        Batch
+                                    </th>
+                                    <th style="width: 3%;font-size:small">
+                                        Action
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var obj in Model)
+                                {
+                                    <tr>
+                                        <td style="font-size:small">@obj.po</td>
+                                        <td style="font-size:small">PT# @obj.pt</td>
+                                        <td style="font-size:small">@obj.batch</td>
+                                        <td>
+                                            <form asp-controller="PO" asp-route-po="@obj.po" asp-action="Delete" method="post">
+                                                <a data-toggle="modal" data-target="#modal-default" data-po="@obj.po" class="btn btn-xs btn-warning update-po">
+                                                    <i class="fa fa-edit" style="color:whitesmoke;outline:thin">
+                                                    </i>
+                                                </a>
+                                                <button type="submit" onclick="return confirm ('Delete PO @obj.po');" class="btn btn-xs btn-danger">
+                                                    <i class="fa fa-trash">
+                                                    </i>
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </section>
+    <!-- /.content -->
+</div>
+
+
+<div class="modal fade" id="modal-default">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="formModalLabel">Add Purchase Order</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body mb-2">
+                <form method="POST" asp-action="Create">
+                    <div class="card-body">
+                        <input type="hidden" name="plant" id="plant" value="@ViewBag.plant" />
+                        <div class="form-group purchase-order">
+                            <label>Purchase Order</label>
+                            <input type="number" step="any" class="form-control" asp-for="First().po"
+                                   placeholder="Purchase Order">
+                            <span asp-validation-for="First().po" class="text-danger" style="font-size:smaller"> </span>
+                        </div>
+                        <div class="form-group">
+                            <label>Production Target</label>
+                            <input type="text" class="form-control" asp-for="First().pt"
+                                   placeholder="Production Target">
+                            <span asp-validation-for="First().pt" class="text-danger" style="font-size:smaller"> </span>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" value="Create" class="btn btn-primary">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- /.modal-content -->
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

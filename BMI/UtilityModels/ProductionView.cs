@@ -22,6 +22,7 @@ namespace BMI.Models
         public double total { get; set; }
         public int qty { get; set; }
         public string batch { get; set; }
+        public string landing_site { get; set; }
         public string raw_source { get; set; }
         public string to_bmi_code { get; set; }
         public MasterBMIModel MasterBMIModel { get; set; }
@@ -30,6 +31,7 @@ namespace BMI.Models
         public List<ProductionInputModel> ProductionInputModel { get; set; }
         public List<ProductionOutputModel> ProductionOutputModel { get; set; }
         public List<CategoryView> CategoryView { get; set; }
+        public List<RepackModel> RepackModel { get; set; }
 
     }
 }

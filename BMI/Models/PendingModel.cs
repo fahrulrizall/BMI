@@ -16,6 +16,13 @@ namespace BMI.Models
         public string raw_source { get; set; }
         public float qty { get; set; }
 
+
         public RmModel RmModel { get; set; }
+
+        #nullable enable
+        public string? created_by { get; set; }
+        public string? updated_by { get; set; }
+        public DateTime? created_at { get; set; }
+        public DateTime? updated_at { get; set; }
     }
 }

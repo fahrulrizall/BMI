@@ -23,6 +23,10 @@ namespace BMI.Models
         #nullable enable
         public string? reason { get; set; }
         public string? status { get; set; }
+        public string? created_by { get; set; }
+        public string? updated_by { get; set; }
+        public DateTime? created_at { get; set; }
+        public DateTime? updated_at { get; set; }
 
         [NotMapped]
         public string? pt { get; set; }

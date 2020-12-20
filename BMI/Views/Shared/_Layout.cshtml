@@ -32,6 +32,27 @@
                 <li class="nav-item">
                     <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                 </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        BMI Master Report
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" asp-controller="Rm" asp-action="index">RAW MATERIAL</a>
+                        <a class="dropdown-item" asp-controller="Production" asp-action="Index">PRODUCTION</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" asp-controller="Production" asp-action="Index">Reguler</a>
+                        <a class="dropdown-item" asp-controller="FT" asp-action="Index">Fair Trade</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="#">INVENTORY</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" asp-controller="Inventory" asp-action="Index">Inventory</a>
+                        <a class="dropdown-item" asp-controller="Adjustment" asp-action="Index">Adjustment</a>
+                        <a class="dropdown-item" asp-controller="Repack" asp-action="Index">Repack</a>
+                        <a class="dropdown-item" asp-controller="Deposit" asp-action="Index">Deposit</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" asp-controller="Shipment" asp-action="index">SHIPMENT</a>
+                    </div>
+                </li>
             </ul>
 
 
@@ -96,7 +117,7 @@
         </nav>
         <!-- /.navbar -->
         <!-- Main Sidebar Container -->
-        <aside class="main-sidebar sidebar-dark-primary elevation-4">
+        <aside class="main-sidebar sidebar-light-teal elevation-4">
             <!-- Brand Logo -->
             <a href="#" class="brand-link">
                 <img src="~/css/dist/img/AdminLTELogo.png"
@@ -112,7 +133,9 @@
                 <nav class="mt-2">
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                         <!-- Add icons to the links using the .nav-icon class
-                        with font-awesome or any other icon font library -->
+                            with font-awesome or any other icon font library -->
+
+
                         <li class="nav-item has-treeview">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-copy"></i>
@@ -122,16 +145,10 @@
                                 </p>
                             </a>
                             <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a class="nav-link" asp-route-plant="3770" asp-controller="Fg" asp-action="index">
+                                 <li class="nav-item">
+                                    <a class="nav-link" asp-route-plant="3770" asp-controller="PO" asp-action="index">
                                         <i class="far fa-circle nav-icon"></i>
-                                        <p>Finished Goods</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Moving Average Cost</p>
+                                        <p>Purchase Order</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
@@ -157,16 +174,10 @@
                                 </p>
                             </a>
                             <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a asp-route-plant="3710" asp-controller="Fg" asp-action="index" class="nav-link">
+                                 <li class="nav-item">
+                                    <a class="nav-link" asp-route-plant="3710" asp-controller="PO" asp-action="index">
                                         <i class="far fa-circle nav-icon"></i>
-                                        <p>Finished Goods</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Moving Average Cost</p>
+                                        <p>Purchase Order</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
@@ -192,6 +203,12 @@
                                 </p>
                             </a>
                             <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-route-plant="3700" asp-controller="PO" asp-action="index">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Purchase Order</p>
+                                    </a>
+                                </li>
                                 <li class="nav-item">
                                     <a class="nav-link" asp-controller="Rm" asp-action="index">
                                         <i class="far fa-circle nav-icon"></i>
@@ -242,37 +259,38 @@
                                 </li>
                             </ul>
                         </li>
+
                         @if (signInManager.IsSignedIn(User) && User.IsInRole("Admin"))
                         {
-                            <li class="nav-item has-treeview">
-                                <a href="#" class="nav-link">
-                                    <i class="nav-icon fas fa-edit"></i>
-                                    <p>
-                                        Settings
-                                        <i class="right fas fa-angle-left"></i>
-                                    </p>
-                                </a>
-                                <ul class="nav nav-treeview">
-                                    <li class="nav-item">
-                                        <a class="nav-link" asp-controller="MasterData" asp-action="Index">
-                                            <i class="far fa-circle nav-icon"></i>
-                                            <p>Master Data</p>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" asp-controller="MasterBMI" asp-action="Index">
-                                            <i class="far fa-circle nav-icon"></i>
-                                            <p>Master BMI</p>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" asp-controller="Administration" asp-action="Index">
-                                            <i class="far fa-circle nav-icon"></i>
-                                            <p>Authorization</p>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
+                        <li class="nav-item has-treeview">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-edit"></i>
+                                <p>
+                                    Settings
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="MasterData" asp-action="Index">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Master Data</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="MasterBMI" asp-action="Index">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Master BMI</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Administration" asp-action="Index">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>User & Authorization</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
                         }
 
 
@@ -315,6 +333,7 @@
     <script asp-append-version="true" src="~/css/js/RawMaterial.js"></script>
     <script asp-append-version="true" src="~/css/js/Repack.js"></script>
     <script asp-append-version="true" src="~/css/js/Shipment.js"></script>
+    <script asp-append-version="true" src="~/css/js/PO.js"></script>
     <!-- sweetalert -->
     <script src="~/css/plugins/sweetalert2/sweetalert2.min.js"></script>
     <!-- toastr -->

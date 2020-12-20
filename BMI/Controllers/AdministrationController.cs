@@ -49,11 +49,9 @@ namespace BMI.Controllers
         public IActionResult Index()
         {
             var model = new MultipleViewAuthorize();
-            //model.roles = roleManager.Roles;
-            //model.users = userManager.Users;
-            var roles = roleManager.Roles;
-            var user = userManager.Users;
-            return View(roles);
+            model.roles = roleManager.Roles;
+            model.users = userManager.Users;
+            return View(model);
         }
 
         [HttpGet]
@@ -99,7 +97,7 @@ namespace BMI.Controllers
             return RedirectToAction("Index");
         }
 
-        public async Task<IActionResult> GetUserRole(string id)
+        public async Task<IActionResult> GetUserRole(string id,string name)
         {
             var role = await roleManager.FindByIdAsync(id);
             var model = new List<UserRoleView>();
@@ -121,6 +119,7 @@ namespace BMI.Controllers
                 model.Add(UserRoleView);
             }
             ViewBag.id = id;
+            ViewBag.name = name;
             return View (model);
         }
 

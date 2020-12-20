@@ -41,8 +41,13 @@ namespace BMI.Models
         public DateTime created_at { get; set; }
         public DateTime updated_at { get; set; }
 
+
         public Masterdatamodel Masterdatamodel { get; set; }
 
-        
+        #nullable enable
+        public string? created_by { get; set; }
+        public string? updated_by { get; set; }
+
+
     }
 }

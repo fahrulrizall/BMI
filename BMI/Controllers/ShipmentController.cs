@@ -76,17 +76,19 @@ namespace BMI.Controllers
 
         [HttpPost]
         [AutoValidateAntiforgeryToken]
-        public async Task< IActionResult> Delete(string id)
+        public async Task< IActionResult> Delete(string po, string code, string batch)
         {
-            var obj = _db.Shipment.Find(id);
+            var obj = _db.Shipment
+                .Where(a => a.po == po && a.bmi_code == code && a.batch == batch)
+                .ToList();
             if (obj != null) {
-                _db.Shipment.Remove(obj);
+                _db.Shipment.RemoveRange(obj);
                 _db.SaveChanges();
-                TempData["msg"] = "Shipment Succesfully Deleted";
+                TempData["msg"] = "Item Succesfully Deleted";
                 TempData["result"] = "success";
                 return await Task.Run(() => Redirect(Request.Headers["Referer"].ToString()));
             }
-            TempData["msg"] = "Shipment Failed to Delete";
+            TempData["msg"] = "Item Failed to Delete";
             TempData["result"] = "failed";
             return await Task.Run(() => Redirect(Request.Headers["Referer"].ToString()));
 
@@ -100,13 +102,27 @@ namespace BMI.Controllers
 
         public async Task< IActionResult> Detail(string po)
         {
-            ViewBag.po = po;
             var obj = _db.Shipment
                 .Where(a => a.po == po)
-                .Include(c => c.MasterBMIModel)
+                .Include(a => a.MasterBMIModel)
+                .Include(a=>a.POModelBatch)
+                .AsEnumerable()
+                .GroupBy(a=> new { a.bmi_code,a.batch})
+                .Select(a=> new ShipmentModel 
+                {
+                    bmi_code = a.Key.bmi_code,
+                    batch = a.Key.batch,
+                    qty = a.Sum(b=>b.qty),
+                    MasterBMIModel = a.Max(b=>b.MasterBMIModel),
+                    POModelBatch = a.Max(b=>b.POModelBatch)
+                })
+                .OrderByDescending(a=>a.bmi_code)
                 .ToList();
+            var total_cases = obj.Sum(a => a.qty);
             if (obj != null)
             {
+                ViewBag.po = po;
+                ViewBag.totalcase = total_cases;
                 return await Task.Run(() => View(obj));
             }
             return await Task.Run(() => View("NotFound"));
@@ -133,7 +149,6 @@ namespace BMI.Controllers
                     {
                         postedFile.CopyTo(stream);
                     }
-
                     // For .net core, the next line requires the NuGet package, 
                     //System.Text.Encoding.CodePages
                     System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
@@ -142,9 +157,8 @@ namespace BMI.Controllers
                     {
                         {
                             IExcelDataReader excelDataReader = ExcelDataReader.ExcelReaderFactory.CreateReader(stream);
-                            if (excelDataReader.FieldCount == 5)
+                            if (excelDataReader.FieldCount == 6)
                             {
-
                                 var conf = new ExcelDataSetConfiguration()
                                 {
                                     ConfigureDataTable = a => new ExcelDataTableConfiguration
@@ -160,25 +174,31 @@ namespace BMI.Controllers
                                 foreach (DataRow item in row)
                                 {
                                     rowDataList = item.ItemArray.ToList();
-                                    //    .ToList();
+                                    var po_batch = Convert.ToString(_db.PO.Where(a => a.batch == Convert.ToString( rowDataList[3] )).Select(a => a.po).First());
                                     shipmentdata.Add(new ShipmentModel
                                     {
-                                        po = po,
+                                        po =  po,
                                         pdc = Convert.ToDateTime(rowDataList[0]),
                                         bmi_code = Convert.ToString(rowDataList[1]),
-                                        batch = Convert.ToString(rowDataList[2]),
-                                        qty = Convert.ToInt32(rowDataList[3]),
-                                        raw_source = Convert.ToString(rowDataList[4]),
-                                        created_at = DateTime.Now
+                                        batch = po_batch,
+                                        qty = Convert.ToInt32(rowDataList[4]),
+                                        raw_source = Convert.ToString(rowDataList[5]),
+                                        created_at = DateTime.Now,
+                                        created_by = User.Identity.Name,
+                                        //index = Convert.ToSingle(rowDataList[5]),
                                     });
                                 }
                                 _db.Shipment.AddRange(shipmentdata);
                                 _db.SaveChanges();
+                                stream.Close();
+                                System.IO.File.Delete(filePath);
                                 TempData["msg"] = "File Succesfully Uploaded";
                                 TempData["result"] = "success";
                                 return await Task.Run(() => Redirect(Request.Headers["Referer"].ToString()));
                             }
                             //jika kolom lebih besar dari 4
+                            stream.Close();
+                            System.IO.File.Delete(filePath);
                             TempData["msg"] = "Field Column not Match";
                             TempData["result"] = "failed";
                             return await Task.Run(() => Redirect(Request.Headers["Referer"].ToString()));
@@ -220,7 +240,7 @@ namespace BMI.Controllers
         {
             var obj = _db.Shipment
                 .Where(a => a.po == po && a.bmi_code == code && a.batch == batch)
-                .Select(a => new { a.pdc,a.raw_source,a.qty})
+                .Select(a => new { a.pdc,a.raw_source,a.qty}).OrderByDescending(a=>a.pdc)
                 .ToList();
             return await Task.Run(() => Json(obj));
         }

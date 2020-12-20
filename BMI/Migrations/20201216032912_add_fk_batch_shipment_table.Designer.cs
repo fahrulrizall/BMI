@@ -4,14 +4,16 @@ using BMI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BMI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201216032912_add_fk_batch_shipment_table")]
+    partial class add_fk_batch_shipment_table
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -29,12 +31,6 @@ namespace BMI.Migrations
                     b.Property<string>("bmi_code")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<DateTime?>("created_at")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("created_by")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("po")
                         .HasColumnType("nvarchar(450)");
 
@@ -48,12 +44,6 @@ namespace BMI.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("status")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("updated_at")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("updated_by")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("id_adjustmentFG");
@@ -72,12 +62,6 @@ namespace BMI.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime?>("created_at")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("created_by")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<double>("qty")
                         .HasColumnType("float");
 
@@ -91,12 +75,6 @@ namespace BMI.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("status")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("updated_at")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("updated_by")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("id_adjustmentRaw");
@@ -187,9 +165,6 @@ namespace BMI.Migrations
                     b.Property<DateTime>("created_at")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("created_by")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("plant")
                         .HasColumnType("int");
 
@@ -209,9 +184,6 @@ namespace BMI.Migrations
                     b.Property<DateTime>("updated_at")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("updated_by")
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("id_fg");
 
                     b.HasIndex("sap_code");
@@ -226,9 +198,6 @@ namespace BMI.Migrations
 
                     b.Property<DateTime?>("created_at")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("created_by")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("daily_category")
                         .HasColumnType("nvarchar(max)");
@@ -257,9 +226,6 @@ namespace BMI.Migrations
                     b.Property<DateTime?>("updated_at")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("updated_by")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("weekly_category")
                         .HasColumnType("nvarchar(max)");
 
@@ -285,9 +251,6 @@ namespace BMI.Migrations
                     b.Property<DateTime?>("created_at")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("created_by")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("description")
                         .HasColumnType("nvarchar(max)");
 
@@ -296,9 +259,6 @@ namespace BMI.Migrations
 
                     b.Property<DateTime?>("updated_at")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("updated_by")
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("sap_code");
 
@@ -318,9 +278,6 @@ namespace BMI.Migrations
 
                     b.Property<DateTime?>("created_at")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("created_by")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("destination")
                         .HasColumnType("nvarchar(max)");
@@ -379,9 +336,6 @@ namespace BMI.Migrations
                     b.Property<DateTime?>("updated_at")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("updated_by")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("vessel_name")
                         .HasColumnType("nvarchar(max)");
 
@@ -400,23 +354,11 @@ namespace BMI.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime?>("created_at")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("created_by")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<float>("qty")
                         .HasColumnType("real");
 
                     b.Property<string>("raw_source")
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime?>("updated_at")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("updated_by")
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("id_pending");
 
@@ -434,9 +376,6 @@ namespace BMI.Migrations
 
                     b.Property<DateTime?>("created_at")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("created_by")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("date")
                         .HasColumnType("datetime2");
@@ -465,9 +404,6 @@ namespace BMI.Migrations
                     b.Property<DateTime?>("updated_at")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("updated_by")
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("id_productioninput");
 
                     b.HasIndex("po");
@@ -489,9 +425,6 @@ namespace BMI.Migrations
 
                     b.Property<DateTime?>("created_at")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("created_by")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("date")
                         .HasColumnType("datetime2");
@@ -516,9 +449,6 @@ namespace BMI.Migrations
 
                     b.Property<DateTime?>("updated_at")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("updated_by")
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("id_productionoutput");
 
@@ -572,12 +502,6 @@ namespace BMI.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime?>("created_at")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("created_by")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("date")
                         .HasColumnType("datetime2");
 
@@ -586,9 +510,6 @@ namespace BMI.Migrations
 
                     b.Property<string>("from_po")
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("landing_site")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("po")
                         .HasColumnType("nvarchar(max)");
@@ -607,12 +528,6 @@ namespace BMI.Migrations
 
                     b.Property<string>("to_po")
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime?>("updated_at")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("updated_by")
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("id_repack");
 
@@ -643,9 +558,6 @@ namespace BMI.Migrations
                     b.Property<DateTime?>("created_at")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("created_by")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<float?>("ex_rate")
                         .HasColumnType("real");
 
@@ -673,9 +585,6 @@ namespace BMI.Migrations
                     b.Property<DateTime?>("updated_at")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("updated_by")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<float?>("usd_price")
                         .HasColumnType("real");
 
@@ -699,9 +608,6 @@ namespace BMI.Migrations
                     b.Property<DateTime?>("created_at")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("created_by")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("eta")
                         .HasColumnType("datetime2");
 
@@ -716,9 +622,6 @@ namespace BMI.Migrations
 
                     b.Property<DateTime?>("updated_at")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("updated_by")
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("raw_source");
 

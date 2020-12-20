@@ -15,6 +15,7 @@
             method: 'get',
             dataType: 'json',
             success: function (data) {
+                console.log(data)
                 data.forEach(function (e) {
                     var date = new Date(e.date);
                     yr = date.getFullYear();
@@ -24,11 +25,32 @@
                         month = "0" + month;
                     }
                     newdate = day + '-' + month + '-' + yr;
-                    $('#detail-table-daily').append("<tr><td style='font-size:small'>" + newdate + "</td>" + "<td style='font-size:small' class='btn check-landing-site " + "site" + newdate + "-" + e.raw_source + "'  data-pt=" + pt + " data-code=" + bmicode + "  data-date=" + newdate + " data-source=" + e.raw_source + " >" + e.raw_source + "</td>" + "<td style='font-size:small' class='qty" + newdate + "-" + e.raw_source +"'  >" + parseInt(e.cases) + "</td>" + "<td class='case' style='font-size:small'>" + e.available + "</td></tr>");
-                    calc_case();
+                    pdc = yr + '-' + month + '-' + day;
+                    $('#detail-table-daily').append("<tr><td style='font-size:small'>" + newdate + "</td>" + "<td style='font-size:small' class='btn check-landing-site " + "site" + pdc + "-" + e.raw_source + "'  data-pt=" + pt + " data-code=" + bmicode + "  data-date=" + pdc + " data-source=" + e.raw_source + " >" + e.raw_source + "</td>" + "<td style='font-size:small' class='casetotal qty" + pdc + "-" + e.raw_source +"'  >" + parseInt(e.cases) + "</td>" + "<td class='caseavailable' style='font-size:small'>" + e.available + "</td></tr>");
+                    calc_case_total();
+                    calc_case_available();
                 })
+                //data.repackModel.forEach(function (e) {
+                //    var date = new Date(e.production_date);
+                //    yr = date.getFullYear();
+                //    month = date.getMonth() + 1;
+                //    day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate();
+                //    if (month < 10) {
+                //        month = "0" + month;
+                //    }
+                //    newdate = day + '-' + month + '-' + yr;
+                //    pdc = yr + '-' + month + '-' + day;
+                //    $('#detail-table-daily').append("<tr><td style='font-size:small'>" + newdate + "</td>" + "<td style='font-size:small' class='btn check-landing-site " + "site" + pdc + "-" + e.raw_source + "'  data-pt=" + pt + " data-code=" + bmicode + "  data-date=" + pdc + " data-source=" + e.raw_source + " >" + e.raw_source + "</td>" + "<td style='font-size:small' class='casetotal qty" + pdc + "-" + e.raw_source + "'  >" + parseInt(e.cases) + "</td>" + "<td class='caseavailable' style='font-size:small'>" + e.available + "</td></tr>");
+                //    calc_case_total();
+                //    calc_case_available();
+                //})
+
+
+
+
                 $('.check-landing-site').on('click', function () {
                     var pdc = $(this).data('date');
+                    console.log(pdc)
                     var raw_source = $(this).data('source');
                     $('.landing-site').remove();
                     $.ajax({
@@ -48,12 +70,20 @@
 
             }
         });
-        function calc_case() {
+        function calc_case_total() {
             var sum = 0;
-            $('.case').each(function () {
+            $('.casetotal').each(function () {
                 sum += parseInt($(this).text())
             });
-            $('#total').text(sum);
+            $('#totalcase').text(sum);
+        };
+
+        function calc_case_available() {
+            var sum = 0;
+            $('.caseavailable').each(function () {
+                sum += parseInt($(this).text())
+            });
+            $('#totalavailable').text(sum);
         };
     });
 
@@ -75,11 +105,11 @@
 
     $('.upload-gi').on('click', function () {
         $('#formModalLabel').html('Upload GI');
-        $('.modal-body form').attr('action', '/Production/ImportGI');
+        //$('.modal-body form').attr('action', '/Production/ImportGI');
     });
     $('.upload-gr').on('click', function () {
         $('#formModalLabel').html('Upload GR');
-        $('.modal-body form').attr('action', '/Production/ImportGR');
+        //$('.modal-body form').attr('action', '/Production/ImportGI');
     });
 
 
@@ -173,6 +203,7 @@
         $('.po').hide();
         $('.date').hide();
         $('.raw-source').hide();
+        $('.landing-site-input').hide();
         $('.modal-body form').attr('action', '/Production/Adjustment');
         $.ajax({
             url: '/Production/Getitemdata',
@@ -189,13 +220,15 @@
     });
 
     $('.repack-fg').on('click', function () {
-        $('#formModalLabel').html('Repack Item');
+        var sap = $(this).data('sap');
+        $('#formModalLabel').html('Repack Item ' + sap);
         $('.destination-pt').show();
         $('.destination-code').show();
         $('.raw-source').show();
         $('.production-date').show();
         $('.date').show();
         $('.po').show();
+        $('.landing-site-input').show();
         var pt = $(this).data('pt');
         var code = $(this).data('code');
         $('#qty').val("");
@@ -204,6 +237,7 @@
         $('#date').html("");
         $('#production_date').html("");
         $('#raw_source').html("");
+        $('#landing_site').html("");
         $('.modal-body form').attr('action', '/Production/Repack');
         $.ajax({
             url: '/Production/Getitemdata',
@@ -222,6 +256,7 @@
                     newdate = day + '-' + month + '-' + yr;
                     $('#production_date').append("<option>" + newdate + "</option>");
                     $('#raw_source').append("<option>" + e.raw_source + "</option>");
+                    $('#landing_site').append("<option>" + e.landing_site + "</option>");
                     $('#bmi_code').val(e.bmi_code)
                 })
             }
