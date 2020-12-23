@@ -12,6 +12,9 @@
     <link rel="stylesheet" href="~/css/plugins/datatables-bs4/css/dataTables.bootstrap4.css">
     <link rel="stylesheet" href="~/css/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
     <link rel="stylesheet" href="~/css/plugins/toastr/toastr.min.css">
+    @*<link rel="stylesheet" href="~/css/plugins/daterangepicker/daterangepicker.css">
+    <link href="~/css/plugins/select2/css/select2.css" rel="stylesheet" />*@
+
     @*overlayScrollbars*@
     <link rel="stylesheet" href="~/css/adminlte.min.css">
     @*Google Font: Source Sans Pro*@
@@ -58,58 +61,58 @@
 
             @if (signInManager.IsSignedIn(User))
             {
-                @*<form class="form-inline ml-3" method="post" asp-action="Logout" asp-controller="Account">
-                        <button class="btn nav-link text-dark">Logout @User.Identity.Name</button>
-                    </form>*@
-                <ul class="navbar-nav ml-auto">
-                    <li class="nav-item dropdown">
-                        <a data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class=" btn nav-link dropdown-toggle">
-                            @User.Identity.Name
+            @*<form class="form-inline ml-3" method="post" asp-action="Logout" asp-controller="Account">
+                    <button class="btn nav-link text-dark">Logout @User.Identity.Name</button>
+                </form>*@
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item dropdown">
+                    <a data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class=" btn nav-link dropdown-toggle">
+                        @User.Identity.Name
 
-                            @*<span class="badge badge-warning navbar-badge">15</span>*@
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+                        @*<span class="badge badge-warning navbar-badge">15</span>*@
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
 
 
-                            <div class="card card-primary card-outline">
-                                <div class="card-body box-profile">
-                                    <div class="text-center">
-                                        <img class="profile-user-img img-fluid img-circle" alt="User profile picture" src="~/css/dist/img/man300x300.png" />
-                                    </div>
-
-                                    <h3 class="profile-username text-center">@User.Identity.Name</h3>
-
-                                    <p class="text-muted text-center">Staff Cost Analyst</p>
-
-                                    @*<ul class="list-group list-group-unbordered mb-3">
-                                            <li class="list-group-item">
-                                                <b>Followers</b> <a class="float-right">1,322</a>
-                                            </li>
-                                            <li class="list-group-item">
-                                                <b>Following</b> <a class="float-right">543</a>
-                                            </li>
-                                            <li class="list-group-item">
-                                                <b>Friends</b> <a class="float-right">13,287</a>
-                                            </li>
-                                        </ul>*@
-                                    <form class="form-inline ml-3" method="post" asp-action="Logout" asp-controller="Account">
-                                        <button class="btn btn-primary btn-block"><b>Log Out</b></button>
-                                    </form>
-
+                        <div class="card card-primary card-outline">
+                            <div class="card-body box-profile">
+                                <div class="text-center">
+                                    <img class="profile-user-img img-fluid img-circle" alt="User profile picture" src="~/css/dist/img/man300x300.png" />
                                 </div>
-                                <!-- /.card-body -->
-                            </div>
 
+                                <h3 class="profile-username text-center">@User.Identity.Name</h3>
+
+                                <p class="text-muted text-center">Staff Cost Analyst</p>
+
+                                @*<ul class="list-group list-group-unbordered mb-3">
+                                        <li class="list-group-item">
+                                            <b>Followers</b> <a class="float-right">1,322</a>
+                                        </li>
+                                        <li class="list-group-item">
+                                            <b>Following</b> <a class="float-right">543</a>
+                                        </li>
+                                        <li class="list-group-item">
+                                            <b>Friends</b> <a class="float-right">13,287</a>
+                                        </li>
+                                    </ul>*@
+                                <form class="form-inline ml-3" method="post" asp-action="Logout" asp-controller="Account">
+                                    <button class="btn btn-primary btn-block"><b>Log Out</b></button>
+                                </form>
+
+                            </div>
+                            <!-- /.card-body -->
                         </div>
-                    </li>
-                </ul>
+
+                    </div>
+                </li>
+            </ul>
 
             }
             else
             {
-                <form class="form-inline ml-3">
-                    <a class="nav-link text-dark" asp-controller="Account" asp-action="Login">Login</a>
-                </form>
+            <form class="form-inline ml-3">
+                <a class="nav-link text-dark" asp-controller="Account" asp-action="Login">Login</a>
+            </form>
             }
 
 
@@ -117,7 +120,7 @@
         </nav>
         <!-- /.navbar -->
         <!-- Main Sidebar Container -->
-        <aside class="main-sidebar sidebar-light-teal elevation-4">
+        <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <!-- Brand Logo -->
             <a href="#" class="brand-link">
                 <img src="~/css/dist/img/AdminLTELogo.png"
@@ -145,7 +148,7 @@
                                 </p>
                             </a>
                             <ul class="nav nav-treeview">
-                                 <li class="nav-item">
+                                <li class="nav-item">
                                     <a class="nav-link" asp-route-plant="3770" asp-controller="PO" asp-action="index">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Purchase Order</p>
@@ -174,7 +177,7 @@
                                 </p>
                             </a>
                             <ul class="nav nav-treeview">
-                                 <li class="nav-item">
+                                <li class="nav-item">
                                     <a class="nav-link" asp-route-plant="3710" asp-controller="PO" asp-action="index">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Purchase Order</p>
@@ -216,7 +219,7 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-controller="Production" asp-action="Index">
+                                    <a class="nav-link" asp-controller="Production" asp-action="Index" asp-route-plant="3700">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Production</p>
                                     </a>
@@ -246,7 +249,7 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-controller="Fairtrade" asp-action="Index">
+                                    <a class="nav-link" asp-controller="FT" asp-action="Index">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Fair Trade</p>
                                     </a>
@@ -323,6 +326,24 @@
     @*<script src="~/css/plugins/jquery-validation/jquery.validate.js"></script>*@
     @*<script src="~/css/plugins/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>*@
 
+
+    <!-- sweetalert -->
+    <script src="~/css/plugins/sweetalert2/sweetalert2.min.js"></script>
+    <!-- toastr -->
+    <script src="~/css/plugins/toastr/toastr.min.js"></script>
+    <!-- Bootstrap 4 -->
+    <script src="~/css/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="~/css/plugins/datatables/jquery.dataTables.js"></script>
+    <script src="~/css/plugins/datatables-bs4/js/dataTables.bootstrap4.js"></script>
+    <script src="~/css/plugins/bs-custom-file-input/bs-custom-file-input.min.js"></script>
+    @*<script src="~/css/plugins/select2/js/select2.full.min.js"></script>
+    <script src="~/css/plugins/daterangepicker/daterangepicker.js"></script>
+    <script src="~/css/plugins/moment/moment.min.js"></script>
+    <script src="~/css/plugins/inputmask/jquery.inputmask.bundle.js"></script>*@
+    <!-- AdminLTE App -->
+    <script src="~/css/dist/js/adminlte.min.js"></script>
+    <!-- AdminLTE for demo purposes -->
+    <script src="~/css/dist/js/demo.js"></script>
     <!-- this below is my function script -->
     <script asp-append-version="true" src="~/css/js/script.js"></script>
     <script asp-append-version="true" src="~/css/js/Production.js"></script>
@@ -334,19 +355,6 @@
     <script asp-append-version="true" src="~/css/js/Repack.js"></script>
     <script asp-append-version="true" src="~/css/js/Shipment.js"></script>
     <script asp-append-version="true" src="~/css/js/PO.js"></script>
-    <!-- sweetalert -->
-    <script src="~/css/plugins/sweetalert2/sweetalert2.min.js"></script>
-    <!-- toastr -->
-    <script src="~/css/plugins/toastr/toastr.min.js"></script>
-    <!-- Bootstrap 4 -->
-    <script src="~/css/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="~/css/plugins/datatables/jquery.dataTables.js"></script>
-    <script src="~/css/plugins/datatables-bs4/js/dataTables.bootstrap4.js"></script>
-    <script src="~/css/plugins/bs-custom-file-input/bs-custom-file-input.min.js"></script>
-    <!-- AdminLTE App -->
-    <script src="~/css/dist/js/adminlte.min.js"></script>
-    <!-- AdminLTE for demo purposes -->
-    <script src="~/css/dist/js/demo.js"></script>
 
     <script>
         $(function () {

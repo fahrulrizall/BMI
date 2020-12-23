@@ -44,7 +44,7 @@
                                         @foreach (var obj in Model.ProductionOutputModel)
                                         {
                                             <tr>
-                                                <td style="font-size:small" id="sumdaily" name="sumdaily" class="btn detail-pt-daily" data-pt="@pt" data-sap="@obj.MasterBMIModel.sap_code" data-bmicode="@obj.bmi_code" data-source="@obj.raw_source" >@obj.MasterBMIModel.sap_code</td>
+                                                <td style="font-size:small" id="sumdaily" name="sumdaily" class="btn detail-pt-daily" data-po="@po" data-sap="@obj.MasterBMIModel.sap_code" data-bmicode="@obj.bmi_code" data-source="@obj.raw_source" >@obj.MasterBMIModel.sap_code</td>
                                                 <td style="font-size:small">@obj.MasterBMIModel.description</td>
                                                 <td style="font-size:small" class="btn adjustment-fg" data-toggle="modal" data-target="#modal-default" data-pt="@pt" data-code="@obj.bmi_code" >@((obj.qty_production * 2.204).ToString("0.00"))</td>
                                                 <td style="font-size:small" class="repack-fg" data-toggle="modal" data-target="#modal-default" data-pt="@pt" data-code="@obj.bmi_code" data-sap="@obj.MasterBMIModel.sap_code"> @Convert.ToInt32(((obj.qty_production * 2.204) / obj.MasterBMIModel.lbs))</td>

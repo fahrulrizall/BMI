@@ -38,7 +38,7 @@ namespace BMI.Controllers
             return View();
         }
 
-        public IActionResult List(string status)
+        public async Task<IActionResult> List(string status)
         {
             if (status == "in_plant" || status == "otw" || status == "closed")
             {
@@ -59,12 +59,12 @@ namespace BMI.Controllers
                 {
                     ViewBag.status = "Closed";
                 }
-                return View(list);
+                return await Task.Run(()=> View(list));
             }
             return NotFound();
         }
 
-        public IActionResult Detail (string raw_source)
+        public async Task<IActionResult> Detail (string raw_source)
         {
             var list = _db.Rm_detail
                 .Where(x => x.raw_source == raw_source)
@@ -72,18 +72,18 @@ namespace BMI.Controllers
                 .OrderByDescending(e => e.id_raw)
                 .ToList();
             ViewBag.raw_source = raw_source;
-            return View(list);
+            return await Task.Run(()=> View(list));
         }
 
-        public JsonResult Getdata(string raw_source)
+        public async Task<JsonResult> Getdata(string raw_source)
         {
             var obj = _db.Rm.Find(raw_source);
-            return Json(obj);
+            return await Task.Run(()=> Json(obj));
         }
 
         [HttpPost]
         [AutoValidateAntiforgeryToken]
-        public IActionResult Update(RmModel rmModel)
+        public async Task<IActionResult> Update(RmModel rmModel)
         {
             if (ModelState.IsValid)
             {
@@ -108,7 +108,7 @@ namespace BMI.Controllers
                     _db.SaveChanges();
                     TempData["msg"] = "Item Succesfully Updated";
                     TempData["result"] = "success";
-                    return RedirectToAction("List", new { status = status });
+                    return await Task.Run(()=> RedirectToAction("List", new { status = status }));
                 }
                 else if (rmModel.status == "On The Water")
                 {
@@ -124,7 +124,7 @@ namespace BMI.Controllers
                     _db.SaveChanges();
                     TempData["msg"] = "Item Succesfully Updated";
                     TempData["result"] = "success";
-                    return RedirectToAction("List", new { status = status });
+                    return await Task.Run(()=> RedirectToAction("List", new { status = status }));
                 }
                 else
                 {
@@ -140,18 +140,18 @@ namespace BMI.Controllers
                     _db.SaveChanges();
                     TempData["msg"] = "Item Succesfully Updated";
                     TempData["result"] = "success";
-                    return RedirectToAction("List", new { status = status });
+                    return await Task.Run(()=> RedirectToAction("List", new { status = status }));
                 }
             }
             TempData["msg"] = "Item Failed Updated";
             TempData["result"] = "failed";
-            return RedirectToAction("Index");
+            return await Task.Run(()=> RedirectToAction("Index")) ;
         }
 
 
         [HttpPost]
         [AutoValidateAntiforgeryToken]
-        public IActionResult Import(IFormFile postedFile)
+        public async Task<IActionResult> Import(IFormFile postedFile)
         {
             if (postedFile != null)
             {
@@ -236,29 +236,29 @@ namespace BMI.Controllers
                                 _db.SaveChanges();
                                 TempData["msg"] = "File Succesfully Uploaded";
                                 TempData["result"] = "success";
-                                return RedirectToAction("List", new { status = "otw" });
+                                return await Task.Run(()=> RedirectToAction("List", new { status = "otw" }));
                             }
                             stream.Close();
                             System.IO.File.Delete(filePath);
                             TempData["msg"] = "Field Column not Match";
                             TempData["result"] = "failed";
-                            return RedirectToAction("List", new { status = "otw" });
+                            return await Task.Run(() => RedirectToAction("List", new { status = "otw" }));
                         }
                     }
                 }
                 //jika tidak sesuai extension
                 TempData["msg"] = "File Extension must excel file format 'xlsx or xls'";
                 TempData["result"] = "failed";
-                return RedirectToAction("List", new { status = "otw" });
+                return await Task.Run(() => RedirectToAction("List", new { status = "otw" }));
             }
             TempData["msg"] = "File Empty";
             TempData["result"] = "failed";
-            return RedirectToAction("List", new { status = "otw" });
+            return await Task.Run(() => RedirectToAction("List", new { status = "otw" }));
         }
 
         [HttpPost]
         [AutoValidateAntiforgeryToken]
-        public IActionResult Delete(string raw_source,string status)
+        public async Task<IActionResult> Delete(string raw_source,string status)
         {
             var rm_detail = _db.Rm_detail.Where(x => x.raw_source == raw_source).ToList();
             _db.Rm_detail.RemoveRange(rm_detail);
@@ -267,23 +267,23 @@ namespace BMI.Controllers
             _db.SaveChanges();
             TempData["msg"] = "Item Succesfully Deleted";
             TempData["result"] = "success";
-            return RedirectToAction("List", new { status = status });
+            return await Task.Run(()=> RedirectToAction("List", new { status = status }));
         }
 
         [HttpPost]
         [AutoValidateAntiforgeryToken]
-        public IActionResult Updatedetail(RmDetailModel obj)
+        public async Task<IActionResult> Updatedetail(RmDetailModel obj)
         {
             _db.Rm_detail.Update(obj);
             _db.SaveChanges();
             TempData["msg"] = "Item Succesfully Updated";
             TempData["result"] = "success";
-            return RedirectToAction("Detail",new { raw_source = obj.raw_source });
+            return await Task.Run(()=> RedirectToAction("Detail", new { raw_source = obj.raw_source }));
         }
 
         [HttpPost]
         [AutoValidateAntiforgeryToken]
-        public IActionResult Duplicateitem(RmDetailModel obj)
+        public async Task<IActionResult> Duplicateitem(RmDetailModel obj)
         {
             if (obj.id_raw == 0)
             {
@@ -291,36 +291,36 @@ namespace BMI.Controllers
                 _db.SaveChanges();
                 TempData["msg"] = "Item Succesfully Duplicated";
                 TempData["result"] = "success";
-                return RedirectToAction("Detail", new { raw_source = obj.raw_source });
+                return await Task.Run(() => RedirectToAction("Detail", new { raw_source = obj.raw_source }));
             }
             else
             {
                 TempData["msg"] = "Item Failed Duplicated";
                 TempData["result"] = "failed";
-                return RedirectToAction("Detail", new { raw_source = obj.raw_source });
+                return await Task.Run(() => RedirectToAction("Detail", new { raw_source = obj.raw_source }));
             }
         }
 
-        public JsonResult Getdetailitem(int id)
+        public async Task<JsonResult> Getdetailitem(int id)
         {
             var obj = _db.Rm_detail.Find(id);
-            return Json(obj);
+            return await Task.Run(()=> Json(obj));
         }
 
         [HttpPost]
         [AutoValidateAntiforgeryToken]
-        public IActionResult Deleteitem(int id,string raw_source)
+        public async Task<IActionResult> Deleteitem(int id,string raw_source)
         {
             var obj = _db.Rm_detail.Find(id);
             _db.Rm_detail.Remove(obj);
             _db.SaveChanges();
             TempData["msg"] = "Item Succesfully Deleted";
             TempData["result"] = "success";
-            return RedirectToAction("Detail", new { raw_source = raw_source });
+            return await Task.Run(() => RedirectToAction("Detail", new { raw_source = obj.raw_source }));
         }
 
 
-        public IActionResult Adddestroy(AdjustmentRawModel adjustmentRawModel)
+        public async Task< IActionResult> Adddestroy(AdjustmentRawModel adjustmentRawModel)
         {
             if (ModelState.IsValid)
             {
@@ -328,11 +328,11 @@ namespace BMI.Controllers
                 _db.SaveChanges();
                 TempData["msg"] = "Raw Material Succesfully Destroy";
                 TempData["result"] = "success";
-                return Redirect(Request.Headers["Referer"].ToString());
+                return await Task.Run(()=> Redirect(Request.Headers["Referer"].ToString())) ;
             }
             TempData["msg"] = "Raw Material Failed to Destroy";
             TempData["result"] = "failed";
-            return Redirect(Request.Headers["Referer"].ToString());
+            return await Task.Run(() => Redirect(Request.Headers["Referer"].ToString()));
         }
 
 

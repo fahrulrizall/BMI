@@ -20,7 +20,6 @@ $(function () {
             bsCustomFileInput.init();
         });
     });
-    
 
     //untuk fgs
     $('.add-new-fg').on('click',function () {

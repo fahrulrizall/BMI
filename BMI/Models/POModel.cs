@@ -29,8 +29,6 @@ namespace BMI.Models
 
         [Display(Name = "Destination")]
         public string? destination { get; set; }
-
-
         
         public string? container { get; set; }
         public string? inv_no { get; set; }
@@ -56,5 +54,7 @@ namespace BMI.Models
         [NotMapped]
         [Remote(action: "DateExist", controller: "Production", HttpMethod = "POST", AdditionalFields = "date", ErrorMessage = "Production Date Not Available")]
         public DateTime date  { get; set; }
+        [NotMapped]
+        public double yield { get; set; }
     }
 }

@@ -26,7 +26,7 @@ namespace BMI.Controllers
             return View();
         }
 
-        public IActionResult DetailFG(string material)
+        public async Task< IActionResult> DetailFG(string material)
         {
             var fg = _db.Production_output
                 .Include(k => k.MasterBMIModel)
@@ -39,16 +39,19 @@ namespace BMI.Controllers
                     bmi_code = k.Key.bmi_code,
                     MasterBMIModel = k.Max(m => m.MasterBMIModel),
                     POModel = k.Max(m => m.POModel),
-                    total = k.Sum(k => k.qty * 2.204 / k.MasterBMIModel.lbs) -
-                   // _db.Shipment_detail.Include(a=>a.ShipmentModel).Where(c => c.ShipmentModel.bmi_code == k.Key.bmi_code && c.ShipmentModel.batch == k.Key.batch).Sum(a => a.qty) -
-                    _db.AdjustmentFG.Where(c => c.bmi_code == k.Key.bmi_code && c.po == k.Key.po).Sum(a => a.qty)
+                    total = k.Sum(k => k.qty * 2.204 / k.MasterBMIModel.lbs)
+                    - _db.Shipment.Where(c => c.bmi_code == k.Key.bmi_code && c.batch == k.Key.po).Sum(a => a.qty)
+                    - _db.AdjustmentFG.Where(c => c.bmi_code == k.Key.bmi_code && c.po == k.Key.po).Sum(a => a.qty)
+                    - _db.Repack.Where(c => c.from_bmi_code == k.Key.bmi_code && c.from_po == k.Key.po).Sum(a => a.qty)
+                    + _db.Repack.Where(c => c.to_bmi_code == k.Key.bmi_code && c.to_po == k.Key.po).Sum(a => a.qty * 2.204 / a.toMasterBMIModel.lbs)
                 })
                 .Where(k => k.total >= 0.9)
+                .OrderByDescending(a => a.POModel.pt)
                 .ToList();
-            return View(fg);
+            return await Task.Run(()=> View(fg));
         }
 
-        public IActionResult DetailRaw(string material)
+        public async Task<IActionResult> DetailRaw(string material)
         {
             var raw = _db.Rm_detail
                  .Include(k => k.Masterdatamodel)
@@ -67,7 +70,7 @@ namespace BMI.Controllers
                  })
                  .Where(k => k.total > 0)
                  .ToList();
-            return View(raw);
+            return await Task.Run(()=> View(raw));
         }
 
 

@@ -33,11 +33,12 @@ namespace BMI.Controllers
             Configuration = _configuration;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string plant)
         {
             var obj = _db.PO
-                .Where(a => a.plant == "3700" && a.pt != null)
-                .Select(a=> new POModel { 
+                .Where(a => a.plant == plant)
+                .Select(a => new POModel
+                {
                     pt = a.pt,
                     po = a.po,
                     batch = a.batch,
@@ -183,16 +184,14 @@ namespace BMI.Controllers
             return await Task.Run(() => Redirect(Request.Headers["Referer"].ToString()));
         }
 
-        public async Task<IActionResult> Detail(string pt)
+        public async Task<IActionResult> Detail(string pt,string po)
         {
-            var po = Convert.ToString(_db.PO.Where(a => a.pt == Convert.ToInt32(pt)).Select(a => a.po).First());
             var model = new ProductionView();
             model.ProductionOutputModel = _db.Production_output
                 .Where(a => a.po == po)
                 .Include(k => k.MasterBMIModel)
-                .Include(k => k.POModel)
                 .AsEnumerable()
-                .GroupBy(k => new { k.bmi_code, k.POModel, k.po })
+                .GroupBy(k => new { k.bmi_code, k.po })
                 .Select(a => new ProductionOutputModel
                 {
                     bmi_code = a.Key.bmi_code,
@@ -242,10 +241,8 @@ namespace BMI.Controllers
             return await Task.Run(()=> View(model));
         }
 
-        public async Task<JsonResult> Detailperitem(int pt, string bmicode)
+        public async Task<JsonResult> Detailperitem(string po, string bmicode)
         {
-            var po = Convert.ToString(_db.PO.Where(a => a.pt == Convert.ToInt32(pt)).Select(a => a.po).First());
-
             var output = _db.Production_output
                 .Where(a => a.po == po && a.bmi_code == bmicode)
                 .Include(k => k.MasterBMIModel)
@@ -273,8 +270,8 @@ namespace BMI.Controllers
                 {
                     production_date = a.Key.production_date,
                     raw_source = a.Key.raw_source,
-                    cases = a.Sum(a => a.qty),
-                    available = a.Sum(a=>a.qty)
+                    cases = a.Sum(a => a.qty * a.fromMasterBMIModel.lbs /a.toMasterBMIModel.lbs),
+                    available = a.Sum(a=>a.qty * a.fromMasterBMIModel.lbs / a.toMasterBMIModel.lbs)
                 })
                 .ToList();
 
@@ -289,35 +286,51 @@ namespace BMI.Controllers
                     cases = a.Sum(b => b.cases),
                     available = a.Sum(b => b.available)
                 }).ToList();
-          
-
             return await Task.Run(()=> Json(result));
         }
 
-        public async Task<JsonResult> Detaillandingsite(int pt, string bmicode, DateTime pdc, string raw_source)
+        public async Task<JsonResult> Detaillandingsite(string po, string bmicode, DateTime pdc, string raw_source)
         {
-            var po = Convert.ToString(_db.PO.Where(a => a.pt == Convert.ToInt32(pt)).Select(a => a.po).First());
-            var obj = _db.Production_output
+            var output = _db.Production_output
                 .Include(a => a.MasterBMIModel)
-                .Where(a => a.po == po && a.bmi_code == bmicode && a.raw_source == raw_source && a.date.Year == pdc.Year &&
-                       a.date.Month == pdc.Month &&
-                       a.date.Day == pdc.Day)
+                .Where(a => a.po == po && a.bmi_code == bmicode && a.raw_source == raw_source && a.date == pdc)
                 .AsEnumerable()
                 .GroupBy(a => a.landing_site)
-                .Select(a => new
+                .Select(a => new RepackModel
                 {
                     landing_site = a.Key,
                     cases = Convert.ToInt32(a.Sum(x => x.qty * 2.204) / a.Max(b => b.MasterBMIModel.lbs))
                 }).ToList();
-            return await Task.Run(() => Json(obj));
+
+            var repack = _db.Repack
+                .Where(a => a.to_po == po && a.to_bmi_code == bmicode && a.raw_source == raw_source && a.production_date == pdc) 
+                .AsEnumerable()
+                .GroupBy(a => a.landing_site)
+                .Select(a => new RepackModel
+                {
+                    landing_site = a.Key,
+                    cases = a.Sum(b => b.qty)
+                }).ToList();
+
+
+            var union = new List<RepackModel> (output);
+            union.AddRange(repack);
+
+            var result = union
+                .GroupBy(a => a.landing_site)
+                .Select(a=> new 
+                { 
+                    landing_site = a.Key,
+                    cases = a.Sum(b=>b.cases)
+                }).ToList();
+
+            return await Task.Run(() => Json(result));
 
         }
 
         public async Task<JsonResult> DateExist(DateTime date)
         {
-            var unique = _db.Production_input.FirstOrDefault(m => m.date.Year == date.Year &&
-                                                                    m.date.Month == date.Month &&
-                                                                    m.date.Day == date.Day);
+            var unique = _db.Production_input.FirstOrDefault(m => m.date == date);
             if (unique != null)
             {
                 return await Task.Run(()=> Json(true));
@@ -330,9 +343,7 @@ namespace BMI.Controllers
             var obj = _db.Production_input
                 .Include(k => k.POModel)
                 .AsEnumerable()
-                .Where(m => m.date.Year == date.Year &&
-                       m.date.Month == date.Month &&
-                       m.date.Day == date.Day)
+                .Where(m => m.date == date)
                 .GroupBy(k => k.po_bmi)
                 .Select(a => new ProductionInputModel
                 {
@@ -346,14 +357,14 @@ namespace BMI.Controllers
             return await Task.Run(() => View(obj));
         }
 
-        public async Task<JsonResult> RawMaterial(string po, DateTime date)
+
+        public async Task<JsonResult> AllMaterial(string po, DateTime date)
         {
-            var obj = _db.Production_input
+            var model = new ProductionView();
+            model.ProductionInputModel = _db.Production_input
                 .Include(k => k.Masterdatamodel)
                 .AsEnumerable()
-                .Where(m => m.po_bmi == po && m.date.Year == date.Year &&
-                       m.date.Month == date.Month &&
-                       m.date.Day == date.Day)
+                .Where(m => m.po_bmi == po && m.date == date)
                 .GroupBy(k => new { k.raw_source, k.sap_code, k.landing_site })
                 .Select(a => new ProductionInputModel
                 {
@@ -364,17 +375,11 @@ namespace BMI.Controllers
                     qty = a.Sum(k => k.qty)
                 })
                 .ToList();
-            return await Task.Run(() => Json(obj));
-        }
 
-        public async Task<JsonResult> FinishedGood(string po, DateTime date)
-        {
-            var obj = _db.Production_output
+            model.ProductionOutputModel = _db.Production_output
                 .Include(k => k.MasterBMIModel)
                 .AsEnumerable()
-                .Where(m => m.po_bmi == po && m.date.Year == date.Year &&
-                       m.date.Month == date.Month &&
-                       m.date.Day == date.Day)
+                .Where(m => m.po_bmi == po && m.date == date)
                 .GroupBy(k => k.bmi_code)
                 .Select(a => new ProductionOutputModel
                 {
@@ -383,9 +388,8 @@ namespace BMI.Controllers
                     qty = a.Sum(k => k.qty)
                 })
                 .ToList();
-            return await Task.Run(() => Json(obj));
+            return await Task.Run(() => Json(model));
         }
-
 
         public async Task<JsonResult> Getitemdata(string code, string pt)
         {
@@ -495,7 +499,6 @@ namespace BMI.Controllers
         public async Task<IActionResult> DeleteGI(DateTime date, int hour,int minute)
         {
             var datetime = _db.Production_input.Where(a => a.created_at.Value.Date == date && a.created_at.Value.Hour == hour && a.created_at.Value.Minute == minute).ToList();
-            
             if (datetime.Count>0)
             {
                 _db.Production_input.RemoveRange(datetime);

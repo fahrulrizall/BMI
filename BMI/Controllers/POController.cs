@@ -26,7 +26,7 @@ namespace BMI.Controllers
 
         public async Task<IActionResult> Index(string plant)
         {
-            var obj = _db.PO.Where(a => a.plant == plant).OrderByDescending(a=>a.po).ToList();
+            var obj = _db.PO.Where(a => a.plant == plant).Where(a=>a.plant == plant) .OrderByDescending(a=>a.po).ToList();
             ViewBag.plant = plant;
             if (plant == "3700")
             {

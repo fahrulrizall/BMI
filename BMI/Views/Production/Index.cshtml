@@ -49,6 +49,9 @@
                                     <th style="width: 4%">
                                         Batch
                                     </th>
+                                    @*<th style="width: 4%">
+                                        Yield
+                                    </th>*@
                                     <th style="width: 4%">
                                         Status
                                     </th>
@@ -63,10 +66,11 @@
 
                                     <tr>
                                         <td>
-                                            <a  style="font-size:smaller;color:black" asp-controller="Production" asp-action="Detail" asp-route-pt="@obj.pt">@obj.pt</a>
+                                            <a  style="font-size:smaller;color:black" asp-controller="Production" asp-action="Detail" asp-route-po="@obj.po" asp-route-pt="@obj.pt">@obj.pt</a>
                                         </td>
                                         <td style="font-size:smaller">@obj.po</td>
                                         <td style="font-size:smaller">@obj.batch</td>
+                                        @*<td style="font-size:smaller">@((obj.yield).ToString("0.00")) %</td>*@
                                         <td style="font-size:smaller">@obj.pt_status</td>
                                         <td>
                                             <a style="font-size:small" class="btn btn-xs btn-warning change-pt"

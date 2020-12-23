@@ -7,15 +7,14 @@
         var sap = $(this).data('sap');
         var bmicode = $(this).data('bmicode');
         $('#card-title').html(sap);
-        var pt = $(this).data('pt');
+        var po = $(this).data('po');
         $('#detail-table-daily').html("");
         $.ajax({
             url: '/Production/Detailperitem',
-            data: { pt: pt, bmicode: bmicode },
+            data: { po: po, bmicode: bmicode },
             method: 'get',
             dataType: 'json',
             success: function (data) {
-                console.log(data)
                 data.forEach(function (e) {
                     var date = new Date(e.date);
                     yr = date.getFullYear();
@@ -26,36 +25,18 @@
                     }
                     newdate = day + '-' + month + '-' + yr;
                     pdc = yr + '-' + month + '-' + day;
-                    $('#detail-table-daily').append("<tr><td style='font-size:small'>" + newdate + "</td>" + "<td style='font-size:small' class='btn check-landing-site " + "site" + pdc + "-" + e.raw_source + "'  data-pt=" + pt + " data-code=" + bmicode + "  data-date=" + pdc + " data-source=" + e.raw_source + " >" + e.raw_source + "</td>" + "<td style='font-size:small' class='casetotal qty" + pdc + "-" + e.raw_source +"'  >" + parseInt(e.cases) + "</td>" + "<td class='caseavailable' style='font-size:small'>" + e.available + "</td></tr>");
+                    $('#detail-table-daily').append("<tr><td style='font-size:small'>" + newdate + "</td>" + "<td style='font-size:small' class='btn check-landing-site " + "site" + pdc + "-" + e.raw_source + "'  data-po=" + po + " data-code=" + bmicode + "  data-date=" + pdc + " data-source=" + e.raw_source + " >" + e.raw_source + "</td>" + "<td style='font-size:small' class='casetotal qty" + pdc + "-" + e.raw_source +"'  >" + parseInt(e.cases) + "</td>" + "<td class='caseavailable' style='font-size:small'>" + e.available + "</td></tr>");
                     calc_case_total();
                     calc_case_available();
                 })
-                //data.repackModel.forEach(function (e) {
-                //    var date = new Date(e.production_date);
-                //    yr = date.getFullYear();
-                //    month = date.getMonth() + 1;
-                //    day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate();
-                //    if (month < 10) {
-                //        month = "0" + month;
-                //    }
-                //    newdate = day + '-' + month + '-' + yr;
-                //    pdc = yr + '-' + month + '-' + day;
-                //    $('#detail-table-daily').append("<tr><td style='font-size:small'>" + newdate + "</td>" + "<td style='font-size:small' class='btn check-landing-site " + "site" + pdc + "-" + e.raw_source + "'  data-pt=" + pt + " data-code=" + bmicode + "  data-date=" + pdc + " data-source=" + e.raw_source + " >" + e.raw_source + "</td>" + "<td style='font-size:small' class='casetotal qty" + pdc + "-" + e.raw_source + "'  >" + parseInt(e.cases) + "</td>" + "<td class='caseavailable' style='font-size:small'>" + e.available + "</td></tr>");
-                //    calc_case_total();
-                //    calc_case_available();
-                //})
-
-
-
 
                 $('.check-landing-site').on('click', function () {
                     var pdc = $(this).data('date');
-                    console.log(pdc)
                     var raw_source = $(this).data('source');
                     $('.landing-site').remove();
                     $.ajax({
                         url: '/Production/Detaillandingsite',
-                        data: { pt: pt, bmicode: bmicode, pdc: pdc, raw_source: raw_source },
+                        data: { po: po, bmicode: bmicode, pdc: pdc, raw_source: raw_source },
                         method: 'get',
                         dataType: 'json',
                         success: function (data) {
@@ -105,11 +86,9 @@
 
     $('.upload-gi').on('click', function () {
         $('#formModalLabel').html('Upload GI');
-        //$('.modal-body form').attr('action', '/Production/ImportGI');
     });
     $('.upload-gr').on('click', function () {
         $('#formModalLabel').html('Upload GR');
-        //$('.modal-body form').attr('action', '/Production/ImportGI');
     });
 
 
@@ -139,14 +118,20 @@
         $('#detail-raw-daily').html("");
         $('#detail-fg-daily').html("");
         $.ajax({
-            url: '/Production/RawMaterial',
+            url: '/Production/AllMaterial',
             data: { po: po, date: date },
             method: 'get',
             dataType: 'json',
             success: function (data) {
-                data.forEach(function (e) {
+                data.productionInputModel.forEach(function (e) {
                     $('#detail-raw-daily').append("<tr><td style='font-size:small'>" + e.raw_source + "</td>" + "<td style='font-size:small'>" + e.sap_code + "</td>" + "<td style='font-size:small'>" + e.masterdatamodel.description + "</td>" + "<td style='font-size:small'>" + e.landing_site + "</td>" + "<td class='qty' style='font-size:small'>" + e.qty + "</td></tr>");
                     total_kg();
+                })
+                data.productionOutputModel.forEach(function (e) {
+                    total_case = parseInt(e.qty * 2.204 / e.masterBMIModel.lbs);
+                    $('#detail-fg-daily').append("<tr><td style='font-size:small'>" + e.masterBMIModel.sap_code + "</td>" + "<td style='font-size:small'>" + e.masterBMIModel.description + "</td>" + "<td class='qty-kg' style='font-size:small'>" + parseFloat(e.qty).toFixed(2) + "</td>" + "<td class='qty-case' style='font-size:small'>" + total_case + "</td></tr>");
+                    calc_total_fg();
+                    calc_total_case();
                 })
             }
         });
@@ -157,21 +142,6 @@
             });
             $('#total-kg-raw').text(sum);
         };
-
-        $.ajax({
-            url: '/Production/FinishedGood',
-            data: { po: po, date: date },
-            method: 'get',
-            dataType: 'json',
-            success: function (data) {
-                data.forEach(function (e) {
-                    total_case = parseInt(e.qty * 2.204 / e.masterBMIModel.lbs);
-                    $('#detail-fg-daily').append("<tr><td style='font-size:small'>" + e.masterBMIModel.sap_code + "</td>" + "<td style='font-size:small'>" + e.masterBMIModel.description + "</td>" + "<td class='qty-kg' style='font-size:small'>" + parseFloat(e.qty).toFixed(2) + "</td>" + "<td class='qty-case' style='font-size:small'>" + total_case + "</td></tr>");
-                    calc_total_fg();
-                    calc_total_case();
-                })
-            }
-        });
         function calc_total_fg() {
             var sum = 0;
             $('.qty-kg').each(function () {
