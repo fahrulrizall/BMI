@@ -155,13 +155,18 @@ namespace BMI.Controllers
                                 DataRowCollection row = dataSet.Tables["Pending"].Rows;
                                 List<object> rowDataList = null;
 
+                                _db.Pending.RemoveRange();
+                                _db.SaveChanges();
+
                                 foreach (DataRow item in row)
                                 {
                                     rowDataList = item.ItemArray.ToList();
                                     Pending.Add(new PendingModel
                                     {
                                         raw_source = Convert.ToString(rowDataList[0]),
-                                        qty = Convert.ToSingle(rowDataList[1])
+                                        qty = Convert.ToSingle(rowDataList[1]),
+                                        created_at = DateTime.Now,
+                                        created_by = User.Identity.Name
                                     });
                                 }
                                 _db.Pending.AddRange(Pending);

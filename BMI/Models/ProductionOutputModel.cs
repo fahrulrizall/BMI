@@ -27,12 +27,14 @@ namespace BMI.Models
         #nullable enable
         public string? landing_site { get; set; }
         public string? raw_source { get; set; }
-        public string? saved { get; set; }
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime? created_at { get; set; }
         public DateTime? updated_at { get; set; }
         public string? created_by { get; set; }
         public string? updated_by { get; set; }
+        [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}", ApplyFormatInEditMode = true)]
+        public DateTime? gr_date { get; set; }
+
         [NotMapped]
         public double qty_production { get; set; }
         [NotMapped]

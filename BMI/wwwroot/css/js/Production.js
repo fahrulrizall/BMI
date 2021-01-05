@@ -1,4 +1,6 @@
-﻿$(function () {
+﻿
+$(function () {
+
 
     //table global pt
     $('.detail-pt-daily').on('click', function () {

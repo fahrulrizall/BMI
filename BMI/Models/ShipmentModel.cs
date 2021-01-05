@@ -34,5 +34,8 @@ namespace BMI.Models
         public POModel POModel { get; set; }
         public POModel POModelBatch { get; set; }
         public MasterBMIModel MasterBMIModel { get; set; }
+
+        [NotMapped]
+        public double cases { get; set; }
     }
 }

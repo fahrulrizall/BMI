@@ -52,6 +52,7 @@
                 $('#fda_no').val(data.fda_no);
                 $('#seal_no').val(data.seal_no);
                 $('#destination').val(data.destination);
+                $('#status').val(data.po_status);
             }
         });
     });

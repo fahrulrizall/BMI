@@ -24,9 +24,9 @@ namespace BMI.Controllers
             _db = db;
         }
 
-        public async Task<IActionResult> Index(string plant)
+        public async Task<IActionResult> Index(string plant, string status)
         {
-            var obj = _db.PO.Where(a => a.plant == plant).Where(a=>a.plant == plant) .OrderByDescending(a=>a.po).ToList();
+            var obj = _db.PO.Where(a => a.plant == plant).Where(a=>a.plant == plant && a.po_status == status).OrderByDescending(a=>a.po).ToList();
             ViewBag.plant = plant;
             if (plant == "3700")
             {
@@ -39,6 +39,7 @@ namespace BMI.Controllers
             {
                 ViewBag.factory = "GFF";
             }
+            ViewBag.status = status;
             return await Task.Run(()=> View(obj));
         }
 
@@ -53,6 +54,8 @@ namespace BMI.Controllers
                     po = POModel.po,
                     pt = POModel.pt,
                     plant = plant,
+                    pt_status = "Open",
+                    po_status = "Open",
                     batch =  (POModel.po).Substring((POModel.po).Length-5) + "SIDID",
                     created_by = User.Identity.Name,
                     created_at = DateTime.Now

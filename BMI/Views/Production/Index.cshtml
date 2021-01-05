@@ -1,4 +1,5 @@
 ﻿@model IEnumerable<BMI.Models.POModel>
+@{string status = ViewBag.status; }
 @{
     ViewData["Title"] = "Production";
 }
@@ -13,7 +14,6 @@
                 <div class="card">
                     <div class="card-header">
                         <div class="card-title">
-
                             <form method="get" asp-action="Daily" asp-controller="Production">
                                 <div class="input-group input-group-sm">
                                     <input type="date" asp-for="First().date">
@@ -26,16 +26,33 @@
 
                         </div>
 
-                        <div class="card-tools">
+                        <div>
                             <a href="Production/History" class="btn btn-sm btn-default upload-gr float-right mx-2">
                                 <i class="fa fa-history"></i>
                             </a>
                         </div>
+
+                        <div class="card-tools">
+                            <ul class="nav nav-pills">
+                                @if (status == "Open")
+                                {
+                                    <li class="nav-item"><a class="nav-link active" asp-controller="Production" asp-action="Index" asp-route-plant="3700" asp-route-status="Open">Open</a></li>
+                                    <li class="nav-item"><a class="nav-link" asp-controller="Production" asp-action="Index" asp-route-plant="3700" asp-route-status="Closed">Closed</a></li>
+                                }
+                                else
+                                {
+                                    <li class="nav-item"><a class="nav-link" asp-controller="Production" asp-action="Index" asp-route-plant="3700" asp-route-status="Open">Open</a></li>
+                                    <li class="nav-item"><a class="nav-link active" asp-controller="Production" asp-action="Index" asp-route-plant="3700" asp-route-status="Closed">Closed</a></li>
+                                }
+
+                            </ul>
+                        </div>
+
+
                     </div>
                 </div>
 
                 <div class="card">
-
                     <div class="card-body">
                         <table id="example1" class="table table-bordered table-striped table-sm">
                             <thead>
@@ -50,8 +67,8 @@
                                         Batch
                                     </th>
                                     @*<th style="width: 4%">
-                                        Yield
-                                    </th>*@
+                                            Yield
+                                        </th>*@
                                     <th style="width: 4%">
                                         Status
                                     </th>
@@ -64,21 +81,21 @@
                                 @foreach (var obj in Model)
                                 {
 
-                                    <tr>
-                                        <td>
-                                            <a  style="font-size:smaller;color:black" asp-controller="Production" asp-action="Detail" asp-route-po="@obj.po" asp-route-pt="@obj.pt">@obj.pt</a>
-                                        </td>
-                                        <td style="font-size:smaller">@obj.po</td>
-                                        <td style="font-size:smaller">@obj.batch</td>
-                                        @*<td style="font-size:smaller">@((obj.yield).ToString("0.00")) %</td>*@
-                                        <td style="font-size:smaller">@obj.pt_status</td>
-                                        <td>
-                                            <a style="font-size:small" class="btn btn-xs btn-warning change-pt"
-                                               data-toggle="modal" data-target="#modal-edit" data-po="@obj.po">
-                                                <i class="fa fa-edit" style="color:ghostwhite;outline:thin"></i>
-                                            </a>
-                                        </td>
-                                    </tr>
+                                <tr>
+                                    <td>
+                                        <a style="font-size:smaller;color:black" asp-controller="Production" asp-action="Detail" asp-route-po="@obj.po" asp-route-pt="@obj.pt">@obj.pt</a>
+                                    </td>
+                                    <td style="font-size:smaller">@obj.po</td>
+                                    <td style="font-size:smaller">@obj.batch</td>
+                                    @*<td style="font-size:smaller">@((obj.yield).ToString("0.00")) %</td>*@
+                                    <td style="font-size:smaller">@obj.pt_status</td>
+                                    <td>
+                                        <a style="font-size:small" class="btn btn-xs btn-warning change-pt"
+                                           data-toggle="modal" data-target="#modal-edit" data-po="@obj.po">
+                                            <i class="fa fa-edit" style="color:ghostwhite;outline:thin"></i>
+                                        </a>
+                                    </td>
+                                </tr>
                                 }
                             </tbody>
 

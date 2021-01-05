@@ -1,4 +1,5 @@
 ﻿@model IEnumerable<BMI.Models.POModel>
+@{string status = ViewBag.status; }
 @{
     ViewData["Title"] = "Master BMI";
 }
@@ -14,13 +15,28 @@
                 <div class="card">
                     <div class="card-header">
                         <h3 class="card-title">@ViewBag.plant-@ViewBag.factory PO List</h3>
-                        <div class="card-tools ">
+                        <div>
                             <button class="btn btn-sm float-right mx-1 add-po"
                                     data-toggle="modal" data-target="#modal-default">
                                 <i class="fa fa-plus">
                                 </i>
                             </button>
                         </div>
+                        <div class="card-tools ">
+                            <ul class="nav nav-pills">
+                                @if (status == "Open")
+                                {
+                                    <li class="nav-item"><a class="nav-link active" asp-controller="PO" asp-action="Index" asp-route-plant="3700" asp-route-status="Open">Open</a></li>
+                                    <li class="nav-item"><a class="nav-link" asp-controller="PO" asp-action="Index" asp-route-plant="3700" asp-route-status="Closed">Closed</a></li>
+                                }
+                                else
+                                {
+                                    <li class="nav-item"><a class="nav-link" asp-controller="PO" asp-action="Index" asp-route-plant="3700" asp-route-status="Open">Open</a></li>
+                                    <li class="nav-item"><a class="nav-link active" asp-controller="PO" asp-action="Index" asp-route-plant="3700" asp-route-status="Closed">Closed</a></li>
+                                }
+                            </ul>
+                        </div>
+
                     </div>
 
                     <div class="card-body">
@@ -36,6 +52,9 @@
                                     <th style="width: 23%;font-size:small">
                                         Batch
                                     </th>
+                                    <th style="width: 23%;font-size:small">
+                                        Status
+                                    </th>
                                     <th style="width: 3%;font-size:small">
                                         Action
                                     </th>
@@ -48,6 +67,7 @@
                                         <td style="font-size:small">@obj.po</td>
                                         <td style="font-size:small">PT# @obj.pt</td>
                                         <td style="font-size:small">@obj.batch</td>
+                                        <td style="font-size:small">@obj.po_status</td>
                                         <td>
                                             <form asp-controller="PO" asp-route-po="@obj.po" asp-action="Delete" method="post">
                                                 <a data-toggle="modal" data-target="#modal-default" data-po="@obj.po" class="btn btn-xs btn-warning update-po">

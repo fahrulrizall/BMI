@@ -1,5 +1,99 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model IEnumerable<BMI.Models.FTView>
 @{
+    ViewData["Title"] = "Fair Trade";
+}
+<div class="content-wrapper">
+    <section class="content-header">
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-12">
+
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Fair Trade Report</h3>
+                        <div class="card-tools ">
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <table id="example1" class="table table-bordered table-striped table-sm">
+                            <thead>
+                                <tr>
+                                    <th style="width: 7%;font-size:small">
+                                        Material
+                                    </th>
+                                    <th style="width: 3%;font-size:small">
+                                        Input
+                                    </th>
+                                    <th style="width: 5%;font-size:small">
+                                        5384909483
+                                    </th>
+                                    <th style="width: 5%;font-size:small">
+                                        5384909495
+                                    </th>
+                                    <th style="width: 5%;font-size:small">
+                                        5384909502
+                                    </th>
+                                    <th style="width: 5%;font-size:small">
+                                        5384909498
+                                    </th>
+                                    <th style="width: 5%;font-size:small">
+                                        5384909499
+                                    </th>
+                                    <th style="width: 5%;font-size:small">
+                                        5384909491
+                                    </th>
+                                    <th style="width: 5%;font-size:small">
+                                        5384909501
+                                    </th>
+                                    <th style="width: 5%;font-size:small">
+                                        5384909554
+                                    </th>
+                                    <th style="width: 5%;font-size:small">
+                                        5384909512
+                                    </th>
+                                    <th style="width: 4%;font-size:small">
+                                        Yield
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var obj in Model)
+                                {
+                                    <tr>
+                                        <td class="text text-sm">@obj.raw_source</td>
+                                        <td class="text text-sm">@((obj.qty).ToString("0.00"))</td>
+                                        <td class="text text-sm">@((obj.a5384909483).ToString("0.00"))</td>
+                                        <td class="text text-sm">@((obj.a5384909495).ToString("0.00"))</td>
+                                        <td class="text text-sm">@((obj.a5384909502).ToString("0.00"))</td>
+                                        <td class="text text-sm">@((obj.a5384909498).ToString("0.00"))</td>
+                                        <td class="text text-sm">@((obj.a5384909499).ToString("0.00"))</td>
+                                        <td class="text text-sm">@((obj.a5384909491).ToString("0.00"))</td>
+                                        <td class="text text-sm">@((obj.a5384909501).ToString("0.00"))</td>
+                                        <td class="text text-sm">@((obj.a5384909554).ToString("0.00"))</td>
+                                        <td class="text text-sm">@((obj.a5384909512).ToString("0.00"))</td>
+                                        <td class="text text-sm">@obj.yield %</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </section>
+    <!-- /.content -->
+</div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

@@ -1,4 +1,5 @@
 ﻿@model IEnumerable<BMI.Models.POModel>
+@{string status = ViewBag.status; }
 @{
     ViewData["Title"] = "Shipment";
 }
@@ -14,8 +15,19 @@
                     <div class="card-header">
                         <h3 class="card-title">Shipment List</h3>
                         <div class="card-tools">
-                            @*<a href="#" type="button" class="btn btn-sm btn-default float-right mx-1 add-shipment"
-                               data-toggle="modal" data-target="#modal-default">Add New Shipment</a>*@
+                            <ul class="nav nav-pills">
+                                @if (status == "Open")
+                                {
+                                    <li class="nav-item"><a class="nav-link active" asp-controller="Shipment" asp-action="Index" asp-route-plant="3700" asp-route-status="Open">Open</a></li>
+                                    <li class="nav-item"><a class="nav-link" asp-controller="Shipment" asp-action="Index" asp-route-plant="3700" asp-route-status="Closed">Closed</a></li>
+                                }
+                                else
+                                {
+                                    <li class="nav-item"><a class="nav-link" asp-controller="Shipment" asp-action="Index" asp-route-plant="3700" asp-route-status="Open">Open</a></li>
+                                    <li class="nav-item"><a class="nav-link active" asp-controller="Shipment" asp-action="Index" asp-route-plant="3700" asp-route-status="Closed">Closed</a></li>
+                                }
+
+                            </ul>
                         </div>
                     </div>
 
@@ -36,9 +48,6 @@
                                         ETA
                                     </th>
                                     <th style="width: 8%;font-size:small">
-                                        Carrier
-                                    </th>
-                                    <th style="width: 8%;font-size:small">
                                         Container
                                     </th>
                                     <th style="width: 8%;font-size:small">
@@ -46,6 +55,9 @@
                                     </th>
                                     <th style="width: 15%;font-size:small">
                                         Destination
+                                    </th>
+                                    <th style="width: 3%;font-size:small">
+                                        Status
                                     </th>
                                     <th style="width: 3%;font-size:small">
                                         Action
@@ -57,32 +69,32 @@
                                 <tbody>
                                     @foreach (var obj in Model)
                                     {
-                                    <tr>
-                                        <td>
-                                            <a style="font-size:small;color:black" asp-controller="Shipment" asp-action="Detail" asp-route-po="@obj.po">
-                                                @Html.DisplayFor(modelItem => obj.po)
-                                            </a>
-                                        </td>
-                                        <td style="font-size:small">@obj.shipment_no</td>
-                                        <td style="font-size:small">@Html.DisplayFor(modelItem => obj.etd)</td>
-                                        <td style="font-size:small">@Html.DisplayFor(modelItem => obj.eta)</td>
-                                        <td style="font-size:small">@obj.ocean_carrier</td>
-                                        <td style="font-size:small">@obj.container</td>
-                                        <td style="font-size:small">@obj.vessel_name</td>
-                                        <td style="font-size:small">@obj.destination</td>
-                                        <td>
-                                            <form asp-controller="Shipment" asp-route-id="@obj.po" asp-action="Delete" method="post">
-                                                <a data-toggle="modal" data-target="#modal-default" data-po="@obj.po" class="btn btn-xs btn-warning update-shipment">
-                                                    <i class="fa fa-edit" style="color:ghostwhite;outline:thin">
-                                                    </i>
+                                        <tr>
+                                            <td>
+                                                <a style="font-size:small;color:black" asp-controller="Shipment" asp-action="Detail" asp-route-po="@obj.po">
+                                                    @Html.DisplayFor(modelItem => obj.po)
                                                 </a>
-                                                @*<button type="submit" onclick="return confirm ('Delete Shipment No @obj.po');" class="btn btn-xs btn-danger">
-                    <i class="fa fa-trash">
-                    </i>
-                </button>*@
-                                            </form>
-                                        </td>
-                                    </tr>
+                                            </td>
+                                            <td style="font-size:small">@obj.shipment_no</td>
+                                            <td style="font-size:small">@Html.DisplayFor(modelItem => obj.etd)</td>
+                                            <td style="font-size:small">@Html.DisplayFor(modelItem => obj.eta)</td>
+                                            <td style="font-size:small">@obj.container</td>
+                                            <td style="font-size:small">@obj.vessel_name</td>
+                                            <td style="font-size:small">@obj.destination</td>
+                                            <td style="font-size:small">@obj.po_status</td>
+                                            <td>
+                                                <form asp-controller="Shipment" asp-route-id="@obj.po" asp-action="Delete" method="post">
+                                                    <a data-toggle="modal" data-target="#modal-default" data-po="@obj.po" class="btn btn-xs btn-warning update-shipment">
+                                                        <i class="fa fa-edit" style="color:ghostwhite;outline:thin">
+                                                        </i>
+                                                    </a>
+                                                    @*<button type="submit" onclick="return confirm ('Delete Shipment No @obj.po');" class="btn btn-xs btn-danger">
+                                                            <i class="fa fa-trash">
+                                                            </i>
+                                                        </button>*@
+                                                </form>
+                                            </td>
+                                        </tr>
                                     }
                                 </tbody>
                             }
@@ -184,6 +196,13 @@
                                     <option>1790: Lineage Cold Storage</option>
                                 </select>
                             </div>
+                            <div class="form-group row">
+                                <label class="col-sm-3">Status</label>
+                                <select class="col-sm-9 form-control" asp-for="First().po_status">
+                                    <option>Open</option>
+                                    <option>Closed</option>
+                                </select>
+                            </div>
 
                         </div>
                         <div class="modal-footer">
@@ -197,6 +216,6 @@
     </div>
 }
 
-    @section Scripts {
-        @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-    }
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -25,7 +25,6 @@ namespace BMI.Controllers
         {
             if (plant== 3770 || plant == 3710)
             {
-                //IEnumerable<Fgmodel> list = _db.Fg.Where(d => d.plant == plant);
                 ViewBag.plant = plant;
                 var list = _db.Fg
                     .Where(d => d.plant == plant)

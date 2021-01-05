@@ -30,11 +30,12 @@ namespace BMI.Controllers
         }
 
 
-        public async Task< IActionResult> Index()
+        public async Task< IActionResult> Index(string plant, string status)
         {
-            var list = _db.PO
+            var list = _db.PO.Where(a=>a.plant == plant && a.po_status == status)
                 .OrderByDescending(e => e.shipment_no)
                 .ToList();
+            ViewBag.status = status;
             return await Task.Run(()=> View(list)) ;
         }
 
@@ -62,6 +63,7 @@ namespace BMI.Controllers
                 po.destination = POModel.destination;
                 po.port_loading = "Surabaya";
                 po.updated_at = DateTime.Now;
+                po.po_status = POModel.po_status;
                 _db.Entry(po).State = EntityState.Modified;
                 _db.SaveChanges();
 

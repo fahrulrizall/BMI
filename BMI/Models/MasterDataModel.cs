@@ -10,10 +10,6 @@ namespace BMI.Models
 {
     public class Masterdatamodel
     {
-        //public Masterdatamodel()
-        //{
-        //    Fgmodels = new List<Fgmodel>();
-        //}
         [Key]
         public string sap_code { get; set; }
         #nullable enable
@@ -24,8 +20,6 @@ namespace BMI.Models
         public DateTime? updated_at { get; set; }
         public string? created_by { get; set; }
         public string? updated_by { get; set; }
-        //public ICollection<Fgmodel> Fgmodels { get; set; }
-        //public ICollection<RmDetailModel> Rmmodels { get; set; }
 
     }
 }

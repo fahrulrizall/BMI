@@ -41,7 +41,7 @@
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <a class="dropdown-item" asp-controller="Rm" asp-action="index">RAW MATERIAL</a>
-                        <a class="dropdown-item" asp-controller="Production" asp-action="Index">PRODUCTION</a>
+                        <a class="dropdown-item" asp-controller="Production" asp-action="Index" asp-route-plant="3700">PRODUCTION</a>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" asp-controller="Production" asp-action="Index">Reguler</a>
                         <a class="dropdown-item" asp-controller="FT" asp-action="Index">Fair Trade</a>
@@ -207,7 +207,7 @@
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-route-plant="3700" asp-controller="PO" asp-action="index">
+                                    <a class="nav-link" asp-route-plant="3700" asp-route-status="Open" asp-controller="PO" asp-action="index">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Purchase Order</p>
                                     </a>
@@ -219,13 +219,13 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-controller="Production" asp-action="Index" asp-route-plant="3700">
+                                    <a class="nav-link" asp-controller="Production" asp-action="Index" asp-route-plant="3700" asp-route-status="Open">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Production</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-controller="Shipment" asp-action="index">
+                                    <a class="nav-link" asp-controller="Shipment" asp-action="index" asp-route-status="Open" asp-route-plant="3700">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Shipment</p>
                                     </a>

@@ -30,5 +30,7 @@ namespace BMI.Models
 
         [NotMapped]
         public string? pt { get; set; }
+        [NotMapped]
+        public double cases { get; set; }
     }
 }

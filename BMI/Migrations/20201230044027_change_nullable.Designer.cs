@@ -4,14 +4,16 @@ using BMI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BMI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201230044027_change_nullable")]
+    partial class change_nullable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -352,9 +354,6 @@ namespace BMI.Migrations
                     b.Property<string>("plant")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("po_status")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("port_loading")
                         .HasColumnType("nvarchar(max)");
 
@@ -375,6 +374,9 @@ namespace BMI.Migrations
 
                     b.Property<int?>("shipment_no")
                         .HasColumnType("int");
+
+                    b.Property<string>("shipment_status")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("updated_at")
                         .HasColumnType("datetime2");
@@ -462,6 +464,9 @@ namespace BMI.Migrations
                     b.Property<string>("sap_code")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("saved")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime?>("updated_at")
                         .HasColumnType("datetime2");
 
@@ -512,6 +517,9 @@ namespace BMI.Migrations
                         .HasColumnType("real");
 
                     b.Property<string>("raw_source")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("saved")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("updated_at")

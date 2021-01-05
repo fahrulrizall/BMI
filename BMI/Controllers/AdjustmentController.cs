@@ -24,6 +24,7 @@ namespace BMI.Controllers
             return View();
         }
 
+
         public async Task< IActionResult> Adjustment(string status)
         {
             var obj = _db.AdjustmentFG
@@ -44,7 +45,7 @@ namespace BMI.Controllers
 
         [HttpPost]
         [AutoValidateAntiforgeryToken]
-        public IActionResult Create(AdjustmentFGModel adjustmentFGModel)
+        public async Task<IActionResult> Create(AdjustmentFGModel adjustmentFGModel)
         {
             var getPO = _db.PO.Where(a => a.pt == Convert.ToInt32(adjustmentFGModel.pt)).Select(a => a.po).ToList();
             var po = Convert.ToString(getPO[0]);
@@ -57,62 +58,22 @@ namespace BMI.Controllers
                     po = po,
                     raw_source = adjustmentFGModel.raw_source,
                     reason = adjustmentFGModel.reason,
-                    status = adjustmentFGModel.status
+                    status = adjustmentFGModel.status,
+                    created_at = DateTime.Now,
+                    created_by = User.Identity.Name
                 };
 
                 _db.AdjustmentFG.Add(create);
                 _db.SaveChanges();
                 TempData["msg"] = "Item Succesfully Added";
                 TempData["result"] = "success";
-                return Redirect(Request.Headers["Referer"].ToString());
+                return await Task.Run(()=> Redirect(Request.Headers["Referer"].ToString()));
             }
             TempData["msg"] = "Failed Add Item";
             TempData["result"] = "failed";
-            return Redirect(Request.Headers["Referer"].ToString());
+            return await Task.Run(() => Redirect(Request.Headers["Referer"].ToString()));
         }
 
-        [HttpPost]
-        [AutoValidateAntiforgeryToken]
-        public IActionResult Delete(int id, string status)
-        {
-            var obj = _db.AdjustmentFG.Find(id);
-            _db.AdjustmentFG.Remove(obj);
-            _db.SaveChanges();
-            TempData["msg"] = "Item Succesfully Deleted";
-            TempData["result"] = "success";
-            return RedirectToAction("Adjustment", new { status = status });
-        }
-
-
-        public JsonResult Getdataitem(int id)
-        {
-            var obj = _db.AdjustmentFG.Include(a=>a.POModel).Where(a=>a.id_adjustmentFG == id).First();
-            return Json(obj);
-        }
-
-        public JsonResult Getitemraw(int id)
-        {
-            var obj = _db.AdjustmentRaw.Find(id);
-            return Json(obj);
-        }
-
-        [HttpPost]
-        [AutoValidateAntiforgeryToken]
-        public IActionResult UpdateRaw(AdjustmentRawModel adjustmentRawModel)
-        {
-            if (ModelState.IsValid)
-            {
-                _db.AdjustmentRaw.Update(adjustmentRawModel);
-                _db.SaveChanges();
-                TempData["msg"] = "Item Succesfully Updated";
-                TempData["result"] = "success";
-                return Redirect(Request.Headers["Referer"].ToString());
-            }
-            TempData["msg"] = "Item Failed to Update";
-            TempData["result"] = "failed";
-            return Redirect(Request.Headers["Referer"].ToString());
-
-        }
 
         [HttpPost]
         [AutoValidateAntiforgeryToken]
@@ -122,17 +83,18 @@ namespace BMI.Controllers
             var po = Convert.ToString(getPO[0]);
             if (ModelState.IsValid)
             {
-                var create = new AdjustmentFGModel
-                {
-                    id_adjustmentFG = destroyModel.id_adjustmentFG,
-                    bmi_code = destroyModel.bmi_code,
-                    qty = destroyModel.qty,
-                    po = po,
-                    raw_source = destroyModel.raw_source,
-                    reason = destroyModel.reason,
-                    status = destroyModel.status
-                };
-                _db.AdjustmentFG.Update(create);
+                var update = _db.AdjustmentFG.Find(destroyModel.id_adjustmentFG);
+
+                update.id_adjustmentFG = destroyModel.id_adjustmentFG;
+                update.bmi_code = destroyModel.bmi_code;
+                update.qty = destroyModel.qty;
+                update.po = po;
+                update.raw_source = destroyModel.raw_source;
+                update.reason = destroyModel.reason;
+                update.updated_by = User.Identity.Name;
+                update.updated_at = DateTime.Now;
+
+                _db.Entry(update).State = EntityState.Modified;
                 _db.SaveChanges();
                 TempData["msg"] = "Item Succesfully Updated";
                 TempData["result"] = "success";
@@ -143,19 +105,55 @@ namespace BMI.Controllers
             return Redirect(Request.Headers["Referer"].ToString());
         }
 
-
-        public IActionResult AdjustmentRaw(string status)
+        [HttpPost]
+        [AutoValidateAntiforgeryToken]
+        public async Task< IActionResult> Delete(int id, string status)
         {
-            var obj = _db.AdjustmentRaw.Include(a => a.Masterdatamodel).Where(a => a.status == status).ToList();
-            ViewBag.status = status;
-            return View(obj);
+            var obj = _db.AdjustmentFG.Find(id);
+            if (obj != null)
+            {
+                _db.AdjustmentFG.Remove(obj);
+                _db.SaveChanges();
+                TempData["msg"] = "Item Succesfully Deleted";
+                TempData["result"] = "success";
+                return await Task.Run(() => Redirect(Request.Headers["Referer"].ToString()));
+            }
+            TempData["msg"] = "Item Failed to Delete";
+            TempData["result"] = "failed";
+            return await Task.Run(() => Redirect(Request.Headers["Referer"].ToString()));
+
         }
+
+
+        public async Task<JsonResult>  Getdataitem(int id)
+        {
+            var obj = _db.AdjustmentFG.Include(a=>a.POModel).Where(a=>a.id_adjustmentFG == id).First();
+            return await Task.Run(()=> Json(obj));
+        }
+
+        public async Task<JsonResult> Getitemraw(int id)
+        {
+            var obj = _db.AdjustmentRaw.Find(id);
+            return await Task.Run(() => Json(obj));
+        }
+
+
 
         public IActionResult AddDestroyRaw(AdjustmentRawModel adjustmentRawModel)
         {
             if (adjustmentRawModel.id_adjustmentRaw == 0)
             {
-                _db.AdjustmentRaw.Add(adjustmentRawModel);
+                var obj = new AdjustmentRawModel()
+                {
+                    raw_source = adjustmentRawModel.raw_source,
+                    sap_code = adjustmentRawModel.sap_code,
+                    qty = adjustmentRawModel.qty,
+                    reason = adjustmentRawModel.reason,
+                    status = adjustmentRawModel.status,
+                    created_at = DateTime.Now,
+                    created_by = User.Identity.Name
+                };
+                _db.AdjustmentRaw.Add(obj);
                 _db.SaveChanges();
                 TempData["msg"] = "Item Succesfully Added";
                 TempData["result"] = "success";
@@ -165,6 +163,35 @@ namespace BMI.Controllers
             TempData["result"] = "failed";
             return Redirect(Request.Headers["Referer"].ToString());
         }
+
+        [HttpPost]
+        [AutoValidateAntiforgeryToken]
+        public async Task<IActionResult> UpdateRaw(AdjustmentRawModel adjustmentRawModel)
+        {
+            if (ModelState.IsValid)
+            {
+                var update = _db.AdjustmentRaw.Find(adjustmentRawModel.id_adjustmentRaw);
+
+                update.id_adjustmentRaw = adjustmentRawModel.id_adjustmentRaw;
+                update.raw_source = adjustmentRawModel.raw_source;
+                update.sap_code = adjustmentRawModel.sap_code;
+                update.qty = adjustmentRawModel.qty;
+                update.reason = adjustmentRawModel.reason;
+                update.updated_at = DateTime.Now;
+                update.updated_by = User.Identity.Name;
+
+                _db.Entry(update).State = EntityState.Modified;
+                _db.SaveChanges();
+                TempData["msg"] = "Item Succesfully Updated";
+                TempData["result"] = "success";
+                return await Task.Run(() => Redirect(Request.Headers["Referer"].ToString()));
+            }
+            TempData["msg"] = "Item Failed to Update";
+            TempData["result"] = "failed";
+            return await Task.Run(() => Redirect(Request.Headers["Referer"].ToString()));
+
+        }
+
 
 
         [AutoValidateAntiforgeryToken]
@@ -183,6 +210,18 @@ namespace BMI.Controllers
             TempData["result"] = "failed";
             return Redirect(Request.Headers["Referer"].ToString());
         }
+
+
+        public IActionResult AdjustmentRaw(string status)
+        {
+            var obj = _db.AdjustmentRaw.Include(a => a.Masterdatamodel).Where(a => a.status == status).ToList();
+            ViewBag.status = status;
+            return View(obj);
+        }
+
+     
+
+
 
     }
 }

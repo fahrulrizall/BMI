@@ -28,7 +28,7 @@
                                 <thead>
                                     <tr>
                                         <th style="width: 2%;font-size:small">
-                                            Created at
+                                            GI date
                                         </th>
                                         <th style="width: 1%;font-size:small">
                                             Saved by
@@ -44,11 +44,11 @@
                                         @foreach (var obj in Model.ProductionInputModel)
                                         {
                                             <tr>
-                                                <td style="font-size:small">@Html.DisplayFor(model => obj.created_at)/ @obj.hour O'Clock/ @obj.minute Minute</td>
-                                                <td style="font-size:small">@obj.saved</td>
+                                                <td style="font-size:small">@Html.DisplayFor(model => obj.gi_date)</td>
+                                                <td style="font-size:small">@obj.created_by</td>
                                                 <td>
-                                                    <form asp-controller="Production" asp-action="DeleteGI" asp-route-date="@obj.created_at" asp-route-hour="@obj.hour" asp-route-minute="@obj.minute" method="post">
-                                                        <button type="submit" onclick="return confirm ('Delete Data GI Created on  @Html.DisplayFor(model => obj.created_at)/ @obj.hour Clock/ @obj.minute Minute');" class="btn btn-xs btn-danger">
+                                                    <form asp-controller="Production" asp-action="DeleteGI" asp-route-date="@obj.gi_date" method="post">
+                                                        <button type="submit" onclick="return confirm ('Delete Data GI on  @Html.DisplayFor(model => obj.gi_date)');" class="btn btn-xs btn-danger">
                                                             <i class="fa fa-trash"></i>
                                                         </button>
                                                     </form>
@@ -81,7 +81,7 @@
                                 <thead>
                                     <tr>
                                         <th style="width: 2%;font-size:small">
-                                            Created at
+                                            GR date
                                         </th>
                                         <th style="width: 1%;font-size:small">
                                             Saved by
@@ -97,11 +97,11 @@
                                         @foreach (var obj in Model.ProductionOutputModel)
                                         {
                                             <tr>
-                                                <td style="font-size:small">@Html.DisplayFor(model => obj.created_at)/ @obj.hour O'Clock/ @obj.minute Minute</td>
-                                                <td style="font-size:small">@obj.saved</td>
+                                                <td style="font-size:small">@Html.DisplayFor(model => obj.gr_date)</td>
+                                                <td style="font-size:small">@obj.created_by</td>
                                                 <td>
-                                                    <form asp-controller="Production" asp-action="DeleteGR" asp-route-date="@obj.created_at" asp-route-hour="@obj.hour" asp-route-minute="@obj.minute" method="post">
-                                                        <button type="submit" onclick="return confirm ('Delete Data GR Created on @obj.raw_source');" class="btn btn-xs btn-danger">
+                                                    <form asp-controller="Production" asp-action="DeleteGR" asp-route-date="@obj.gr_date" method="post">
+                                                        <button type="submit" onclick="return confirm ('Delete Data GR on  @Html.DisplayFor( model =>obj.gr_date)');" class="btn btn-xs btn-danger">
                                                             <i class="fa fa-trash"></i>
                                                         </button>
                                                     </form>
@@ -142,6 +142,13 @@
                                     <input type="file" class="custom-file-input" name="postedFile" id="postedFile" accept="application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
                                     <label class="custom-file-label" for="exampleInputFile">Choose file</label>
                                 </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-form-label">Production Date</label>
+                            <div class="input-group">
+                                <input class="form-control" type="date" asp-for="date" />
+                                <span asp-validation-for="date" class="text-danger" style="font-size:smaller"> </span>
                             </div>
                         </div>
                     </div>

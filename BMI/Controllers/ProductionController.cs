@@ -33,10 +33,10 @@ namespace BMI.Controllers
             Configuration = _configuration;
         }
 
-        public async Task<IActionResult> Index(string plant)
+        public async Task<IActionResult> Index(string plant, string status)
         {
             var obj = _db.PO
-                .Where(a => a.plant == plant)
+                .Where(a => a.plant == plant && a.pt != null && a.pt_status == status)
                 .Select(a => new POModel
                 {
                     pt = a.pt,
@@ -45,7 +45,22 @@ namespace BMI.Controllers
                     pt_status = a.pt_status
                 })
                 .OrderByDescending(a => a.pt).ToList();
+            ViewBag.status = status;
             return await Task.Run(()=>View(obj));
+        }
+
+        public async Task<JsonResult> Otw ()
+        {
+            var obj = _db.PO.Where(a => a.plant == "3700" && a.pt != null && a.pt_status == "Closed")
+                .Select(a => new POModel
+                {
+                    pt = a.pt,
+                    po = a.po,
+                    batch = a.batch,
+                    pt_status = a.pt_status
+                })
+                .OrderByDescending(a => a.pt).ToList();
+            return await Task.Run(() => Json(obj));
         }
 
 
@@ -63,13 +78,13 @@ namespace BMI.Controllers
             _db.SaveChanges();
             TempData["msg"] = "File Succesfully Updated";
             TempData["result"] = "success";
-            return await Task.Run(()=> RedirectToAction("Index"));
+            return await Task.Run(() => Redirect(Request.Headers["Referer"].ToString()));
         }
 
 
         [HttpPost]
         [AutoValidateAntiforgeryToken]
-        public async Task<IActionResult> Import(IFormFile postedFile)
+        public async Task<IActionResult> Import(IFormFile postedFile, DateTime date)
         {
             if (postedFile != null)
             {
@@ -125,7 +140,9 @@ namespace BMI.Controllers
                                         sap_code = Convert.ToString(rowDataList[4]),
                                         qty = Convert.ToSingle(rowDataList[5]),
                                         landing_site = Convert.ToString(rowDataList[6]),
-                                        created_at = DateTime.Now
+                                        created_at = DateTime.Now,
+                                        created_by = User.Identity.Name,
+                                        gi_date = date
                                     });
                                 }
                                 stream.Close();
@@ -154,7 +171,9 @@ namespace BMI.Controllers
                                         qty = Convert.ToSingle(rowDataList[4]),
                                         raw_source = source_site.raw_source,
                                         landing_site = source_site.landing_site,
-                                        created_at = DateTime.Now
+                                        created_at = DateTime.Now,
+                                        created_by = User.Identity.Name,
+                                        gr_date = date
                                     });
                                 }
                                 stream.Close();
@@ -196,12 +215,45 @@ namespace BMI.Controllers
                 {
                     bmi_code = a.Key.bmi_code,
                     MasterBMIModel = a.Max(m => m.MasterBMIModel),
-                    qty_production = a.Sum(x => x.qty) 
+                    qty_production = a.Sum(x => x.qty)  
                     - _db.AdjustmentFG.Where(c => c.status == "rounded" && c.bmi_code == a.Key.bmi_code && c.po == a.Key.po).Sum(a => a.qty * a.MasterBMIModel.lbs / 2.204)
                 })
                 .OrderByDescending(a=>a.bmi_code)
                 .ToList();
-            ViewBag.totaloutput = model.ProductionOutputModel.Sum(a => a.qty_production * 2.204).ToString("0.00");
+
+
+            //var adjustment = _db.AdjustmentFG
+            //    .Where(a => a.status == "rounded" && a.po == po)
+            //    .Include(a=>a.MasterBMIModel)
+            //    .AsEnumerable()
+            //    .GroupBy(a => a.bmi_code)
+            //    .Select(a => new AdjustmentFGModel
+            //    {
+            //        bmi_code = a.Key,
+            //        cases = a.Sum(b => b.qty)
+            //    })
+            //    .ToList();
+
+            //var shipment = _db.Shipment
+            //    .Where(a => a.batch == po)
+            //    .AsEnumerable()
+            //    .GroupBy(a => a.bmi_code)
+            //    .Select(a => new ShipmentModel
+            //    {
+            //        bmi_code = a.Key,
+            //        cases = a.Sum(a => a.qty)
+            //    })
+            //    .ToList();
+
+            //var result = from a in adjustment
+            //             join s in shipment on a.bmi_code equals s.bmi_code
+            //             select new ProductionOutputModel
+            //             {
+            //                 bmi_code = s.bmi_code,
+            //                 cases =a.cases + s.cases
+            //             } ;
+           
+
 
             model.CategoryView = _db.Production_output
                 .Where(a => a.po == po)
@@ -231,6 +283,8 @@ namespace BMI.Controllers
                 })
                 .OrderByDescending(a=>a.raw_source)
                 .ToList();
+
+            ViewBag.totaloutput = model.ProductionOutputModel.Sum(a => a.qty_production * 2.204).ToString("0.00");
             ViewBag.totalinputkg = model.ProductionInputModel.Sum(k => k.qty).ToString("0.00");
             ViewBag.totalinputlbs = model.ProductionInputModel.Sum(k => k.qty * 2.204).ToString("0.00");
 
@@ -465,40 +519,38 @@ namespace BMI.Controllers
         {
             var model = new ProductionView();
             model.ProductionInputModel = _db.Production_input
-                .Where(a=>a.created_at != null)
+                .Where(a=>a.gi_date != null)
                 .AsEnumerable()
-                .GroupBy(a => new { a.created_at.Value.Date , a.created_at.Value.Hour, a.created_at.Value.Minute})
+                .GroupBy(a =>a.gi_date)
                 .Select(a=> new ProductionInputModel
                 { 
-                   created_at = a.Key.Date,
-                   hour = a.Key.Hour,
-                   minute = a.Key.Minute,
-                   saved = a.Max(b=>b.saved)
+                   gi_date = a.Key,
+                   created_by = a.Max(b=>b.created_by),
+                   created_at = a.Max(b=>b.created_at)
                 })
-                .OrderByDescending(a=>a.created_at)
+                .OrderByDescending(a=>a.gi_date).Take(10)
                 .ToList();
 
             model.ProductionOutputModel = _db.Production_output
-                .Where(a => a.created_at != null)
+                .Where(a => a.gr_date != null)
                .AsEnumerable()
-               .GroupBy(a => new { a.created_at.Value.Date, a.created_at.Value.Hour, a.created_at.Value.Minute })
+               .GroupBy(a => a.gr_date)
                .Select(a => new ProductionOutputModel
                {
-                   created_at = a.Key.Date,
-                   hour = a.Key.Hour,
-                   minute = a.Key.Minute,
-                   saved = a.Max(b => b.saved)
+                   gr_date = a.Key,
+                   created_by = a.Max(b => b.created_by),
+                   created_at = a.Max(b => b.created_at),
                })
-               .OrderByDescending(a => a.created_at)
+               .OrderByDescending(a => a.gr_date).Take(10)
                .ToList();
 
             return await Task.Run(() => View(model));
         }
 
 
-        public async Task<IActionResult> DeleteGI(DateTime date, int hour,int minute)
+        public async Task<IActionResult> DeleteGI(DateTime date)
         {
-            var datetime = _db.Production_input.Where(a => a.created_at.Value.Date == date && a.created_at.Value.Hour == hour && a.created_at.Value.Minute == minute).ToList();
+            var datetime = _db.Production_input.Where(a => a.gi_date == date).ToList();
             if (datetime.Count>0)
             {
                 _db.Production_input.RemoveRange(datetime);
@@ -513,9 +565,9 @@ namespace BMI.Controllers
         }
 
 
-        public async Task<IActionResult> DeleteGR(DateTime date, int hour, int minute)
+        public async Task<IActionResult> DeleteGR(DateTime date)
         {
-            var datetime = _db.Production_output.Where(a => a.created_at.Value.Date == date && a.created_at.Value.Hour == hour && a.created_at.Value.Minute == minute).ToList();
+            var datetime = _db.Production_output.Where(a => a.gr_date == date).ToList();
             if(datetime.Count > 0)
             {
                 _db.Production_output.RemoveRange(datetime);
