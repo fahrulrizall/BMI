@@ -9,7 +9,7 @@
     <!-- Main content -->
     <section class="content">
         <div class="row">
-            <div class="col-12">
+            <div class="col-12" id="detail-raw-table">
 
                 <div class="card">
                     <div class="card-header">
@@ -19,17 +19,11 @@
                     </div>
 
                     <div class="card-body">
-                        <table id="example1" class="table table-bordered table-striped table-sm">
+                        <table class="table table-bordered table-striped table-sm">
                             <thead>
                                 <tr>
-                                    <th style="width: 1%;font-size:small">
+                                    <th style="width: 10%;font-size:small">
                                         Raw Source
-                                    </th>
-                                    <th style="width: 2%;font-size:small">
-                                        SAP Code
-                                    </th>
-                                    <th style="width: 15%;font-size:small">
-                                        Decsription
                                     </th>
                                     <th style="width: 5%;font-size:small">
                                         Available Qty
@@ -40,9 +34,7 @@
                                 @foreach (var obj in Model)
                                 {
                                     <tr>
-                                        <td class="text text-sm">@obj.raw_source</td>
-                                        <td style="font-size:small">@obj.sap_code</td>
-                                        <td style="font-size:small">@obj.Masterdatamodel.description</td>
+                                        <td class="btn text text-sm detail-raw-material" data-raw="@obj.raw_source">@obj.raw_source</td>
                                         <td style="font-size:small">@obj.total.ToString("0.00")</td>
                                     </tr>
                                 }
@@ -53,6 +45,49 @@
                 </div>
                 <!-- /.card -->
             </div>
+
+
+            <div class="col-6" id="detail-raw-material">
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title" id="card-title-detail">Raw Material</h3>
+                        <div class="card-tools ">
+                            <button type="button" class="close close-detail-raw-material" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <table class="table table-bordered table-striped table-sm">
+                            <thead>
+                                <tr>
+                                    <th style="width: 3%;font-size:small">
+                                        SAP Code
+                                    </th>
+                                    <th style="width: 5%;font-size:small">
+                                        Description
+                                    </th>
+                                    <th style="width: 5%;font-size:small">
+                                        Landing Site
+                                    </th>
+                                    <th style="width: 5%;font-size:small">
+                                        Qty
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody class="data-raw-material">
+         
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+
+
             <!-- /.col -->
         </div>
         <!-- /.row -->

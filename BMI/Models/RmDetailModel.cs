@@ -46,7 +46,7 @@ namespace BMI.Models
         public float? qty_pl { get; set; }
         [Display(Name = "Received")]
         public float? qty_received { get; set; }
-        public string? saved { get; set; }
+        public string? landing_site_received { get; set; }
         public DateTime? created_at { get; set; }
         public DateTime? updated_at { get; set; }
         public string? created_by { get; set; }

@@ -16,7 +16,7 @@ namespace BMI.Models
         [Remote(action: "DateExist", controller: "Repack", HttpMethod = "POST", AdditionalFields = "date", ErrorMessage = "Repack date Not Available")]
         public DateTime date { get; set; }
         public string raw_source { get; set; }
-        public float qty { get; set; }
+        public double qty { get; set; }
         public DateTime production_date { get; set; }
 
 

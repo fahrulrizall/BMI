@@ -1,5 +1,6 @@
 ﻿@model IEnumerable<BMI.Models.RmDetailModel>
 @{string raw_source = ViewBag.raw_source; }
+@{string status = ViewBag.status; }
 @{
     ViewData["Title"] = raw_source;
 }
@@ -14,11 +15,11 @@
 
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Detail List of @raw_source</h3>
+                        <h3 class="card-title">Detail List of @raw_source - @status</h3>
                     </div>
 
                     <div class="card-body">
-                        <table id="example1" class="table table-bordered table-striped table-sm">
+                        <table class="table table-bordered table-striped table-sm">
                             <thead>
                                 <tr>
                                     <th style="width: 6%;font-size:small">
@@ -27,56 +28,82 @@
                                     <th style="width: 6%;font-size:small">
                                         Descriptions
                                     </th>
-                                    <th style="width: 6%;font-size:small">
-                                        Site
-                                    </th>
                                     <th style="width: 5%;font-size:small">
                                         USD Price
                                     </th>
                                     <th style="width: 5%;font-size:small">
                                         Ex Rate
                                     </th>
+                                    <th style="width: 6%;font-size:small">
+                                        Site
+                                    </th>
                                     <th style="width: 5%;font-size:small">
                                         Qty PL
                                     </th>
-                                    <th style="width: 5%;font-size:small">
-                                        Qty Received
-                                    </th>
+                                    @if (status == "Plant" || status == "Closed")
+                                    {
+                                        <th style="width: 6%;font-size:small">
+                                            Site Received
+                                        </th>
+                                        <th style="width: 5%;font-size:small">
+                                            Qty Received
+                                        </th>
+                                    }
+
                                     <th style="width: 3%;font-size:small">
                                         Actions
                                     </th>
                                 </tr>
                             </thead>
                             <tbody>
-                             @foreach (var obj in Model)
-                             {
-                                <tr>
-                                    <td style="font-size:small">@obj.sap_code</td>
-                                    <td style="font-size:small">@obj.Masterdatamodel.description</td>
-                                    <td style="font-size:small">@obj.landing_site</td>
-                                    <td style="font-size:small">$@obj.usd_price</td>
-                                    <td style="font-size:small">Rp.@obj.ex_rate</td>
-                                    <td style="font-size:small">@obj.qty_pl</td>
-                                    <td style="font-size:small">@obj.qty_received</td>
-                                    <td>
-                                        <form asp-controller="Rm" asp-action="Deleteitem" asp-route-id="@obj.id_raw" asp-route-raw_source="@obj.raw_source" method="post" class="d-inline">
-                                            <a href="#" class="btn btn-xs btn-info change-item-detail"
-                                               data-toggle="modal" data-target="#modal-default" data-id="@obj.id_raw">
-                                                <i class="fa fa-edit" style="color:ghostwhite;outline:thin"></i>
-                                            </a>
-                                            <a href="#" class="btn btn-xs btn-warning destroy-raw"
-                                               data-toggle="modal" data-target="#modal-destroy" data-id="@obj.id_raw">
-                                                <i class="fa fa-times" style="color:ghostwhite;outline:thin"></i>
-                                            </a>
-                                            <button type="submit" onclick="return confirm ('Delete Item @obj.sap_code' );" class="btn btn-xs btn-danger">
-                                                <i class="fa fa-trash"></i>
-                                            </button>
-                                        </form>
+                                @foreach (var obj in Model)
+                                {
+                                    <tr>
+                                        <td style="font-size:small">@obj.sap_code</td>
+                                        <td style="font-size:small">@obj.Masterdatamodel.description</td>
+                                        <td style="font-size:small">$@obj.usd_price</td>
+                                        <td style="font-size:small">Rp.@obj.ex_rate</td>
+                                        <td style="font-size:small">@obj.landing_site</td>
+                                        <td style="font-size:small">@obj.qty_pl</td>
+                                        @if (status == "Plant" || status == "Closed")
+                                        {
+                                            <td style="font-size:small">@obj.landing_site_received</td>
+                                            <td style="font-size:small">@obj.qty_received</td>
+                                        }
+
+                                        <td>
+                                            <form asp-controller="Rm" asp-action="Deleteitem" asp-route-id="@obj.id_raw" asp-route-raw_source="@obj.raw_source" method="post" class="d-inline">
+                                                <a href="#" class="btn btn-xs btn-warning change-item-detail"
+                                                   data-toggle="modal" data-target="#modal-default" data-id="@obj.id_raw">
+                                                    <i class="fa fa-edit" style="color:ghostwhite;outline:thin"></i>
+                                                </a>
+                                                <button type="submit" onclick="return confirm ('Delete Item @obj.sap_code' );" class="btn btn-xs btn-danger">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            </form>
                                         </td>
-                                 </tr>
-                             }
-                        </tbody>
-                    </table>
+                                    </tr>
+                                }
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    @if (status == "Plant" || status == "Closed")
+                                    {
+                                        <th style="width: 2%;font-size:small" colspan="5">Total</th>
+                                        <th style="width: 2%;font-size:small">@(ViewBag.qty_pl)</th>
+                                        <th style="width: 2%;font-size:small"></th>
+                                        <th style="width: 2%;font-size:small">@(ViewBag.qty_received)</th>
+                                        <th style="width: 2%;font-size:small"></th>
+                                    }
+                                    else
+                                    {
+                                        <th style="width: 2%;font-size:small" colspan="5">Total</th>
+                                        <th style="width: 2%;font-size:small">@(ViewBag.qty_pl)</th>
+                                        <th style="width: 2%;font-size:small"></th>
+                                    }
+                                </tr>
+                            </tfoot>
+                        </table>
                 </div>
                 <!-- /.card-body -->
             </div>
@@ -111,12 +138,6 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label asp-for="First().landing_site" class="col-sm-3 col-form-label"></label>
-                            <div class="col-sm-9">
-                                <input type="text" placeholder="Landing Site" class="form-control" asp-for="First().landing_site">
-                            </div>
-                        </div>
-                        <div class="form-group row">
                             <label asp-for="First().usd_price" class="col-sm-3 col-form-label"></label>
                             <div class="col-sm-9">
                                 <input type="number" step="any" placeholder="USD Price" class="form-control" asp-for="First().usd_price">
@@ -129,23 +150,37 @@
                             </div>
                         </div>
                         <div class="form-group row">
+                            <label asp-for="First().landing_site" class="col-sm-3 col-form-label"></label>
+                            <div class="col-sm-9">
+                                <input type="text" placeholder="Landing Site" class="form-control" asp-for="First().landing_site">
+                            </div>
+                        </div>
+                        <div class="form-group row">
                             <label asp-for="First().qty_pl" class="col-sm-3 col-form-label"></label>
                             <div class="col-sm-9">
                                 <input type="number" step="any" class="form-control" placeholder="Packing List" asp-for="First().qty_pl">
                             </div>
                         </div>
-                        <div class="form-group row">
-                            <label asp-for="First().qty_received" class="col-sm-3 col-form-label"></label>
-                            <div class="col-sm-9">
-                                <input type="number" step="any" class="form-control" placeholder="Qty Received" asp-for="First().qty_received">
+                        @if (status == "Plant" || status == "Closed")
+                        {
+                            <hr />
+                            <div class="form-group row">
+                                <label class="col-sm-3 col-form-label">Landing Site Received</label>
+                                <div class="col-sm-9">
+                                    <input type="text" placeholder="Landing Site" class="form-control" asp-for="First().landing_site_received">
+                                </div>
                             </div>
-                        </div>
-                        <input type="hidden" asp-for="First().raw_source">
-                        <input type="hidden" asp-for="First().cases">
+                            <div class="form-group row">
+                                <label class="col-sm-3 col-form-label">Qty Received</label>
+                                <div class="col-sm-9">
+                                    <input type="number" step="any" class="form-control" placeholder="Qty Received" asp-for="First().qty_received">
+                                </div>
+                            </div>
+                        }
+
                     </div>
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-primary">Update</button>
-                        <button type="submit" class="btn btn-warning duplicate-item">Duplicate</button>
                     </div>
                 </form>
             </div>

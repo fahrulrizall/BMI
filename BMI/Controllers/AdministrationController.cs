@@ -154,9 +154,11 @@ namespace BMI.Controllers
                     if (i < (model.Count - 1))
                         continue;
                     else
-                        return RedirectToAction("GetUserRole",new { id = id });
+                    return RedirectToAction("GetUserRole",new { id = id });
                 }
             }
+            TempData["msg"] = "User Role Updated";
+            TempData["result"] = "success";
             return RedirectToAction("GetUserRole", new { id = id });
         }
 

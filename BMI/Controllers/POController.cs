@@ -54,7 +54,7 @@ namespace BMI.Controllers
                     po = POModel.po,
                     pt = POModel.pt,
                     plant = plant,
-                    pt_status = "Open",
+                    pt_status = "Process",
                     po_status = "Open",
                     batch =  (POModel.po).Substring((POModel.po).Length-5) + "SIDID",
                     created_by = User.Identity.Name,
@@ -62,7 +62,7 @@ namespace BMI.Controllers
                 };
                 _db.PO.Add(po);
                 _db.SaveChanges();
-                TempData["msg"] = "Data Successfuly Deleted";
+                TempData["msg"] = "Data Successfuly Added";
                 TempData["result"] = "success";
                 return await Task.Run(() => Redirect(Request.Headers["Referer"].ToString()));
             }

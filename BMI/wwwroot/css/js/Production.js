@@ -1,7 +1,5 @@
 ﻿
 $(function () {
-
-
     //table global pt
     $('.detail-pt-daily').on('click', function () {
         $('.table-production-daily').show();
@@ -27,7 +25,7 @@ $(function () {
                     }
                     newdate = day + '-' + month + '-' + yr;
                     pdc = yr + '-' + month + '-' + day;
-                    $('#detail-table-daily').append("<tr><td style='font-size:small'>" + newdate + "</td>" + "<td style='font-size:small' class='btn check-landing-site " + "site" + pdc + "-" + e.raw_source + "'  data-po=" + po + " data-code=" + bmicode + "  data-date=" + pdc + " data-source=" + e.raw_source + " >" + e.raw_source + "</td>" + "<td style='font-size:small' class='casetotal qty" + pdc + "-" + e.raw_source +"'  >" + parseInt(e.cases) + "</td>" + "<td class='caseavailable' style='font-size:small'>" + e.available + "</td></tr>");
+                    $('#detail-table-daily').append("<tr><td style='font-size:small'>" + newdate + "</td>" + "<td style='font-size:small' class='btn check-landing-site " + "site" + pdc + "-" + e.raw_source + "'  data-po=" + po + " data-code=" + bmicode + "  data-date=" + pdc + " data-source=" + e.raw_source + " >" + e.raw_source + "</td>" + "<td style='font-size:small' class='casetotal qty" + pdc + "-" + e.raw_source +"'  >" + parseInt(e.cases) + "</td>" + "<td class='caseavailable' style='font-size:small'>" + parseInt( e.available) + "</td></tr>");
                     calc_case_total();
                     calc_case_available();
                 })
@@ -166,6 +164,7 @@ $(function () {
     // adjust dan repack
     $('.adjustment-fg').on('click', function () {
         $('#formModalLabel').html('Adjustment');
+        $('#qty_label').html('Qty (CS)');
         var pt = $(this).data('pt');
         var code = $(this).data('code');
         $('#qty').val("");
@@ -176,6 +175,7 @@ $(function () {
         $('.date').hide();
         $('.raw-source').hide();
         $('.landing-site-input').hide();
+        $('.reason').hide();
         $('.modal-body form').attr('action', '/Production/Adjustment');
         $.ajax({
             url: '/Production/Getitemdata',
@@ -201,6 +201,8 @@ $(function () {
         $('.date').show();
         $('.po').show();
         $('.landing-site-input').show();
+        $('.reason').hide();
+        $('#qty_label').html('Qty (Kg)');
         var pt = $(this).data('pt');
         var code = $(this).data('code');
         $('#qty').val("");
@@ -225,7 +227,7 @@ $(function () {
                     if (month < 10) {
                         month = "0" + month;
                     }
-                    newdate = day + '-' + month + '-' + yr;
+                    newdate = yr + '-' + month + '-' + day;
                     $('#production_date').append("<option>" + newdate + "</option>");
                     $('#raw_source').append("<option>" + e.raw_source + "</option>");
                     $('#landing_site').append("<option>" + e.landing_site + "</option>");
@@ -235,6 +237,55 @@ $(function () {
         });
 
     });
+
+
+
+
+    $('.destroy-fg').on('click', function () {
+        //var sap = $(this).data('sap');
+        $('#formModalLabel').html('Destroy Item ');
+        $('#qty_label').html('Qty (CS)');
+        $('.destination-pt').hide();
+        $('.destination-code').hide();
+        $('.raw-source').show();
+        $('.production-date').show();
+        $('.reason').show();
+        $('.date').hide();
+        $('.po').hide();
+        $('.landing-site-input').show();
+        var pt = $(this).data('pt');
+        var code = $(this).data('code');
+        $('#qty').val("");
+        $('#production_date').html("");
+        $('#raw_source').html("");
+        $('#landing_site').html("");
+        $('#reason').html("");
+        $('.modal-body form').attr('action', '/Production/Destroy');
+        $.ajax({
+            url: '/Production/Getitemdata',
+            data: { pt: pt, code: code },
+            method: 'get',
+            dataType: 'json',
+            success: function (data) {
+                data.forEach(function (e) {
+                    var date = new Date(e.date);
+                    yr = date.getFullYear();
+                    month = date.getMonth() + 1;
+                    day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate();
+                    if (month < 10) {
+                        month = "0" + month;
+                    }
+                    newdate = yr + '-' + month + '-' + day;
+                    $('#production_date').append("<option>" + newdate + "</option>");
+                    $('#raw_source').append("<option>" + e.raw_source + "</option>");
+                    $('#landing_site').append("<option>" + e.landing_site + "</option>");
+                    $('#bmi_code').val(e.bmi_code)
+                })
+            }
+        });
+
+    });
+
 
 
 

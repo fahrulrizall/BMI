@@ -37,12 +37,20 @@
                                 @if (status == "Open")
                                 {
                                     <li class="nav-item"><a class="nav-link active" asp-controller="Production" asp-action="Index" asp-route-plant="3700" asp-route-status="Open">Open</a></li>
+                                    <li class="nav-item"><a class="nav-link" asp-controller="Production" asp-action="Index" asp-route-plant="3700" asp-route-status="Process">Process</a></li>
+                                    <li class="nav-item"><a class="nav-link" asp-controller="Production" asp-action="Index" asp-route-plant="3700" asp-route-status="Closed">Closed</a></li>
+                                }
+                                else if (status == "Process")
+                                {
+                                    <li class="nav-item"><a class="nav-link" asp-controller="Production" asp-action="Index" asp-route-plant="3700" asp-route-status="Open">Open</a></li>
+                                    <li class="nav-item"><a class="nav-link active" asp-controller="Production" asp-action="Index" asp-route-plant="3700" asp-route-status="Process">Process</a></li>
                                     <li class="nav-item"><a class="nav-link" asp-controller="Production" asp-action="Index" asp-route-plant="3700" asp-route-status="Closed">Closed</a></li>
                                 }
                                 else
                                 {
                                     <li class="nav-item"><a class="nav-link" asp-controller="Production" asp-action="Index" asp-route-plant="3700" asp-route-status="Open">Open</a></li>
-                                    <li class="nav-item"><a class="nav-link active" asp-controller="Production" asp-action="Index" asp-route-plant="3700" asp-route-status="Closed">Closed</a></li>
+                                    <li class="nav-item"><a class="nav-link" asp-controller="Production" asp-action="Index" asp-route-plant="3700" asp-route-status="Process">Process</a></li>
+                                    <li class="nav-item"><a class="nav-link active asp-controller="Production" asp-action="Index" asp-route-plant="3700" asp-route-status="Closed">Closed</a></li>
                                 }
 
                             </ul>
@@ -66,9 +74,12 @@
                                     <th style="width: 4%">
                                         Batch
                                     </th>
-                                    @*<th style="width: 4%">
+                                    @if (status == "Open" || status == "Process")
+                                    {
+                                        <th style="width: 4%">
                                             Yield
-                                        </th>*@
+                                        </th>
+                                    }
                                     <th style="width: 4%">
                                         Status
                                     </th>
@@ -87,7 +98,10 @@
                                     </td>
                                     <td style="font-size:smaller">@obj.po</td>
                                     <td style="font-size:smaller">@obj.batch</td>
-                                    @*<td style="font-size:smaller">@((obj.yield).ToString("0.00")) %</td>*@
+                                    @if (status == "Open" || status == "Process")
+                                    {
+                                        <td style="font-size:smaller">@((obj.yield).ToString("0.00")) %</td>
+                                    }
                                     <td style="font-size:smaller">@obj.pt_status</td>
                                     <td>
                                         <a style="font-size:small" class="btn btn-xs btn-warning change-pt"
@@ -132,6 +146,7 @@
                         <div class="form-group">
                             <label>Status</label>
                             <select class="form-control" asp-for="First().pt_status">
+                                <option>Process</option>
                                 <option>Open</option>
                                 <option>Closed</option>
                             </select>

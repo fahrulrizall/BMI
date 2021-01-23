@@ -4,14 +4,16 @@ using BMI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BMI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210106070415_change_qty_adjusment")]
+    partial class change_qty_adjusment
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -373,6 +375,9 @@ namespace BMI.Migrations
                     b.Property<string>("pt_status")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("saved")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("seal_no")
                         .HasColumnType("nvarchar(max)");
 
@@ -655,9 +660,6 @@ namespace BMI.Migrations
                     b.Property<string>("landing_site")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("landing_site_received")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<float?>("qty_pl")
                         .HasColumnType("real");
 
@@ -669,6 +671,9 @@ namespace BMI.Migrations
 
                     b.Property<string>("sap_code")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("saved")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("uom")
                         .HasColumnType("nvarchar(max)");
@@ -710,6 +715,9 @@ namespace BMI.Migrations
 
                     b.Property<DateTime>("etd")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("saved")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("status")
                         .HasColumnType("nvarchar(max)");

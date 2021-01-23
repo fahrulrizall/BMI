@@ -25,8 +25,6 @@ namespace BMI.Models
 
         [Display(Name = "Status")]
         public string? status { get; set; }
-
-        public string? saved { get; set; }
         public DateTime? created_at { get; set; }
         public DateTime? updated_at { get; set; }
         public string? created_by { get; set; }

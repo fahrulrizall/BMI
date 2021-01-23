@@ -34,9 +34,9 @@
                 $('#eta').val(eta);
                 $('#container').val(data.container);
                 $('#reff').val(data.reff);
-                if (data.status == 'in_plant') {
-                    $('#status').val('In Plant');
-                } else if (data.status == 'otw') {
+                if (data.status == 'Plant') {
+                    $('#status').val('Plant');
+                } else if (data.status == 'Otw') {
                     $('#status').val('On The Water');
                 } else {
                     $('#status').val('Closed');
@@ -54,6 +54,7 @@
             method: 'get',
             dataType: 'json',
             success: function (data) {
+                console.log(data.landing_site_received)
                 $('#id_raw').val(data.id_raw);
                 $('#sap_code').val(data.sap_code);
                 $('#landing_site').val(data.landing_site);
@@ -61,6 +62,7 @@
                 $('#ex_rate').val(data.ex_rate);
                 $('#qty_pl').val(data.qty_pl);
                 $('#qty_received').val(data.qty_received);
+                $('#landing_site_received').val(data.landing_site_received);
                 $('#raw_source').val(data.raw_source);
             }
         });

@@ -16,6 +16,7 @@ using Newtonsoft.Json;
 using Microsoft.Extensions.Configuration;
 using ExcelDataReader;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.Text;
 
 namespace BMI.Controllers
 {
@@ -33,23 +34,18 @@ namespace BMI.Controllers
             Configuration = _configuration;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index(string status)
         {
-            return View();
-        }
-
-        public async Task<IActionResult> List(string status)
-        {
-            if (status == "in_plant" || status == "otw" || status == "closed")
+            if (status == "plant" || status == "otw" || status == "closed")
             {
                 var list = _db.Rm
                     .Where(x => x.status == status)
                     .OrderByDescending(e => e.created_at)
                     .ToList();
 
-                if (status == "in_plant")
+                if (status == "plant")
                 {
-                    ViewBag.status = "In Plant";
+                    ViewBag.status = "Plant";
                 }
                 else if (status == "otw")
                 {
@@ -59,12 +55,13 @@ namespace BMI.Controllers
                 {
                     ViewBag.status = "Closed";
                 }
+               
                 return await Task.Run(()=> View(list));
             }
             return NotFound();
         }
 
-        public async Task<IActionResult> Detail (string raw_source)
+        public async Task<IActionResult> Detail (string raw_source, string status)
         {
             var list = _db.Rm_detail
                 .Where(x => x.raw_source == raw_source)
@@ -72,6 +69,9 @@ namespace BMI.Controllers
                 .OrderByDescending(e => e.id_raw)
                 .ToList();
             ViewBag.raw_source = raw_source;
+            ViewBag.status = status;
+            ViewBag.qty_pl = list.Sum(a => a.qty_pl);
+            ViewBag.qty_received = list.Sum(a => a.qty_received);
             return await Task.Run(()=> View(list));
         }
 
@@ -87,65 +87,56 @@ namespace BMI.Controllers
         {
             if (ModelState.IsValid)
             {
-                var list_rm = _db.Rm.Where(x => x.raw_source == rmModel.raw_source).ToList();
+                var obj = _db.Rm.Find(rmModel.raw_source);
                 var list_rm_detail = _db.Rm_detail.Where(x => x.raw_source == rmModel.raw_source).ToList();
-                if (rmModel.status == "In Plant")
+                if (rmModel.status == "Plant")
                 {
-                    var status = "in_plant";
-                    list_rm.ForEach(a =>
-                    {
-                        a.eta = rmModel.eta;
-                        a.etd = rmModel.etd;
-                        a.container = rmModel.container;
-                        a.status = status;
-                        a.updated_at = DateTime.Now;
-                    });
+                    obj.eta = rmModel.eta;
+                    obj.etd = rmModel.etd;
+                    obj.container = rmModel.container;
+                    obj.updated_at = DateTime.Now;
+                    obj.updated_by = User.Identity.Name;
+                    obj.status = "Plant";
+
                     list_rm_detail.ForEach(a =>
                     {
                         a.qty_received = a.qty_pl;
+                        a.landing_site_received = a.landing_site;
                         a.updated_at = DateTime.Now;
+                        a.updated_by = User.Identity.Name;
                     });
                     _db.SaveChanges();
-                    TempData["msg"] = "Item Succesfully Updated";
-                    TempData["result"] = "success";
-                    return await Task.Run(()=> RedirectToAction("List", new { status = status }));
+
                 }
                 else if (rmModel.status == "On The Water")
                 {
-                    var status = "otw";
-                    list_rm.ForEach(a =>
-                    {
-                        a.eta = rmModel.eta;
-                        a.etd = rmModel.etd;
-                        a.container = rmModel.container;
-                        a.status = status;
-                        a.updated_at = DateTime.Now;
-                    });
-                    _db.SaveChanges();
-                    TempData["msg"] = "Item Succesfully Updated";
-                    TempData["result"] = "success";
-                    return await Task.Run(()=> RedirectToAction("List", new { status = status }));
+                    obj.eta = rmModel.eta;
+                    obj.etd = rmModel.etd;
+                    obj.container = rmModel.container;
+                    obj.updated_at = DateTime.Now;
+                    obj.created_by = User.Identity.Name;
+                    obj.status = "Otw";
                 }
                 else
                 {
-                    var status = "closed";
-                    list_rm.ForEach(a =>
-                    {
-                        a.eta = rmModel.eta;
-                        a.etd = rmModel.etd;
-                        a.container = rmModel.container;
-                        a.status = status;
-                        a.updated_at = DateTime.Now;
-                    });
-                    _db.SaveChanges();
-                    TempData["msg"] = "Item Succesfully Updated";
-                    TempData["result"] = "success";
-                    return await Task.Run(()=> RedirectToAction("List", new { status = status }));
+                    obj.eta = rmModel.eta;
+                    obj.etd = rmModel.etd;
+                    obj.container = rmModel.container;
+                    obj.updated_at = DateTime.Now;
+                    obj.created_by = User.Identity.Name;
+                    obj.status = "Closed";
                 }
+         
+                _db.Entry(obj).State = EntityState.Modified;
+                _db.SaveChanges();
+
+                TempData["msg"] = "Item Successfully Updated";
+                TempData["result"] = "success";
+                return await Task.Run(() => Redirect(Request.Headers["Referer"].ToString()));
             }
             TempData["msg"] = "Item Failed Updated";
             TempData["result"] = "failed";
-            return await Task.Run(()=> RedirectToAction("Index")) ;
+            return await Task.Run(() => Redirect(Request.Headers["Referer"].ToString()));
         }
 
 
@@ -207,6 +198,7 @@ namespace BMI.Controllers
                                             eta = Convert.ToDateTime(rowDataList[1]),
                                             container = Convert.ToString(rowDataList[2]),
                                             created_at = DateTime.Now,
+                                            created_by = User.Identity.Name,
                                             status = "otw"
                                         };
                                         _db.Rm.Add(obj);
@@ -227,7 +219,8 @@ namespace BMI.Controllers
                                         qty_pl = Convert.ToSingle(rowDataList[7]),
                                         usd_price = Convert.ToSingle(rowDataList[8]),
                                         ex_rate = Convert.ToSingle(rowDataList[9]),
-                                        created_at = DateTime.Now
+                                        created_at = DateTime.Now,
+                                        created_by = User.Identity.Name
                                     });
                                 }
                                 stream.Close();
@@ -236,24 +229,24 @@ namespace BMI.Controllers
                                 _db.SaveChanges();
                                 TempData["msg"] = "File Succesfully Uploaded";
                                 TempData["result"] = "success";
-                                return await Task.Run(()=> RedirectToAction("List", new { status = "otw" }));
+                                return await Task.Run(() => Redirect(Request.Headers["Referer"].ToString()));
                             }
                             stream.Close();
                             System.IO.File.Delete(filePath);
                             TempData["msg"] = "Field Column not Match";
                             TempData["result"] = "failed";
-                            return await Task.Run(() => RedirectToAction("List", new { status = "otw" }));
+                            return await Task.Run(() => Redirect(Request.Headers["Referer"].ToString()));
                         }
                     }
                 }
                 //jika tidak sesuai extension
                 TempData["msg"] = "File Extension must excel file format 'xlsx or xls'";
                 TempData["result"] = "failed";
-                return await Task.Run(() => RedirectToAction("List", new { status = "otw" }));
+                return await Task.Run(() => Redirect(Request.Headers["Referer"].ToString()));
             }
             TempData["msg"] = "File Empty";
             TempData["result"] = "failed";
-            return await Task.Run(() => RedirectToAction("List", new { status = "otw" }));
+            return await Task.Run(() => Redirect(Request.Headers["Referer"].ToString()));
         }
 
         [HttpPost]
@@ -272,34 +265,30 @@ namespace BMI.Controllers
 
         [HttpPost]
         [AutoValidateAntiforgeryToken]
-        public async Task<IActionResult> Updatedetail(RmDetailModel obj)
+        public async Task<IActionResult> Updatedetail(RmDetailModel rmDetailModel)
         {
-            _db.Rm_detail.Update(obj);
-            _db.SaveChanges();
-            TempData["msg"] = "Item Succesfully Updated";
-            TempData["result"] = "success";
-            return await Task.Run(()=> RedirectToAction("Detail", new { raw_source = obj.raw_source }));
+            if (ModelState.IsValid)
+            {
+                var obj = _db.Rm_detail.Find(rmDetailModel.id_raw);
+                obj.sap_code = rmDetailModel.sap_code;
+                obj.usd_price = rmDetailModel.usd_price;
+                obj.ex_rate = rmDetailModel.ex_rate;
+                obj.landing_site = rmDetailModel.landing_site;
+                obj.qty_pl = rmDetailModel.qty_pl;
+                obj.landing_site_received = rmDetailModel.landing_site_received;
+                obj.qty_received = rmDetailModel.qty_received;
+
+                _db.Entry(obj).State = EntityState.Modified;
+                _db.SaveChanges();
+                TempData["msg"] = "Item Successfully Updated";
+                TempData["result"] = "success";
+                return await Task.Run(() => Redirect(Request.Headers["Referer"].ToString()));
+            }
+            TempData["msg"] = "Item Failed to Update";
+            TempData["result"] = "failed";
+            return await Task.Run(() => Redirect(Request.Headers["Referer"].ToString()));
         }
 
-        [HttpPost]
-        [AutoValidateAntiforgeryToken]
-        public async Task<IActionResult> Duplicateitem(RmDetailModel obj)
-        {
-            if (obj.id_raw == 0)
-            {
-                _db.Rm_detail.Add(obj);
-                _db.SaveChanges();
-                TempData["msg"] = "Item Succesfully Duplicated";
-                TempData["result"] = "success";
-                return await Task.Run(() => RedirectToAction("Detail", new { raw_source = obj.raw_source }));
-            }
-            else
-            {
-                TempData["msg"] = "Item Failed Duplicated";
-                TempData["result"] = "failed";
-                return await Task.Run(() => RedirectToAction("Detail", new { raw_source = obj.raw_source }));
-            }
-        }
 
         public async Task<JsonResult> Getdetailitem(int id)
         {

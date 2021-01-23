@@ -17,6 +17,7 @@ using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.EntityFrameworkCore.Scaffolding.Metadata;
 using System.Dynamic;
 using BMI.UtilityModels;
+using System.Text;
 
 namespace BMI.Controllers
 {
@@ -35,6 +36,22 @@ namespace BMI.Controllers
 
         public async Task<IActionResult> Index(string plant, string status)
         {
+            if (status == "Open" || status == "Process")
+            {
+                var result = _db.PO
+                            .Where(a => a.plant == plant && a.pt != null && a.pt_status == status)
+                            .Select(a => new POModel
+                            {
+                                pt = a.pt,
+                                po = a.po,
+                                batch = a.batch,
+                                pt_status = a.pt_status,
+                                yield = (_db.Production_output.Where(b => b.po == a.po).Sum(b => b.qty) / _db.Production_input.Where(b => b.po == a.po).Sum(b => b.qty)) * 100
+                            })
+                            .OrderByDescending(a => a.pt).ToList();
+                ViewBag.status = status;
+                return await Task.Run(() => View(result));
+            }
             var obj = _db.PO
                 .Where(a => a.plant == plant && a.pt != null && a.pt_status == status)
                 .Select(a => new POModel
@@ -42,11 +59,13 @@ namespace BMI.Controllers
                     pt = a.pt,
                     po = a.po,
                     batch = a.batch,
-                    pt_status = a.pt_status
+                    pt_status = a.pt_status,
+                    yield = _db.Production_output.Where(a => a.po == a.po).Sum(a => a.qty) / _db.Production_input.Where(a => a.po == a.po).Sum(a => a.qty)
                 })
                 .OrderByDescending(a => a.pt).ToList();
             ViewBag.status = status;
-            return await Task.Run(()=>View(obj));
+            return await Task.Run(() => View(obj));
+
         }
 
         public async Task<JsonResult> Otw ()
@@ -216,45 +235,16 @@ namespace BMI.Controllers
                     bmi_code = a.Key.bmi_code,
                     MasterBMIModel = a.Max(m => m.MasterBMIModel),
                     qty_production = a.Sum(x => x.qty)  
-                    - _db.AdjustmentFG.Where(c => c.status == "rounded" && c.bmi_code == a.Key.bmi_code && c.po == a.Key.po).Sum(a => a.qty * a.MasterBMIModel.lbs / 2.204)
+                    - _db.AdjustmentFG.Where(c => c.status == "rounded" && c.bmi_code == a.Key.bmi_code && c.po == a.Key.po).Sum(a => a.qty * a.MasterBMIModel.lbs / 2.204),
+                    available = Convert.ToInt32( a.Sum(x => x.qty * 2.204 / x.MasterBMIModel.lbs) 
+                    - _db.AdjustmentFG.Where(c => c.bmi_code == a.Key.bmi_code && c.po == a.Key.po).Sum(a => a.qty)
+                    - _db.Shipment.Where(c=>c.batch == po && c.bmi_code== a.Key.bmi_code).Sum(c=>c.qty)
+                    - _db.Repack.Where(c=>c.from_po == po && c.from_bmi_code == a.Key.bmi_code).Sum(c=>c.qty *2.204 / c.fromMasterBMIModel.lbs ) 
+                    + _db.Repack.Where(c => c.to_po == po && c.to_bmi_code == a.Key.bmi_code).Sum(c => c.qty * 2.204 / c.toMasterBMIModel.lbs )  ),
                 })
                 .OrderByDescending(a=>a.bmi_code)
                 .ToList();
-
-
-            //var adjustment = _db.AdjustmentFG
-            //    .Where(a => a.status == "rounded" && a.po == po)
-            //    .Include(a=>a.MasterBMIModel)
-            //    .AsEnumerable()
-            //    .GroupBy(a => a.bmi_code)
-            //    .Select(a => new AdjustmentFGModel
-            //    {
-            //        bmi_code = a.Key,
-            //        cases = a.Sum(b => b.qty)
-            //    })
-            //    .ToList();
-
-            //var shipment = _db.Shipment
-            //    .Where(a => a.batch == po)
-            //    .AsEnumerable()
-            //    .GroupBy(a => a.bmi_code)
-            //    .Select(a => new ShipmentModel
-            //    {
-            //        bmi_code = a.Key,
-            //        cases = a.Sum(a => a.qty)
-            //    })
-            //    .ToList();
-
-            //var result = from a in adjustment
-            //             join s in shipment on a.bmi_code equals s.bmi_code
-            //             select new ProductionOutputModel
-            //             {
-            //                 bmi_code = s.bmi_code,
-            //                 cases =a.cases + s.cases
-            //             } ;
-           
-
-
+   
             model.CategoryView = _db.Production_output
                 .Where(a => a.po == po)
                 .Include(k => k.MasterBMIModel)
@@ -287,7 +277,7 @@ namespace BMI.Controllers
             ViewBag.totaloutput = model.ProductionOutputModel.Sum(a => a.qty_production * 2.204).ToString("0.00");
             ViewBag.totalinputkg = model.ProductionInputModel.Sum(k => k.qty).ToString("0.00");
             ViewBag.totalinputlbs = model.ProductionInputModel.Sum(k => k.qty * 2.204).ToString("0.00");
-
+           
             ViewBag.yield = ((model.ProductionOutputModel.Sum(k => k.qty_production * 2.204) / model.ProductionInputModel.Sum(k => k.qty * 2.204)) * 100).ToString("0.00");
 
             ViewBag.pt = pt;
@@ -307,12 +297,11 @@ namespace BMI.Controllers
                     production_date = a.Key.date,
                     raw_source = a.Key.raw_source,
                     cases = Convert.ToInt32( a.Sum(x => x.qty *2.204) / a.Max(b=>b.MasterBMIModel.lbs)) ,
-                    available = Convert.ToInt32(a.Sum(x => x.qty * 2.204) / a.Max(b => b.MasterBMIModel.lbs))
+                    available = Convert.ToInt32(a.Sum(x => x.qty * 2.204) / a.Max(b => b.MasterBMIModel.lbs)
                     - _db.Shipment.Where(i=>i.batch == po &&  i.pdc == a.Key.date &&  i.bmi_code == bmicode && i.raw_source == a.Key.raw_source ).Sum(i=>i.qty) 
-                    - _db.AdjustmentFG.Where(i=>i.bmi_code == bmicode && i.raw_source == a.Key.raw_source).Sum(i=>i.qty)
-                    - _db.Repack.Where(i =>i.from_po == po && i.production_date == a.Key.date && i.from_bmi_code == bmicode && i.raw_source == a.Key.raw_source).Sum(i => i.qty)
+                    - _db.AdjustmentFG.Where( i=>i.status == "destroy" && i.production_date == a.Key.date && i.bmi_code == bmicode && i.raw_source == a.Key.raw_source).Sum(i=>i.qty)
+                    - _db.Repack.Where(i =>i.from_po == po && i.production_date == a.Key.date && i.from_bmi_code == bmicode && i.raw_source == a.Key.raw_source).Sum(i => i.qty * 2.204 / i.fromMasterBMIModel.lbs))
                 })
-                .OrderByDescending(a => a.production_date)
                 .ToList();
 
             var repack = _db.Repack
@@ -324,8 +313,8 @@ namespace BMI.Controllers
                 {
                     production_date = a.Key.production_date,
                     raw_source = a.Key.raw_source,
-                    cases = a.Sum(a => a.qty * a.fromMasterBMIModel.lbs /a.toMasterBMIModel.lbs),
-                    available = a.Sum(a=>a.qty * a.fromMasterBMIModel.lbs / a.toMasterBMIModel.lbs)
+                    cases = a.Sum(a => a.qty * 2.204 /a.toMasterBMIModel.lbs),
+                    available = a.Sum(a=>a.qty *2.204 / a.toMasterBMIModel.lbs)
                 })
                 .ToList();
 
@@ -339,7 +328,9 @@ namespace BMI.Controllers
                     raw_source = a.Key.raw_source,
                     cases = a.Sum(b => b.cases),
                     available = a.Sum(b => b.available)
-                }).ToList();
+                })
+                .OrderBy(a=>a.date)
+                .ToList();
             return await Task.Run(()=> Json(result));
         }
 
@@ -489,28 +480,30 @@ namespace BMI.Controllers
         {
             var to_po = Convert.ToString(_db.PO.Where(a => a.pt == Convert.ToInt32(productionView.destination_pt)).Select(a => a.po).First());
 
-            if (ModelState.IsValid)
+            var repack = new RepackModel
             {
-                var repack = new RepackModel
-                {
-                    po = productionView.po_bmi,
-                    date = productionView.date,
-                    raw_source = productionView.raw_source,
-                    qty = productionView.qty,
-                    production_date = productionView.production_date,
-                    from_po = productionView.po,
-                    from_bmi_code = productionView.bmi_code,
-                    to_po = to_po,
-                    to_bmi_code = productionView.to_bmi_code,
-                    landing_site = productionView.landing_site
-                };
+                po = productionView.po_bmi,
+                date = productionView.date,
+                raw_source = productionView.raw_source,
+                qty = productionView.qty,
+                production_date = productionView.production_date,
+                from_po = productionView.po,
+                from_bmi_code = productionView.bmi_code,
+                to_po = to_po,
+                to_bmi_code = productionView.to_bmi_code,
+                landing_site = productionView.landing_site,
+                created_by = User.Identity.Name,
+                created_at = DateTime.Now
+            };
+            if (repack != null)
+            {
                 _db.Repack.Add(repack);
                 _db.SaveChanges();
                 TempData["msg"] = "Item Succesfully Repacked";
                 TempData["result"] = "success";
                 return await Task.Run(() => Redirect(Request.Headers["Referer"].ToString()));
             }
-            TempData["msg"] = "Item Failded to Repack";
+            TempData["msg"] = "Item Failed to Repack";
             TempData["result"] = "failed";
             return await Task.Run(() => Redirect(Request.Headers["Referer"].ToString()));
         }
@@ -579,6 +572,103 @@ namespace BMI.Controllers
             TempData["msg"] = "Data Failed to Delete";
             TempData["result"] = "failed";
             return await Task.Run(() => Redirect(Request.Headers["Referer"].ToString()));
+        }
+
+
+        public async Task<IActionResult> Destroy(ProductionView productionView)
+        {
+           
+            var obj = new AdjustmentFGModel
+            {
+                bmi_code = productionView.bmi_code,
+                raw_source = productionView.raw_source,
+                production_date = productionView.production_date,
+                landing_site = productionView.landing_site,
+                reason = productionView.reason,
+                status = "destroy",
+                qty = productionView.qty,
+                po = productionView.po,
+                created_at = DateTime.Now,
+                created_by = User.Identity.Name
+            };
+
+            if(obj != null)
+            {
+                _db.AdjustmentFG.Add(obj);
+                _db.SaveChanges();
+                TempData["msg"] = "Data Successfuly Added";
+                TempData["result"] = "success";
+                return await Task.Run(() => Redirect(Request.Headers["Referer"].ToString()));
+            }
+            TempData["msg"] = "Data Failed to Add";
+            TempData["result"] = "failed";
+            return await Task.Run(() => Redirect(Request.Headers["Referer"].ToString()));
+        }
+
+
+
+        public async Task<IActionResult> Download (string po)
+        {
+            var ProductionInput = _db.Production_input
+              .Where(a => a.po == po)
+              .Include(k => k.Masterdatamodel)
+              .AsEnumerable()
+              .GroupBy(k => new { k.po_bmi, k.date, k.sap_code })
+              .Select(a => new ProductionInputModel
+              {
+                  po_bmi = a.Key.po_bmi,
+                  date = a.Key.date,
+                  raw_source = a.Max(a => a.raw_source),
+                  sap_code = a.Key.sap_code,
+                  qty = a.Sum(x => x.qty),
+                  landing_site = a.Max(a => a.landing_site),
+                  Masterdatamodel = a.Max(m => m.Masterdatamodel),
+              })
+              .ToList();
+
+            var ProductionOutput = _db.Production_output
+                .Where(a => a.po == po)
+                .Include(k => k.MasterBMIModel)
+                .AsEnumerable()
+                .GroupBy(k => new { k.po_bmi,k.date,k.bmi_code})
+                .Select(a => new ProductionOutputModel
+                {
+                    po_bmi = a.Key.po_bmi,
+                    date = a.Key.date,
+                    bmi_code = a.Key.bmi_code,
+                    qty_production = Convert.ToInt32( a.Sum(x => x.qty * 2.204 / a.Max(m=>m.MasterBMIModel.lbs))),
+                    MasterBMIModel = a.Max(m => m.MasterBMIModel),
+                })
+                .ToList();
+
+            var obj = from o in ProductionOutput
+                      join i in ProductionInput on new { o.po_bmi, o.date } equals new { i.po_bmi, i.date }
+                      //group i by new { i.po, i.date } into a
+                      select new  {
+                          po_bmi = i.po_bmi,
+                          date = i.date,
+                          po = po,
+                          raw_source = i.raw_source,
+                          raw_code = i.sap_code,
+                          raw_description = i.Masterdatamodel.description,
+                          qty = i.qty,
+                          landing_site = i.landing_site,
+                          fg_code = o.MasterBMIModel.sap_code,
+                          fg_description = o.MasterBMIModel.description,
+                          qty_fg = o.qty_production
+
+                      };
+
+
+            //var yield = ((ProductionOutput.Sum(k => k.qty_production * 2.204) / ProductionInput.Sum(k => k.qty * 2.204)) * 100).ToString("0.00");
+
+            var builder = new StringBuilder();
+            builder.AppendLine("PO BMI,DATE,PO,Raw Source,RAW Code,RAW Description,qty,Landing Site,FG Code,FG Description,FG Qty");
+            foreach (var data in obj)
+            {
+                builder.AppendLine($"{data.po_bmi},{data.date},{data.po},{data.raw_source},{data.raw_code},{data.raw_description},{data.qty},{data.landing_site},{data.fg_code},{data.fg_description},{data.qty_fg}");
+            }
+            return await Task.Run(() => File(Encoding.UTF8.GetBytes(builder.ToString()), "text/csv", "data.csv"));
         }
 
 

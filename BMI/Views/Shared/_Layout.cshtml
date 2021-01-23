@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - BMI</title>
+    <title>@ViewData["Title"] | CTP</title>
 
     <link rel="stylesheet" href="~/css/plugins/fontawesome-free/css/all.min.css">
     @*Ionicons*@
@@ -35,7 +35,7 @@
                 <li class="nav-item">
                     <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                 </li>
-                <li class="nav-item dropdown">
+                @*<li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         BMI Master Report
                     </a>
@@ -55,7 +55,7 @@
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" asp-controller="Shipment" asp-action="index">SHIPMENT</a>
                     </div>
-                </li>
+                </li>*@
             </ul>
 
 
@@ -213,13 +213,13 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-controller="Rm" asp-action="index">
+                                    <a class="nav-link" asp-controller="Rm" asp-action="index" asp-route-status="plant">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Raw Material</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-controller="Production" asp-action="Index" asp-route-plant="3700" asp-route-status="Open">
+                                    <a class="nav-link" asp-controller="Production" asp-action="Index" asp-route-plant="3700" asp-route-status="Process">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Production</p>
                                     </a>
@@ -355,6 +355,7 @@
     <script asp-append-version="true" src="~/css/js/Repack.js"></script>
     <script asp-append-version="true" src="~/css/js/Shipment.js"></script>
     <script asp-append-version="true" src="~/css/js/PO.js"></script>
+    <script asp-append-version="true" src="~/css/js/Inventory.js"></script>
 
     <script>
         $(function () {
