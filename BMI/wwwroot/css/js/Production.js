@@ -165,7 +165,7 @@ $(function () {
     $('.adjustment-fg').on('click', function () {
         $('#formModalLabel').html('Adjustment');
         $('#qty_label').html('Qty (CS)');
-        var pt = $(this).data('pt');
+        var po = $(this).data('po');
         var code = $(this).data('code');
         $('#qty').val("");
         $('.destination-pt').hide();
@@ -179,7 +179,7 @@ $(function () {
         $('.modal-body form').attr('action', '/Production/Adjustment');
         $.ajax({
             url: '/Production/Getitemdata',
-            data: { pt: pt, code: code },
+            data: { po: po, code: code },
             method: 'get',
             dataType: 'json',
             success: function (data) {
@@ -203,7 +203,7 @@ $(function () {
         $('.landing-site-input').show();
         $('.reason').hide();
         $('#qty_label').html('Qty (Kg)');
-        var pt = $(this).data('pt');
+        var po = $(this).data('po');
         var code = $(this).data('code');
         $('#qty').val("");
         $('#destination_pt').val("");
@@ -215,7 +215,7 @@ $(function () {
         $('.modal-body form').attr('action', '/Production/Repack');
         $.ajax({
             url: '/Production/Getitemdata',
-            data: { pt: pt, code: code },
+            data: { po: po, code: code },
             method: 'get',
             dataType: 'json',
             success: function (data) {
@@ -253,7 +253,7 @@ $(function () {
         $('.date').hide();
         $('.po').hide();
         $('.landing-site-input').show();
-        var pt = $(this).data('pt');
+        var po = $(this).data('po');
         var code = $(this).data('code');
         $('#qty').val("");
         $('#production_date').html("");
@@ -263,7 +263,7 @@ $(function () {
         $('.modal-body form').attr('action', '/Production/Destroy');
         $.ajax({
             url: '/Production/Getitemdata',
-            data: { pt: pt, code: code },
+            data: { po: po, code: code },
             method: 'get',
             dataType: 'json',
             success: function (data) {
@@ -280,7 +280,12 @@ $(function () {
                     $('#raw_source').append("<option>" + e.raw_source + "</option>");
                     $('#landing_site').append("<option>" + e.landing_site + "</option>");
                     $('#bmi_code').val(e.bmi_code)
+                    
                 })
+                //$('.pdck').on('change', function () {
+                //    console.log("success");
+                //})
+                
             }
         });
 

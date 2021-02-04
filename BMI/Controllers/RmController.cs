@@ -66,7 +66,7 @@ namespace BMI.Controllers
             var list = _db.Rm_detail
                 .Where(x => x.raw_source == raw_source)
                 .Include(x => x.Masterdatamodel)
-                .OrderByDescending(e => e.id_raw)
+                .OrderBy(e => e.landing_site).ThenByDescending(e=>e.Masterdatamodel.description)
                 .ToList();
             ViewBag.raw_source = raw_source;
             ViewBag.status = status;
@@ -260,7 +260,7 @@ namespace BMI.Controllers
             _db.SaveChanges();
             TempData["msg"] = "Item Succesfully Deleted";
             TempData["result"] = "success";
-            return await Task.Run(()=> RedirectToAction("List", new { status = status }));
+            return await Task.Run(() => Redirect(Request.Headers["Referer"].ToString()));
         }
 
         [HttpPost]
@@ -305,7 +305,7 @@ namespace BMI.Controllers
             _db.SaveChanges();
             TempData["msg"] = "Item Succesfully Deleted";
             TempData["result"] = "success";
-            return await Task.Run(() => RedirectToAction("Detail", new { raw_source = obj.raw_source }));
+            return await Task.Run(() => Redirect(Request.Headers["Referer"].ToString()));
         }
 
 

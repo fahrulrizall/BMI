@@ -18,6 +18,7 @@ using Microsoft.EntityFrameworkCore.Scaffolding.Metadata;
 using System.Dynamic;
 using BMI.UtilityModels;
 using System.Text;
+using ClosedXML.Excel;
 
 namespace BMI.Controllers
 {
@@ -314,7 +315,7 @@ namespace BMI.Controllers
                     production_date = a.Key.production_date,
                     raw_source = a.Key.raw_source,
                     cases = a.Sum(a => a.qty * 2.204 /a.toMasterBMIModel.lbs),
-                    available = a.Sum(a=>a.qty *2.204 / a.toMasterBMIModel.lbs)
+                    available = a.Sum(a=>a.qty *2.204 / a.toMasterBMIModel.lbs) - _db.Shipment.Where(b=>b.pdc == a.Key.production_date && b.raw_source == a.Key.raw_source).Sum(b=>b.qty)
                 })
                 .ToList();
 
@@ -436,9 +437,8 @@ namespace BMI.Controllers
             return await Task.Run(() => Json(model));
         }
 
-        public async Task<JsonResult> Getitemdata(string code, string pt)
+        public async Task<JsonResult> Getitemdata(string code, string po)
         {
-            var po = Convert.ToString(_db.PO.Where(a => a.pt == Convert.ToInt32(pt)).Select(a => a.po).First());
             var obj = _db.Production_output
                 .Where(k => k.po == po && k.bmi_code == code)
                 .GroupBy(x => x.date )
@@ -606,69 +606,134 @@ namespace BMI.Controllers
         }
 
 
-
-        public async Task<IActionResult> Download (string po)
+        public IActionResult DownloadFG(string po,string pt)
         {
-            var ProductionInput = _db.Production_input
-              .Where(a => a.po == po)
-              .Include(k => k.Masterdatamodel)
-              .AsEnumerable()
-              .GroupBy(k => new { k.po_bmi, k.date, k.sap_code })
-              .Select(a => new ProductionInputModel
-              {
-                  po_bmi = a.Key.po_bmi,
-                  date = a.Key.date,
-                  raw_source = a.Max(a => a.raw_source),
-                  sap_code = a.Key.sap_code,
-                  qty = a.Sum(x => x.qty),
-                  landing_site = a.Max(a => a.landing_site),
-                  Masterdatamodel = a.Max(m => m.Masterdatamodel),
-              })
-              .ToList();
-
             var ProductionOutput = _db.Production_output
-                .Where(a => a.po == po)
-                .Include(k => k.MasterBMIModel)
-                .AsEnumerable()
-                .GroupBy(k => new { k.po_bmi,k.date,k.bmi_code})
-                .Select(a => new ProductionOutputModel
-                {
-                    po_bmi = a.Key.po_bmi,
-                    date = a.Key.date,
-                    bmi_code = a.Key.bmi_code,
-                    qty_production = Convert.ToInt32( a.Sum(x => x.qty * 2.204 / a.Max(m=>m.MasterBMIModel.lbs))),
-                    MasterBMIModel = a.Max(m => m.MasterBMIModel),
-                })
-                .ToList();
+             .Where(a => a.po == po)
+             .Include(k => k.MasterBMIModel)
+             .Include(k => k.POModel)
+             .AsEnumerable()
+             .GroupBy(k => new { k.date, k.po_bmi, k.bmi_code })
+             .Select(a => new ProductionOutputModel
+             {
+                 po_bmi = a.Key.po_bmi,
+                 date = a.Key.date,
+                 raw_source = a.Max(m => m.raw_source),
+                 landing_site = a.Max(m => m.landing_site),
+                 bmi_code = a.Key.bmi_code,
+                 qty = a.Sum(x => x.qty),
+                 lbs = a.Sum(x=>x.qty * 2.204),
+                 cases = Convert.ToInt32(a.Sum(x => x.qty * 2.204 / a.Max(m => m.MasterBMIModel.lbs))),
+                 MasterBMIModel = a.Max(m => m.MasterBMIModel),
+                 POModel = a.Max(m => m.POModel)
+             })
+             .OrderBy(a=>a.date).ThenBy(a=>a.po_bmi)
+             .ToList();
 
-            var obj = from o in ProductionOutput
-                      join i in ProductionInput on new { o.po_bmi, o.date } equals new { i.po_bmi, i.date }
-                      //group i by new { i.po, i.date } into a
-                      select new  {
-                          po_bmi = i.po_bmi,
-                          date = i.date,
-                          po = po,
-                          raw_source = i.raw_source,
-                          raw_code = i.sap_code,
-                          raw_description = i.Masterdatamodel.description,
-                          qty = i.qty,
-                          landing_site = i.landing_site,
-                          fg_code = o.MasterBMIModel.sap_code,
-                          fg_description = o.MasterBMIModel.description,
-                          qty_fg = o.qty_production
-
-                      };
-
-
-            //var yield = ((ProductionOutput.Sum(k => k.qty_production * 2.204) / ProductionInput.Sum(k => k.qty * 2.204)) * 100).ToString("0.00");
-
-            var builder = new StringBuilder();
-            builder.AppendLine("PO BMI,DATE,PO,Raw Source,RAW Code,RAW Description,qty,Landing Site,FG Code,FG Description,FG Qty");
-            foreach (var data in obj)
+            using (var workbook = new XLWorkbook())
             {
-                builder.AppendLine($"{data.po_bmi},{data.date},{data.po},{data.raw_source},{data.raw_code},{data.raw_description},{data.qty},{data.landing_site},{data.fg_code},{data.fg_description},{data.qty_fg}");
+                var worksheet = workbook.Worksheets.Add("PT "+pt);
+                var currentRow = 1;
+                worksheet.Cell(currentRow, 1).Value = "PO";
+                worksheet.Cell(currentRow, 2).Value = "Date";
+                worksheet.Cell(currentRow, 3).Value = "PT";
+                worksheet.Cell(currentRow, 4).Value = "Raw Source";
+                worksheet.Cell(currentRow, 5).Value = "Landing Site";
+                worksheet.Cell(currentRow, 6).Value = "FG Code";
+                worksheet.Cell(currentRow, 7).Value = "FG Description";
+                worksheet.Cell(currentRow, 8).Value = "FG Qty in Kg";
+                worksheet.Cell(currentRow, 9).Value = "FG Qty in Lbs";
+                worksheet.Cell(currentRow, 10).Value = "FG Qty in CS";
+                worksheet.Cell(currentRow, 11).Value = "FG Batch";
+
+                foreach (var data in ProductionOutput)
+                {
+                    currentRow++;
+                    worksheet.Cell(currentRow, 1).Value = data.po_bmi;
+                    worksheet.Cell(currentRow, 2).Value = data.date;
+                    worksheet.Cell(currentRow, 3).Value = data.POModel.pt;
+                    worksheet.Cell(currentRow, 4).Value = data.raw_source;
+                    worksheet.Cell(currentRow, 5).Value = data.landing_site;
+                    worksheet.Cell(currentRow, 6).Value = data.MasterBMIModel.sap_code;
+                    worksheet.Cell(currentRow, 7).Value = data.MasterBMIModel.description;
+                    worksheet.Cell(currentRow, 8).Value = data.qty;
+                    worksheet.Cell(currentRow, 9).Value = data.lbs;
+                    worksheet.Cell(currentRow, 10).Value = data.cases;
+                    worksheet.Cell(currentRow, 11).Value = data.POModel.batch;
+                }
+
+                using (var stream = new MemoryStream())
+                {
+                    workbook.SaveAs(stream);
+                    var content = stream.ToArray();
+                    return File(content,
+                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                        "FG-PT "+pt+".xlsx");
+                }
             }
-            return await Task.Run(() => File(Encoding.UTF8.GetBytes(builder.ToString()), "text/csv", "data.csv"));
+
+        }
+
+
+        public IActionResult DownloadRaw(string po, string pt)
+        {
+            var ProductionOutput = _db.Production_input
+             .Where(a => a.po == po)
+             .Include(k => k.Masterdatamodel)
+             .Include(k => k.POModel)
+             .AsEnumerable()
+             .GroupBy(k => new { k.date, k.po_bmi, k.sap_code })
+             .Select(a => new ProductionInputModel
+             {
+                 po_bmi = a.Key.po_bmi,
+                 date = a.Key.date,
+                 raw_source = a.Max(m => m.raw_source),
+                 landing_site = a.Max(m => m.landing_site),
+                 sap_code = a.Key.sap_code,
+                 qty = a.Sum(x => x.qty),
+                 Masterdatamodel = a.Max(m => m.Masterdatamodel),
+                 POModel = a.Max(m => m.POModel)
+             })
+             .OrderBy(a => a.date).ThenBy(a => a.po_bmi)
+             .ToList();
+
+
+            using (var workbook = new XLWorkbook())
+            {
+                var worksheet = workbook.Worksheets.Add("PT " + pt);
+                var currentRow = 1;
+                worksheet.Cell(currentRow, 1).Value = "PO";
+                worksheet.Cell(currentRow, 2).Value = "Date";
+                worksheet.Cell(currentRow, 3).Value = "PT";
+                worksheet.Cell(currentRow, 4).Value = "Raw Source";
+                worksheet.Cell(currentRow, 5).Value = "Landing Site";
+                worksheet.Cell(currentRow, 6).Value = "Raw Code";
+                worksheet.Cell(currentRow, 7).Value = "Raw Description";
+                worksheet.Cell(currentRow, 8).Value = "Raw Qty";
+
+                foreach (var data in ProductionOutput)
+                {
+                    currentRow++;
+                    worksheet.Cell(currentRow, 1).Value = data.po_bmi;
+                    worksheet.Cell(currentRow, 2).Value = data.date;
+                    worksheet.Cell(currentRow, 3).Value = data.POModel.pt;
+                    worksheet.Cell(currentRow, 4).Value = data.raw_source;
+                    worksheet.Cell(currentRow, 5).Value = data.landing_site;
+                    worksheet.Cell(currentRow, 6).Value = data.Masterdatamodel.sap_code;
+                    worksheet.Cell(currentRow, 7).Value = data.Masterdatamodel.description;
+                    worksheet.Cell(currentRow, 8).Value = data.qty;
+                }
+
+                using (var stream = new MemoryStream())
+                {
+                    workbook.SaveAs(stream);
+                    var content = stream.ToArray();
+                    return File(content,
+                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                        "RAW-PT " + pt + ".xlsx");
+                }
+            }
+
         }
 
 

@@ -176,14 +176,14 @@ namespace BMI.Controllers
                                 foreach (DataRow item in row)
                                 {
                                     rowDataList = item.ItemArray.ToList();
-                                    var po_batch = Convert.ToString(_db.PO.Where(a => a.batch == Convert.ToString(rowDataList[3])).Select(a => a.po).First());
+                                    var po_batch = Convert.ToString(_db.PO.Where(a => a.batch == Convert.ToString(rowDataList[2])).Select(a => a.po).First());
                                     shipmentdata.Add(new ShipmentModel
                                     {
                                         po = po,
-                                        pdc = Convert.ToDateTime(rowDataList[0]),
-                                        bmi_code = Convert.ToString(rowDataList[1]),
+                                        pdc = Convert.ToDateTime(rowDataList[4]),
+                                        bmi_code = Convert.ToString(rowDataList[0]),
                                         batch = po_batch,
-                                        qty = Convert.ToInt32(rowDataList[4]),
+                                        qty = Convert.ToInt32(rowDataList[3]),
                                         raw_source = Convert.ToString(rowDataList[5]),
                                         created_at = DateTime.Now,
                                         created_by = User.Identity.Name,
