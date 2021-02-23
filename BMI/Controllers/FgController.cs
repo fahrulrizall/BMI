@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace BMI.Controllers
 {
-    [Authorize]
+ 
     public class FgController : Controller
     {
         private readonly ApplicationDbContext _db;
@@ -39,6 +39,7 @@ namespace BMI.Controllers
        
         [HttpPost]
         [AutoValidateAntiforgeryToken]
+        [Authorize(Roles = "CC,Admin")]
         public IActionResult Create(Fgmodel obj)
         {
             if (obj.id_fg == 0)
@@ -66,6 +67,7 @@ namespace BMI.Controllers
 
         [HttpPost]
         [AutoValidateAntiforgeryToken]
+        [Authorize(Roles = "CC,Admin")]
         public IActionResult Delete(int id,int plant)
         {
             var obj = _db.Fg.Find(id);
@@ -78,6 +80,7 @@ namespace BMI.Controllers
 
         [HttpPost]
         [AutoValidateAntiforgeryToken]
+        [Authorize(Roles = "CC,Admin")]
         public IActionResult Update(Fgmodel obj)
         {
             if (ModelState.IsValid)

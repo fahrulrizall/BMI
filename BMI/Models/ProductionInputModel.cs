@@ -42,6 +42,10 @@ namespace BMI.Models
         public int hour { get; set; }
         [NotMapped]
         public int minute { get; set; }
+        [NotMapped]
+        public double qty_raw { get; set; }
+        [NotMapped]
+        public double qty_fg { get; set; }
 
 
     }

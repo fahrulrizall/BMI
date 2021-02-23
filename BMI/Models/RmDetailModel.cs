@@ -42,7 +42,7 @@ namespace BMI.Models
 
         public string? CS_location { get; set; }
 
-        [Display(Name = "Packing List")]
+        [Display(Name = "Qty")]
         public float? qty_pl { get; set; }
         [Display(Name = "Received")]
         public float? qty_received { get; set; }
@@ -58,7 +58,9 @@ namespace BMI.Models
         [NotMapped]
         public float qty { get; set; }
         [NotMapped]
-        public double total_amount { get; set; }
+        public double? amount_pl { get; set; }
+        [NotMapped]
+        public double? amount_received { get; set; }
         [NotMapped]
         public string? reason { get; set; }
 

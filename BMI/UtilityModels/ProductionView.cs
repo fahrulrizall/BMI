@@ -26,6 +26,8 @@ namespace BMI.Models
         public string raw_source { get; set; }
         public string to_bmi_code { get; set; }
         public string reason { get; set; }
+        public double cases { get; set; }
+        public double lbs { get; set; }
         public MasterBMIModel MasterBMIModel { get; set; }
         public Masterdatamodel Masterdatamodel { get; set; }
         public POModel POModel { get; set; }

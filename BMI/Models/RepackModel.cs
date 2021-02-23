@@ -13,10 +13,12 @@ namespace BMI.Models
         [Key]
         public int id_repack { get; set; }
         public string po { get; set; }
-        [Remote(action: "DateExist", controller: "Repack", HttpMethod = "POST", AdditionalFields = "date", ErrorMessage = "Repack date Not Available")]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        [Remote(action: "DateExist", controller: "Repack", HttpMethod = "POST", AdditionalFields = "date", ErrorMessage = "Packing Date Not Available")]
         public DateTime date { get; set; }
         public string raw_source { get; set; }
         public double qty { get; set; }
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime production_date { get; set; }
 
 
@@ -47,6 +49,8 @@ namespace BMI.Models
         public  double cases { get; set; }
         [NotMapped]
         public  double available { get; set; }
+        [NotMapped]
+        public int? pt { get; set; }
 
 
     }

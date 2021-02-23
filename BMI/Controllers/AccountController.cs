@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace BMI.Controllers
 {
+ 
     public class AccountController : Controller
     {
         private readonly UserManager<ApplicationUser> userManager;
@@ -25,6 +26,7 @@ namespace BMI.Controllers
 
         [AllowAnonymous]
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public IActionResult Register()
         {
             return View();
@@ -32,6 +34,7 @@ namespace BMI.Controllers
 
         [AllowAnonymous]
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Register(RegisterView register)
         {
             if (ModelState.IsValid)
@@ -121,6 +124,7 @@ namespace BMI.Controllers
 
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteUser(string id)
         {
             var user = await userManager.FindByIdAsync(id);

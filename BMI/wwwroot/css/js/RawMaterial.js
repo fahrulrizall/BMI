@@ -47,6 +47,7 @@
     $('.change-item-detail').on('click', function () {
         $('#formModalLabel').html('Update Item');
         var id = $(this).data('id');
+        console.log(id)
         $('.modal-body form').attr('action', '/Rm/Updatedetail');
         $.ajax({
             url: '/Rm/Getdetailitem',
@@ -54,7 +55,6 @@
             method: 'get',
             dataType: 'json',
             success: function (data) {
-                console.log(data.landing_site_received)
                 $('#id_raw').val(data.id_raw);
                 $('#sap_code').val(data.sap_code);
                 $('#landing_site').val(data.landing_site);

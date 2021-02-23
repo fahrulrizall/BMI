@@ -22,14 +22,20 @@
                             <table class="table table-bordered table-striped table-sm">
                                 <thead>
                                     <tr>
-                                        <th style="width: 2%;font-size:small">
+                                        <th style="width: 5%;font-size:small">
                                             BMI PO
                                         </th>
-                                        <th style="width: 2%;font-size:small">
+                                        <th style="width: 5%;font-size:small">
                                             PT
                                         </th>
-                                        <th style="width: 15%;font-size:small">
+                                        <th style="width: 7%;font-size:small">
                                             Landing Site
+                                        </th>
+                                        <th style="width: 7%;font-size:small">
+                                            Qty Raw
+                                        </th>
+                                        <th style="width: 7%;font-size:small">
+                                            Qty FG
                                         </th>
                                     </tr>
                                 </thead>
@@ -42,10 +48,20 @@
                                                 <td style="font-size:small" class="btn detail-po-daily" data-date="@date" data-po="@obj.po_bmi">@obj.po_bmi</td>
                                                 <td style="font-size:small">PT#@obj.POModel.pt</td>
                                                 <td style="font-size:small">@obj.landing_site</td>
+                                                <td style="font-size:small">@obj.qty_raw</td>
+                                                <td style="font-size:small">@obj.qty_fg</td>
                                             </tr>
                                         }
                                     </tbody>
                                 }
+
+                                <tfoot>
+                                    <tr>
+                                        <th style="width: 2%;font-size:small" colspan="3">Total</th>
+                                        <th style="width: 2%;font-size:small">@(ViewBag.total_raw)</th>
+                                        <th style="width: 2%;font-size:small">@(ViewBag.total_fg)</th>
+                                    </tr>
+                                </tfoot>
                             </table>
                         </div>
                     </div>

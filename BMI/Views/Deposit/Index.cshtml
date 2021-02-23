@@ -43,8 +43,8 @@
                                 {
                                     <tr>
                                         <td class="text text-sm">@obj.raw_source</td>
-                                        <td style="font-size:small">@((obj.total_qty).ToString("0.00")) Kg</td>
-                                        <td style="font-size:small">$ @((obj.total_amount).ToString("0.00"))</td>
+                                        <td style="font-size:small">@((obj.total_qty).ToString("0.00")) Kgs</td>
+                                        <td style="font-size:small">@Convert.ToDecimal(obj.amount_pl).ToString("C")</td>
                                     </tr>
                                 }
                                 <tr>
@@ -54,8 +54,8 @@
                                 {
                                     <tr>
                                         <td class="text text-sm">@obj.raw_source</td>
-                                        <td style="font-size:small">@((obj.total_qty).ToString("0.00")) Kg</td>
-                                        <td style="font-size:small">$ @((obj.total_amount).ToString("0.00"))</td>
+                                        <td style="font-size:small">@((obj.total_qty).ToString("0.00")) Kgs</td>
+                                        <td style="font-size:small">@Convert.ToDecimal(obj.amount_received).ToString("C")</td>
                                     </tr>
                                 }
                                 <tr>
@@ -65,15 +65,15 @@
                                 {
                                     <tr>
                                         <td class="text text-sm">@obj.raw_source</td>
-                                        <td style="font-size:small">@((obj.lbs).ToString("0.00")) </td>
-                                        <td style="font-size:small">$ @((obj.amount).ToString("0.00"))</td>
+                                        <td style="font-size:small">@((obj.lbs).ToString("0.00")) Lbs </td>
+                                        <td style="font-size:small">@Convert.ToDecimal(obj.amount).ToString("C")</td>
                                     </tr>
                                 }
                             </tbody>
                             <tfoot>
                                 <tr>
                                     <td class="text text-sm" colspan="2">Total</td>
-                                    <td class="text text-sm">$ @ViewBag.amount </td>
+                                    <td class="text text-sm">@Convert.ToDecimal(ViewBag.amount).ToString("C") </td>
                                 </tr>
                             </tfoot>
                         </table>

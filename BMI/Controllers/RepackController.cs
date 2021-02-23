@@ -7,6 +7,7 @@ using System.Data;
 using BMI.Data;
 using BMI.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BMI.Controllers
 {
@@ -19,9 +20,16 @@ namespace BMI.Controllers
             _db = db;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var obj = _db.Repack
+                .GroupBy(a => new { a.date, a.toPOModel.pt })
+                .Select(a => new RepackModel
+                {
+                    date = a.Key.date,
+                    pt = a.Key.pt
+                }).Take(10).ToList();
+            return await Task.Run(()=> View(obj)) ;
         }
 
         public JsonResult DateExist(DateTime date)
@@ -37,7 +45,7 @@ namespace BMI.Controllers
         }
 
 
-        public JsonResult Bydate(DateTime date)
+        public async Task<IActionResult> Detail (DateTime date)
         {
             var obj = _db.Repack
                 .Include(k => k.fromMasterBMIModel)
@@ -49,12 +57,13 @@ namespace BMI.Controllers
                        m.date.Month == date.Month &&
                        m.date.Day == date.Day)
                 .ToList();
-            ViewBag.date = date.Date;
-            return Json(obj);
+            ViewBag.date = date.Day+"-"+date.Month+"-"+date.Year ;
+            return await Task.Run(()=> View(obj));
         }
 
         //[HttpPost]
         //[AutoValidateAntiforgeryToken]
+        [Authorize(Roles = "CC,Admin")]
         public IActionResult Delete(int id)
         {
             var remove = _db.Repack.Find(id);
@@ -66,11 +75,14 @@ namespace BMI.Controllers
 
         public JsonResult Getitemrepack(int id)
         {
-            var obj = _db.Repack.Where(a=>a.id_repack==id).Include(a=> a.fromPOModel).Include(a=>a.toPOModel).First();
+            var obj = _db.Repack.Where(a=>a.id_repack==id)
+                .Include(a => a.fromPOModel)
+                .Include(a => a.toPOModel)
+                .First();
             return Json(obj);
         }
 
-
+        [Authorize(Roles = "CC,Admin")]
         public IActionResult Update(RepackModel repackModel)
         {
             if (ModelState.IsValid)

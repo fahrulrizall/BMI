@@ -184,7 +184,7 @@ $(function () {
             dataType: 'json',
             success: function (data) {
                 data.forEach(function (e) {
-                    $('#pt').val(pt);
+                    $('#po').val(po);
                     $('#bmi_code').val(e.bmi_code)
                 })
             }
@@ -277,14 +277,14 @@ $(function () {
                     }
                     newdate = yr + '-' + month + '-' + day;
                     $('#production_date').append("<option>" + newdate + "</option>");
-                    $('#raw_source').append("<option>" + e.raw_source + "</option>");
-                    $('#landing_site').append("<option>" + e.landing_site + "</option>");
+                    $('.production_date').on('change', function () {
+                        console.log("asdasdasd")
+                    })
+                    //$('#raw_source').append("<option>" + e.raw_source + "</option>");
+                    //$('#landing_site').append("<option>" + e.landing_site + "</option>");
                     $('#bmi_code').val(e.bmi_code)
                     
                 })
-                //$('.pdck').on('change', function () {
-                //    console.log("success");
-                //})
                 
             }
         });

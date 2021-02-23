@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Hosting;
 using ExcelDataReader;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BMI.Controllers
 {
@@ -42,6 +43,7 @@ namespace BMI.Controllers
 
         [HttpPost]
         [AutoValidateAntiforgeryToken]
+        [Authorize(Roles = "CC,Logistic,Admin")]
         public async Task< IActionResult> Update(POModel POModel)
         {
             if (ModelState.IsValid)
@@ -78,6 +80,7 @@ namespace BMI.Controllers
 
         [HttpPost]
         [AutoValidateAntiforgeryToken]
+        [Authorize(Roles = "CC,Logistic,Admin")]
         public async Task< IActionResult> Delete(string po, string code, string batch)
         {
             var obj = _db.Shipment
@@ -107,7 +110,7 @@ namespace BMI.Controllers
             var obj = _db.Shipment
                 .Where(a => a.po == po)
                 .Include(a => a.MasterBMIModel)
-                .Include(a=>a.POModelBatch)
+                .Include(a => a.POModelBatch)
                 .AsEnumerable()
                 .GroupBy(a=> new { a.bmi_code,a.batch})
                 .Select(a=> new ShipmentModel 
@@ -133,6 +136,7 @@ namespace BMI.Controllers
 
         [HttpPost]
         [AutoValidateAntiforgeryToken]
+        [Authorize(Roles = "CC,Logistic,Admin")]
         public async Task<IActionResult> Import(IFormFile postedFile, string po)
         {
             if (postedFile != null)
@@ -219,7 +223,7 @@ namespace BMI.Controllers
             return await Task.Run(() => Redirect(Request.Headers["Referer"].ToString()));
         }
 
-
+        [Authorize(Roles = "CC,Logistic,Admin")]
         public async Task<IActionResult> Updateitem(ShipmentModel shipmentModel)
         {
             if (ModelState.IsValid)

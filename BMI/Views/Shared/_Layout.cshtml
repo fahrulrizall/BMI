@@ -206,12 +206,15 @@
                                 </p>
                             </a>
                             <ul class="nav nav-treeview">
+                                @if (signInManager.IsSignedIn(User) && User.IsInRole("Admin") || User.IsInRole("Planning"))
+                                {
                                 <li class="nav-item">
                                     <a class="nav-link" asp-route-plant="3700" asp-route-status="Open" asp-controller="PO" asp-action="index">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Purchase Order</p>
                                     </a>
                                 </li>
+                                }
                                 <li class="nav-item">
                                     <a class="nav-link" asp-controller="Rm" asp-action="index" asp-route-status="plant">
                                         <i class="far fa-circle nav-icon"></i>
@@ -254,16 +257,19 @@
                                         <p>Fair Trade</p>
                                     </a>
                                 </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" asp-controller="Deposit" asp-action="Index">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Deposit</p>
-                                    </a>
-                                </li>
-                            </ul>
+                                @if (signInManager.IsSignedIn(User) && User.IsInRole("Admin") || User.IsInRole("Accounting"))
+                                {
+                                    <li class="nav-item">
+                                        <a class="nav-link" asp-controller="Deposit" asp-action="Index">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Deposit</p>
+                                        </a>
+                                    </li>
+                                }
+                                </ul>
                         </li>
 
-                        @if (signInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+                        @if (signInManager.IsSignedIn(User) && User.IsInRole("Admin") )
                         {
                         <li class="nav-item has-treeview">
                             <a href="#" class="nav-link">

@@ -17,9 +17,12 @@ using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.EntityFrameworkCore.Scaffolding.Metadata;
 using System.Dynamic;
 using BMI.UtilityModels;
+using Microsoft.AspNetCore.Authorization;
+
 
 namespace BMI.Controllers
 {
+    [Authorize(Roles = "Accounting,Admin")]
     public class DepositController : Controller
     {
         private readonly ApplicationDbContext _db;
@@ -44,53 +47,50 @@ namespace BMI.Controllers
                 {
                     raw_source = k.Key,
                     total_qty = Convert.ToDouble(k.Sum(a => a.qty_pl)),
-                    total_amount = Convert.ToDouble(_db.Rm_detail.Where(a => a.raw_source == k.Key).Sum(a => a.qty_pl * a.usd_price))
+                    amount_pl = Math.Round(Convert.ToDouble(_db.Rm_detail.Where(a => a.raw_source == k.Key).Sum(a => a.qty_pl * a.usd_price)), 2)
                 })
                 .ToList();
 
             var in_plant = _db.Rm_detail
                 .Include(k => k.RmModel)
-                .Where(k => k.RmModel.status == "in_plant")
+                .Where(k => k.RmModel.status == "plant")
                 .GroupBy(k => new { k.raw_source, k.sap_code })
                 .Select(a => new RmDetailModel
                 {
                     raw_source = a.Key.raw_source,
                     sap_code = a.Key.sap_code,
-                    total_qty = Convert.ToDouble(a.Sum(k => k.qty_received) - 
-                        ((int?) _db.Production_input.Where(k => k.raw_source == a.Key.raw_source && k.sap_code == a.Key.sap_code).Sum(k => k.qty) ??0 ) ),
-                    total_amount = Convert.ToDouble((a.Sum(k => k.qty_received * k.usd_price))
-                        - (((int?) _db.Production_input.Where(k => k.raw_source == a.Key.raw_source && k.sap_code == a.Key.sap_code).Sum(k => k.qty) ??0)
-                        * _db.Rm_detail.Where(k => k.raw_source == a.Key.raw_source && k.sap_code == a.Key.sap_code).Average(k => k.usd_price)))
+                    total_qty = Convert.ToDouble(a.Sum(k => k.qty_received) -
+                        ((int?)_db.Production_input.Where(k => k.raw_source == a.Key.raw_source && k.sap_code == a.Key.sap_code).Sum(k => k.qty) ?? 0)),
+                    amount_received = Math.Round(Convert.ToDouble((a.Sum(k => k.qty_received * k.usd_price))
+                        - (((int?)_db.Production_input.Where(k => k.raw_source == a.Key.raw_source && k.sap_code == a.Key.sap_code).Sum(k => k.qty) ?? 0)
+                        * _db.Rm_detail.Where(k => k.raw_source == a.Key.raw_source && k.sap_code == a.Key.sap_code).Average(k => k.usd_price))), 2)
                 })
                 .ToList();
 
             model.in_plant = in_plant
                 .GroupBy(a => a.raw_source)
-                .Select(a=> new RmDetailModel 
-                { 
+                .Select(a => new RmDetailModel
+                {
                     raw_source = a.Key,
-                    total_qty = a.Sum(k=>k.total_qty),
-                    total_amount = a.Sum(k=>k.total_amount)
-                }) 
+                    total_qty = a.Sum(k => k.total_qty),
+                    amount_received = a.Sum(k => k.amount_received)
+                })
                 .ToList();
 
             var fg = _db.Production_output
                 .Include(k => k.POModel)
-                .Include(k=>k.MasterBMIModel)
-                .Where(k => k.POModel.pt_status == "Open")
+                .Include(k => k.MasterBMIModel)
+                .Where(k => k.POModel.pt_status == "Open" || k.POModel.pt_status == "Process")
                 .AsEnumerable()
-                .GroupBy(k => new { k.POModel ,k.raw_source,k.bmi_code })
+                .GroupBy(k => k.raw_source)
                 .Select(k => new ProductionOutputModel
                 {
-                    po = Convert.ToString(k.Key.POModel.pt),
-                    raw_source = k.Key.raw_source,
-                    bmi_code = k.Key.bmi_code,
-                    MasterBMIModel = k.Max(a=>a.MasterBMIModel),
+                    raw_source = k.Key,
                     lbs = k.Sum(k => k.qty * 2.20462) ,
                     rm_cost = Convert.ToDouble(
-                        (_db.Rm_detail.Where(a => a.raw_source == k.Key.raw_source).Sum(a => a.qty_received * a.usd_price) / _db.Rm_detail.Where(a => a.raw_source == k.Key.raw_source).Sum(a => a.qty_received))
+                        (_db.Rm_detail.Where(a => a.raw_source == k.Key).Sum(a => a.qty_received * a.usd_price) / _db.Rm_detail.Where(a => a.raw_source == k.Key).Sum(a => a.qty_received))
                         * 0.45359237 /
-                        (  (_db.Production_output.Where(a => a.raw_source == k.Key.raw_source).Sum(a => a.qty) + (float?)_db.Pending.Where(a=>a.raw_source == k.Key.raw_source).Sum(a=>a.qty) ?? 0 )  / (_db.Production_input.Where(a => a.raw_source == k.Key.raw_source).Sum(a => a.qty)) )
+                        ((_db.Production_output.Where(a => a.raw_source == k.Key).Sum(a => a.qty) + (float?)_db.Pending.Where(a => a.raw_source == k.Key).Sum(a => a.qty) ?? 0) / (_db.Production_input.Where(a => a.raw_source == k.Key).Sum(a => a.qty)))
                         )
                 })
                 .ToList();
@@ -99,13 +99,13 @@ namespace BMI.Controllers
                 .Select(a => new ProductionOutputModel
                 {
                     raw_source = a.Key,
-                    lbs = a.Sum(k=>k.lbs) + (float?)_db.Pending.Where(k => k.raw_source == a.Key).Sum(k => k.qty * 2.20462) ?? 0 - (float?)_db.Shipment.Include(a=>a.MasterBMIModel).Where(k => k.raw_source == a.Key).Sum(k => k.qty * k.MasterBMIModel.lbs ) ?? 0,
-                    rm_cost = a.Average(k=>k.rm_cost),
-                    amount = a.Sum(k=>k.lbs * k.rm_cost)
+                    lbs = a.Sum(k => k.lbs) + _db.Pending.Where(k => k.raw_source == a.Key).Sum(k => k.qty * 2.20462) -  _db.Shipment.Where(k => k.raw_source == a.Key).Sum(k => k.qty * k.MasterBMIModel.lbs),
+                    amount = (a.Sum(k => k.lbs) + _db.Pending.Where(k => k.raw_source == a.Key).Sum(k => k.qty * 2.20462) - _db.Shipment.Where(k => k.raw_source == a.Key).Sum(k => k.qty * k.MasterBMIModel.lbs)) * a.Average(k => k.rm_cost),
                 })
+                .Where(k=>k.lbs > 10)
                 .ToList();
 
-            ViewBag.amount = (model.otw.Sum(a => a.total_amount) + model.in_plant.Sum(a => a.total_amount) + model.fg.Sum(a => a.amount)).ToString("0.00");
+            ViewBag.amount = Math.Round( Convert.ToDouble(model.otw.Sum(a => a.amount_received) + model.in_plant.Sum(a => a.amount_received) + model.fg.Sum(a => a.amount)),2);
 
             return await Task.Run(() => View(model));
         }

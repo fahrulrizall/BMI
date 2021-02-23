@@ -17,6 +17,7 @@ using Microsoft.Extensions.Configuration;
 using ExcelDataReader;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Text;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BMI.Controllers
 {
@@ -67,13 +68,29 @@ namespace BMI.Controllers
                 .Where(x => x.raw_source == raw_source)
                 .Include(x => x.Masterdatamodel)
                 .OrderBy(e => e.landing_site).ThenByDescending(e=>e.Masterdatamodel.description)
+                .Select(a=> new RmDetailModel { 
+                    id_raw = a.id_raw,
+                    sap_code = a.sap_code,
+                    Masterdatamodel = a.Masterdatamodel,
+                    usd_price = a.usd_price,
+                    ex_rate = a.ex_rate,
+                    landing_site = a.landing_site,
+                    qty_pl = a.qty_pl,
+                    amount_pl = Math.Round(  Math.Round(Convert.ToDouble (a.usd_price * a.ex_rate),2) * Math.Round( Convert.ToDouble(a.qty_pl),2),2),
+                    landing_site_received = a.landing_site_received,
+                    qty_received = a.qty_received,
+                    amount_received = Math.Round(Math.Round(Convert.ToDouble(a.usd_price * a.ex_rate), 2) * Math.Round(Convert.ToDouble(a.qty_received), 2), 2),
+                })
                 .ToList();
             ViewBag.raw_source = raw_source;
             ViewBag.status = status;
-            ViewBag.qty_pl = list.Sum(a => a.qty_pl);
-            ViewBag.qty_received = list.Sum(a => a.qty_received);
+            ViewBag.qty_pl = Math.Round( Convert.ToDecimal( list.Sum(a => a.qty_pl)),2);
+            ViewBag.amount_pl = Math.Round( Convert.ToDouble( list.Sum(a => a.amount_pl)),2);
+            ViewBag.qty_received = Math.Round(Convert.ToDecimal(list.Sum(a => a.qty_received)),2);
+            ViewBag.amount_received = Math.Round(Convert.ToDouble(list.Sum(a => a.amount_received)),2);
             return await Task.Run(()=> View(list));
         }
+
 
         public async Task<JsonResult> Getdata(string raw_source)
         {
@@ -83,6 +100,7 @@ namespace BMI.Controllers
 
         [HttpPost]
         [AutoValidateAntiforgeryToken]
+        [Authorize(Roles = "PF,Admin")]
         public async Task<IActionResult> Update(RmModel rmModel)
         {
             if (ModelState.IsValid)
@@ -142,6 +160,7 @@ namespace BMI.Controllers
 
         [HttpPost]
         [AutoValidateAntiforgeryToken]
+        [Authorize(Roles = "PF,Admin")]
         public async Task<IActionResult> Import(IFormFile postedFile)
         {
             if (postedFile != null)
@@ -251,6 +270,7 @@ namespace BMI.Controllers
 
         [HttpPost]
         [AutoValidateAntiforgeryToken]
+        [Authorize(Roles = "PF,Admin")]
         public async Task<IActionResult> Delete(string raw_source,string status)
         {
             var rm_detail = _db.Rm_detail.Where(x => x.raw_source == raw_source).ToList();
@@ -265,6 +285,7 @@ namespace BMI.Controllers
 
         [HttpPost]
         [AutoValidateAntiforgeryToken]
+        [Authorize(Roles = "PF,Admin")]
         public async Task<IActionResult> Updatedetail(RmDetailModel rmDetailModel)
         {
             if (ModelState.IsValid)
@@ -298,6 +319,7 @@ namespace BMI.Controllers
 
         [HttpPost]
         [AutoValidateAntiforgeryToken]
+        [Authorize(Roles = "PF,Admin")]
         public async Task<IActionResult> Deleteitem(int id,string raw_source)
         {
             var obj = _db.Rm_detail.Find(id);
@@ -308,7 +330,7 @@ namespace BMI.Controllers
             return await Task.Run(() => Redirect(Request.Headers["Referer"].ToString()));
         }
 
-
+        [Authorize(Roles = "PF,Admin")]
         public async Task< IActionResult> Adddestroy(AdjustmentRawModel adjustmentRawModel)
         {
             if (ModelState.IsValid)

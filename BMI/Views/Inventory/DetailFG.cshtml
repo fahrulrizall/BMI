@@ -21,20 +21,14 @@
                     </div>
 
                     <div class="card-body">
-                        <table id="example1" class="table table-bordered table-striped table-sm">
+                        <table class="table table-bordered table-striped table-sm">
                             <thead>
                                 <tr>
-                                    <th style="width: 1%;font-size:small">
-                                        PT
-                                    </th>
                                     <th style="width: 5%;font-size:small">
                                         SAP Code
                                     </th>
                                     <th style="width: 15%;font-size:small">
-                                        Decsription
-                                    </th>
-                                    <th style="width: 5%;font-size:small">
-                                        Batch
+                                        Description
                                     </th>
                                     <th style="width: 5%;font-size:small">
                                         Available Qty
@@ -45,10 +39,8 @@
                                 @foreach (var obj in Model)
                                 {
                                     <tr>
-                                        <td class="text text-sm">@obj.POModel.pt</td>
                                         <td style="font-size:small">@obj.MasterBMIModel.sap_code</td>
                                         <td style="font-size:small">@obj.MasterBMIModel.description</td>
-                                        <td style="font-size:small">@obj.POModel.batch</td>
                                         <td style="font-size:small">@Convert.ToInt32(obj.total)</td>
                                     </tr>
                                 }

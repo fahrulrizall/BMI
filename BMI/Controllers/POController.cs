@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BMI.Controllers
 {
+    [Authorize(Roles = "Planning,Admin")]
     public class POController : Controller
     {
         private readonly UserManager<ApplicationUser> userManager;

@@ -22,23 +22,26 @@
                         <table class="table table-bordered table-striped table-sm">
                             <thead>
                                 <tr>
-                                    <th style="width: 6%;font-size:small">
+                                    <th style="width: 3%;font-size:small">
                                         Item Code
                                     </th>
                                     <th style="width: 6%;font-size:small">
                                         Descriptions
                                     </th>
                                     <th style="width: 5%;font-size:small">
-                                        USD Price
+                                        Price
                                     </th>
                                     <th style="width: 5%;font-size:small">
-                                        Ex Rate
+                                        IDR Rate
                                     </th>
                                     <th style="width: 6%;font-size:small">
                                         Site
                                     </th>
                                     <th style="width: 5%;font-size:small">
-                                        Qty PL
+                                        Qty
+                                    </th>
+                                    <th style="width: 5%;font-size:small">
+                                        Amount
                                     </th>
                                     @if (status == "Plant" || status == "Closed")
                                     {
@@ -47,6 +50,9 @@
                                         </th>
                                         <th style="width: 5%;font-size:small">
                                             Qty Received
+                                        </th>
+                                        <th style="width: 6%;font-size:small">
+                                            Amount Received
                                         </th>
                                     }
 
@@ -61,14 +67,16 @@
                                     <tr>
                                         <td style="font-size:small">@obj.sap_code</td>
                                         <td style="font-size:small">@obj.Masterdatamodel.description</td>
-                                        <td style="font-size:small">$@obj.usd_price</td>
-                                        <td style="font-size:small">Rp.@obj.ex_rate</td>
+                                        <td style="font-size:small">@Convert.ToDecimal(obj.usd_price).ToString("C")</td>
+                                        <td style="font-size:small">@Convert.ToDecimal(obj.ex_rate).ToString("C2", System.Globalization.CultureInfo.GetCultureInfo("en-id"))</td>
                                         <td style="font-size:small">@obj.landing_site</td>
-                                        <td style="font-size:small">@obj.qty_pl</td>
+                                        <td style="font-size:small">@obj.qty_pl Kg</td>
+                                        <td style="font-size:small">@Convert.ToDecimal(obj.amount_pl).ToString("C2", System.Globalization.CultureInfo.GetCultureInfo("en-id"))</td>
                                         @if (status == "Plant" || status == "Closed")
                                         {
                                             <td style="font-size:small">@obj.landing_site_received</td>
-                                            <td style="font-size:small">@obj.qty_received</td>
+                                            <td style="font-size:small">@obj.qty_received Kg</td>
+                                            <td style="font-size:small">@Convert.ToDecimal(obj.amount_received).ToString("C2", System.Globalization.CultureInfo.GetCultureInfo("en-id"))</td>
                                         }
 
                                         <td>
@@ -90,15 +98,18 @@
                                     @if (status == "Plant" || status == "Closed")
                                     {
                                         <th style="width: 2%;font-size:small" colspan="5">Total</th>
-                                        <th style="width: 2%;font-size:small">@(ViewBag.qty_pl)</th>
+                                        <th style="width: 2%;font-size:small">@(ViewBag.qty_pl) Kgs</th>
+                                        <th style="width: 2%;font-size:small">@Convert.ToDecimal(ViewBag.amount_pl).ToString("C2", System.Globalization.CultureInfo.GetCultureInfo("en-id"))</th>
                                         <th style="width: 2%;font-size:small"></th>
-                                        <th style="width: 2%;font-size:small">@(ViewBag.qty_received)</th>
+                                        <th style="width: 2%;font-size:small">@(ViewBag.qty_received) Kgs</th>
+                                        <th style="width: 2%;font-size:small">@Convert.ToDecimal(ViewBag.amount_received).ToString("C2", System.Globalization.CultureInfo.GetCultureInfo("en-id"))</th>
                                         <th style="width: 2%;font-size:small"></th>
                                     }
                                     else
                                     {
                                         <th style="width: 2%;font-size:small" colspan="5">Total</th>
-                                        <th style="width: 2%;font-size:small">@(ViewBag.qty_pl)</th>
+                                        <th style="width: 2%;font-size:small">@(ViewBag.qty_pl) Kgs</th>
+                                        <th style="width: 2%;font-size:small">@Convert.ToDecimal(ViewBag.amount_pl).ToString("C2", System.Globalization.CultureInfo.GetCultureInfo("en-id"))</th>
                                         <th style="width: 2%;font-size:small"></th>
                                     }
                                 </tr>

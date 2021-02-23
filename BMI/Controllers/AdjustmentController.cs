@@ -7,9 +7,11 @@ using Microsoft.EntityFrameworkCore;
 using BMI.Data;
 using BMI.Models;
 using System.Data;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BMI.Controllers
 {
+
     public class AdjustmentController : Controller
     {
         private readonly ApplicationDbContext _db;
@@ -24,7 +26,7 @@ namespace BMI.Controllers
             return View();
         }
 
-
+        [Authorize(Roles = "CC,Admin")]
         public async Task< IActionResult> Adjustment(string status)
         {
             var obj = _db.AdjustmentFG
@@ -45,6 +47,7 @@ namespace BMI.Controllers
 
         [HttpPost]
         [AutoValidateAntiforgeryToken]
+        [Authorize(Roles = "CC,Admin")]
         public async Task<IActionResult> Create(AdjustmentFGModel adjustmentFGModel)
         {
             var getPO = _db.PO.Where(a => a.pt == Convert.ToInt32(adjustmentFGModel.pt)).Select(a => a.po).ToList();
@@ -77,6 +80,7 @@ namespace BMI.Controllers
 
         [HttpPost]
         [AutoValidateAntiforgeryToken]
+        [Authorize(Roles = "CC,Admin")]
         public IActionResult Update(AdjustmentFGModel destroyModel)
         {
             var getPO = _db.PO.Where(a => a.pt == Convert.ToInt32(destroyModel.pt)).Select(a => a.po).ToList();
@@ -107,6 +111,7 @@ namespace BMI.Controllers
 
         [HttpPost]
         [AutoValidateAntiforgeryToken]
+        [Authorize(Roles = "CC,Admin")]
         public async Task< IActionResult> Delete(int id, string status)
         {
             var obj = _db.AdjustmentFG.Find(id);
@@ -138,7 +143,7 @@ namespace BMI.Controllers
         }
 
 
-
+        [Authorize(Roles = "CC,Admin")]
         public IActionResult AddDestroyRaw(AdjustmentRawModel adjustmentRawModel)
         {
             if (adjustmentRawModel.id_adjustmentRaw == 0)
@@ -166,6 +171,7 @@ namespace BMI.Controllers
 
         [HttpPost]
         [AutoValidateAntiforgeryToken]
+        [Authorize(Roles = "CC,Admin")]
         public async Task<IActionResult> UpdateRaw(AdjustmentRawModel adjustmentRawModel)
         {
             if (ModelState.IsValid)
@@ -195,6 +201,7 @@ namespace BMI.Controllers
 
 
         [AutoValidateAntiforgeryToken]
+        [Authorize(Roles = "CC,Admin")]
         public IActionResult Deleteraw(int id)
         {
             if (id != 0)
@@ -211,7 +218,7 @@ namespace BMI.Controllers
             return Redirect(Request.Headers["Referer"].ToString());
         }
 
-
+        [Authorize(Roles = "CC,Admin")]
         public IActionResult AdjustmentRaw(string status)
         {
             var obj = _db.AdjustmentRaw.Include(a => a.Masterdatamodel).Where(a => a.status == status).ToList();
