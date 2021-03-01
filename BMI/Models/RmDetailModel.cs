@@ -63,6 +63,8 @@ namespace BMI.Models
         public double? amount_received { get; set; }
         [NotMapped]
         public string? reason { get; set; }
+        [NotMapped]
+        public string? status { get; set; }
 
     }
 }

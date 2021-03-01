@@ -1,5 +1,35 @@
-﻿$('#detail-raw-material').hide();
+﻿
+$('#detail-fg-inventory').hide();
+$('.detail-fg').on('click', function () {
+    $('#fg-detail-batch').html("");
+    var code = $(this).data('code');
+    var sap_code = $(this).data('sap');
+    $("#list-fg-inventory").attr('class', 'col-md-7');
+    $('#detail-fg-inventory').show();
+    $('#card-title-detail').html(sap_code);
+    $.ajax({
+        url: '/Inventory/EachDetailFG',
+        data: { bmi_code: code },
+        method: 'get',
+        dataType: 'json',
+        success: function (data) {
+            data.forEach(function (e) {
+                console.log(e)
+                $('#fg-detail-batch').append("<tr><td class='text-sm'>" + sap_code + "</td><td class='text-sm'>" + e.poModel.batch + "</td><td class='text-sm'>" + e.total + "</td></tr>")
+            })
+        }
+    });
+})
 
+$('.close-detail-fg').on('click', function () {
+    $('#list-fg-inventory').attr('class', 'col-md-12');
+    $('#detail-fg-inventory').hide();
+})
+
+
+
+
+$('#detail-raw-material').hide();
 $('.detail-raw-material').on('click', function () {
     var raw_source = $(this).data('raw');
     $('#detail-raw-table').attr('class', 'col-md-6');
@@ -22,7 +52,6 @@ $('.detail-raw-material').on('click', function () {
 })
 
 $('.close-detail-raw-material').on('click', function () {
-    console.log("close")
     $('#detail-raw-table').attr('class', 'col-md-12');
     $('#detail-raw-material').hide();
 })

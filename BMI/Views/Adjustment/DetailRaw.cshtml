@@ -1,0 +1,144 @@
+﻿@model IEnumerable<BMI.Models.AdjustmentRawModel>
+@{
+    ViewData["Title"] = ViewBag.status;
+}
+<div class="content-wrapper">
+    <section class="content-header">
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-12">
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title"> @ViewBag.status List</h3>
+                        <div class="card-tools ">
+                            <button class="btn btn-sm float-right mx-1 add-destroy-raw"
+                                    data-toggle="modal" data-target="#modal-default">
+                                <i class="fa fa-plus">
+                                </i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <table id="example1" class="table table-bordered table-striped table-sm">
+                            <thead>
+                                <tr>
+                                    <th style="width: 2%;font-size:small">
+                                        Source
+                                    </th>
+                                    <th style="width: 5%;font-size:small">
+                                        SAP Code
+                                    </th>
+                                    <th style="width: 23%;font-size:small">
+                                        Description
+                                    </th>
+                                    <th style="width: 8%;font-size:small">
+                                        Reason
+                                    </th>
+                                    <th style="width: 5%;font-size:small">
+                                        Qty
+                                    </th>
+                                    <th style="width: 3%;font-size:small">
+                                        Action
+                                    </th>
+                                </tr>
+                            </thead>
+                            @if (Model.Count() > 0)
+                            {
+                                <tbody>
+                                    @foreach (var obj in Model)
+                                    {
+                                        <tr>
+                                            <td class="text text-sm">@obj.raw_source</td>
+                                            <td style="font-size:small">@obj.sap_code</td>
+                                            <td style="font-size:small">@obj.Masterdatamodel.description</td>
+                                            <td style="font-size:small">@obj.reason</td>
+                                            <td style="font-size:small">@obj.qty</td>
+                                            <td>
+                                                <form asp-controller="Adjustment" asp-route-id="@obj.id_adjustmentRaw" asp-action="Deleteraw" method="post" asp-route-status="@ViewBag.status">
+                                                    <a data-toggle="modal" data-target="#modal-default" data-id="@obj.id_adjustmentRaw" class="btn btn-xs btn-warning update-destroy-raw">
+                                                        <i class="fa fa-edit" style="color:whitesmoke;outline:thin">
+                                                        </i>
+                                                    </a>
+                                                    <button type="submit" onclick="return confirm ('Delete Raw Material @obj.sap_code');" class="btn btn-xs btn-danger">
+                                                        <i class="fa fa-trash">
+                                                        </i>
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            }
+                        </table>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </section>
+    <!-- /.content -->
+</div>
+
+@if (Model.Count() > 0)
+{
+    <div class="modal fade" id="modal-default">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="formModalLabel">Add Destroy Item</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body mb-2">
+                    <form method="POST" asp-action="Create">
+                        <div class="card-body">
+                            <input type="hidden" class="form-control" asp-for="First().id_adjustmentRaw">
+                            <input type="hidden" class="form-control" asp-for="First().status" value="@ViewBag.status">
+                            <div class="form-group">
+                                <label>Raw Source</label>
+                                <input type="text" class="form-control" asp-for="First().raw_source"
+                                       placeholder="Raw Source">
+                                <span asp-validation-for="First().raw_source" class="text-danger" style="font-size:smaller"> </span>
+                            </div>
+                            <div class="form-group raw-source">
+                                <label>Code</label>
+                                <input type="number" class="form-control" asp-for="First().sap_code"
+                                       placeholder="Hers Code">
+                                <span asp-validation-for="First().sap_code" class="text-danger" style="font-size:smaller"> </span>
+                            </div>
+                            <div class="form-group reason">
+                                <label>Reason</label>
+                                <input type="text" step="any" class="form-control" asp-for="First().reason"
+                                       placeholder="Reason Destroy">
+                                <span asp-validation-for="First().reason" class="text-danger" style="font-size:smaller"> </span>
+                            </div>
+                            <div class="form-group">
+                                <label>Quantity</label>
+                                <input type="number" step="any" class="form-control" asp-for="First().qty"
+                                       placeholder="Quantity">
+                                <span asp-validation-for="First().qty" class="text-danger" style="font-size:smaller"> </span>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" value="Create" class="btn btn-primary">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+}
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

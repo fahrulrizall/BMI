@@ -51,7 +51,7 @@
                                 @foreach (var obj in Model)
                                 {
                                 <tr>
-                                    <td class="text text-sm">@obj.raw_source</td>
+                                    <td class="text text-sm"><a style="color:black" asp-controller="FT" asp-action="Raw" asp-route-raw="@obj.raw_source">@obj.raw_source</a> </td>
                                 </tr>
                                 }
                             </tbody>

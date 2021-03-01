@@ -501,12 +501,12 @@ namespace BMI.Controllers
         {
             var obj = _db.Production_output
                 .Where(k => k.po == po && k.bmi_code == code)
-                .GroupBy(x => x.date )
+                .GroupBy(x => new { x.date, x.raw_source })
                 .Select(a => new ProductionOutputModel
                 {
-                    date = a.Key,
-                    bmi_code = a.Max(b=>b.bmi_code),
-                    raw_source = a.Max(b=>b.raw_source),
+                    date = a.Key.date,
+                    bmi_code = code,
+                    raw_source = a.Key.raw_source,
                     landing_site = a.Max(b=>b.landing_site),
                     po = a.Max(k => k.po)
                 })

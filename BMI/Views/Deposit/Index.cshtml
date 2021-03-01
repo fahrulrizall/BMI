@@ -36,44 +36,51 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td class="text text-sm" colspan="3" style="font-weight:bold">On The Water</td>
-                                </tr>
                                 @foreach (var obj in Model.otw)
                                 {
-                                    <tr>
+                                    <tr class="otw">
                                         <td class="text text-sm">@obj.raw_source</td>
                                         <td style="font-size:small">@((obj.total_qty).ToString("0.00")) Kgs</td>
                                         <td style="font-size:small">@Convert.ToDecimal(obj.amount_pl).ToString("C")</td>
                                     </tr>
                                 }
                                 <tr>
-                                    <td class="text text-sm" colspan="3" style="font-weight:bold">In Plant</td>
+                                    <td class="text text-sm btn otw-show" style="font-weight:bold">On The Water</td>
+                                    <td class="text text-sm" style="font-weight:bold">@ViewBag.otw_qty Kgs</td>
+                                    <td class="text text-sm" style="font-weight:bold">@Convert.ToDecimal(ViewBag.otw_amount).ToString("C")</td>
                                 </tr>
+
                                 @foreach (var obj in Model.in_plant)
                                 {
-                                    <tr>
+                                    <tr class="plant">
                                         <td class="text text-sm">@obj.raw_source</td>
                                         <td style="font-size:small">@((obj.total_qty).ToString("0.00")) Kgs</td>
                                         <td style="font-size:small">@Convert.ToDecimal(obj.amount_received).ToString("C")</td>
                                     </tr>
                                 }
                                 <tr>
-                                    <td class="text text-sm" colspan="3" style="font-weight:bold">Finished Goods</td>
+                                    <td class="text text-sm btn plant-show" style="font-weight:bold">In Plant</td>
+                                    <td class="text text-sm" style="font-weight:bold">@ViewBag.plant_qty Kgs</td>
+                                    <td class="text text-sm" style="font-weight:bold">@Convert.ToDecimal(ViewBag.plant_amount).ToString("C")</td>
                                 </tr>
                                 @foreach (var obj in Model.fg)
                                 {
-                                    <tr>
+                                    <tr class="fg">
                                         <td class="text text-sm">@obj.raw_source</td>
                                         <td style="font-size:small">@((obj.lbs).ToString("0.00")) Lbs </td>
                                         <td style="font-size:small">@Convert.ToDecimal(obj.amount).ToString("C")</td>
                                     </tr>
                                 }
+                                <tr>
+                                    <td class="text text-sm btn fg-show" style="font-weight:bold">Finished Goods</td>
+                                    <td class="text text-sm" style="font-weight:bold">@ViewBag.fg_qty Lbs</td>
+                                    <td class="text text-sm" style="font-weight:bold">@Convert.ToDecimal(ViewBag.fg_amount).ToString("C")</td>
+                                </tr>
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <td class="text text-sm" colspan="2">Total</td>
-                                    <td class="text text-sm">@Convert.ToDecimal(ViewBag.amount).ToString("C") </td>
+                                    <td class="text text-sm" colspan="2" style="font-weight:bold">Total</td>
+                                    <td class="text text-sm" style="font-weight:bold">@Convert.ToDecimal(ViewBag.amount).ToString("C") </td>
                                 </tr>
                             </tfoot>
                         </table>

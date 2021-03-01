@@ -34,38 +34,31 @@ namespace BMI.Controllers
                 .Where(k => k.POModel.pt_status == "Open" || k.POModel.pt_status == "Process")
                 .Include(k => k.MasterBMIModel)
                 .AsEnumerable()
-                .GroupBy(k => new {k.po, k.bmi_code })
+                .GroupBy(k => new { k.po, k.bmi_code })
                 .Select(k => new ProductionView
                 {
                     po = k.Key.po,
                     bmi_code = k.Key.bmi_code,
-                    MasterBMIModel = k.Max(a=>a.MasterBMIModel),
-                    total = Convert.ToInt32( k.Sum(k => k.qty * 2.204 / k.MasterBMIModel.lbs))
-                    //shipment =  (int?) _db.Shipment.Where(c => c.bmi_code == k.Key && c.POModelBatch.pt_status == "Open" || c.POModelBatch.pt_status == "Process").Sum(a => a.qty) ??0
-                    - _db.AdjustmentFG.Where(c => c.bmi_code == k.Key.bmi_code && c.POModel.pt_status == "Open" || c.POModel.pt_status == "Process").Sum(a => a.qty) 
-                    //- (int?) _db.Repack.Where(c => c.from_bmi_code == k.Key && c.fromPOModel.pt_status == "Open" || c.fromPOModel.pt_status == "Process").Sum(a => a.qty * 2.204 / a.toMasterBMIModel.lbs) ??0
-                    //+ (int?) _db.Repack.Where(c => c.to_bmi_code == k.Key && c.toPOModel.pt_status == "Open" || c.toPOModel.pt_status == "Process").Sum(a => a.qty * 2.204 / a.toMasterBMIModel.lbs) ??0
+                    MasterBMIModel = k.Max(a => a.MasterBMIModel),
+                    total = Convert.ToInt32(k.Sum(k => k.qty * 2.204 / k.MasterBMIModel.lbs))
+                    - _db.AdjustmentFG.Where(c => c.bmi_code == k.Key.bmi_code && c.po == k.Key.po && c.POModel.pt_status == "Open" || c.POModel.pt_status == "Process").Sum(a => a.qty)
                 })
                 .ToList();
-
-            var data = fg.Where(a => a.bmi_code == "TA18410ANO1").Sum(a => a.total);
 
             var result = fg
                 .GroupBy(a => a.bmi_code)
                 .Select(a => new ProductionView
                 {
                     bmi_code = a.Key,
-                    MasterBMIModel = a.Max(b=>b.MasterBMIModel),
+                    MasterBMIModel = a.Max(b => b.MasterBMIModel),
                     total = a.Sum(b => b.total)
-                    -  _db.Shipment.Where(c => c.bmi_code == a.Key && c.POModelBatch.pt_status == "Open" || c.POModelBatch.pt_status == "Process").Sum(a => a.qty)
-                    //- (int?)_db.AdjustmentFG.Where(c => c.bmi_code == a.Key && c.POModel.pt_status == "Open" || c.POModel.pt_status == "Process").Sum(a => a.qty) ?? 0
-                    - _db.Repack.Where(c => c.from_bmi_code == a.Key && c.fromPOModel.pt_status == "Open" || c.fromPOModel.pt_status == "Process").Sum(a => a.qty * 2.204 / a.toMasterBMIModel.lbs)
-                    + _db.Repack.Where(c => c.to_bmi_code == a.Key && c.toPOModel.pt_status == "Open" || c.toPOModel.pt_status == "Process").Sum(a => a.qty * 2.204 / a.toMasterBMIModel.lbs)
+                    - _db.Shipment.Where(c => c.POModelBatch.pt_status == "Open" || c.POModelBatch.pt_status == "Process").Where(c=>c.bmi_code == a.Key).Sum(a => a.qty)
+                    - _db.Repack.Where(c => c.fromPOModel.pt_status == "Open" || c.fromPOModel.pt_status == "Process").Where(c => c.from_bmi_code == a.Key).Sum(a => a.qty * 2.204 / a.toMasterBMIModel.lbs)
+                    + _db.Repack.Where(c => c.toPOModel.pt_status == "Open" || c.toPOModel.pt_status == "Process").Where(c => c.to_bmi_code == a.Key).Sum(a => a.qty * 2.204 / a.toMasterBMIModel.lbs)
                 })
                 .Where(a => a.total >= 1)
-                .OrderBy(a=>a.MasterBMIModel.sap_code)
+                .OrderBy(a => a.MasterBMIModel.sap_code)
                 .ToList();
-           
 
             return await Task.Run(()=> View(result));
         }
@@ -88,6 +81,33 @@ namespace BMI.Controllers
                  .ToList();
             return await Task.Run(()=> View(raw));
         }
+
+        public async Task<IActionResult> EachDetailFG (string bmi_code)
+        {
+            var fg = _db.Production_output
+                .Include(a=>a.MasterBMIModel)
+                .Include(a=>a.POModel)
+                .Where(a=> a.POModel.pt_status == "Open" || a.POModel.pt_status == "Process")
+                .Where(a => a.bmi_code == bmi_code)
+                .AsEnumerable()
+                .GroupBy(a => a.po )
+                .Select(a => new
+                {
+                    batch = a.Key,
+                    POModel = a.Max(b=>b.POModel),
+                    total = Convert.ToInt32( a.Sum(b => b.qty * 2.204 / b.MasterBMIModel.lbs)
+                    - _db.Shipment.Where(c => c.bmi_code == bmi_code && c.batch == a.Key).Sum(a => a.qty)
+                    - _db.AdjustmentFG.Where(c => c.bmi_code == bmi_code && c.po == a.Key).Sum(a => a.qty)
+                    - _db.Repack.Where(c => c.from_bmi_code == bmi_code && c.from_po == a.Key).Sum(a => a.qty * 2.204 / a.fromMasterBMIModel.lbs)
+                    + _db.Repack.Where(c => c.to_bmi_code == bmi_code && c.to_po == a.Key).Sum(a => a.qty * 2.204 / a.toMasterBMIModel.lbs)),
+                })
+                .Where(a => a.total >= 1)
+                .OrderByDescending(a=>a.POModel.batch)
+                .ToList();
+            return await Task.Run(() => Json(fg));
+
+        }
+
 
         public async Task<IActionResult> EachDetailRaw (string raw_source)
         {
@@ -250,8 +270,6 @@ namespace BMI.Controllers
                 }
             }
         }
-
-
 
 
 

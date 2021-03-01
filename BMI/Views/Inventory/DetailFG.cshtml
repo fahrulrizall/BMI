@@ -9,12 +9,12 @@
     <!-- Main content -->
     <section class="content">
         <div class="row">
-            <div class="col-12">
 
+            <div class="col-md-12" id="list-fg-inventory">
                 <div class="card">
                     <div class="card-header">
                         <h3 class="card-title">FG Inventory</h3>
-                        <a asp-controller="Inventory" asp-action="DownloadFG"  data-toggle="modal" data-target="#modal-default" class="btn btn-sm btn-default float-right mx-2">
+                        <a asp-controller="Inventory" asp-action="DownloadFG" data-toggle="modal" data-target="#modal-default" class="btn btn-sm btn-default float-right mx-2">
                             <i class="fa fa-download">
                             </i>
                         </a>
@@ -36,14 +36,14 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach (var obj in Model)
-                                {
-                                    <tr>
-                                        <td style="font-size:small">@obj.MasterBMIModel.sap_code</td>
-                                        <td style="font-size:small">@obj.MasterBMIModel.description</td>
-                                        <td style="font-size:small">@Convert.ToInt32(obj.total)</td>
-                                    </tr>
-                                }
+                            @foreach (var obj in Model)
+                            {
+                                <tr>
+                                    <td style="font-size:small">@obj.MasterBMIModel.sap_code</td>
+                                    <td style="font-size:small">@obj.MasterBMIModel.description</td>
+                                    <td style="font-size:small" class="btn detail-fg" data-code="@obj.bmi_code" data-sap="@obj.MasterBMIModel.sap_code">@Convert.ToInt32(obj.total)</td>
+                                </tr>
+                            }
                             </tbody>
                         </table>
                     </div>
@@ -52,6 +52,45 @@
                 <!-- /.card -->
             </div>
             <!-- /.col -->
+
+            <div class="col-md-5" id="detail-fg-inventory">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title" id="card-title">Detail</h3>
+                        <button type="button" class="btn btn-tool float-right close-detail-fg">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-bordered table-striped table-sm">
+                            <thead>
+                                <tr>
+                                    <th style="width: 3%;font-size:small">
+                                        Code
+                                    </th>
+                                    <th style="width: 2%;font-size:small">
+                                        Batch
+                                    </th>
+                                    <th style="width: 1%;font-size:small">
+                                        Available CS
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody id="fg-detail-batch" name="fg-detail-batch">
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th style="width: 2%;font-size:small" colspan="2">Total</th>
+                                    <th style="width: 2%;font-size:small" id="totalavailable" name="totalavailable" class="totalavailable"></th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+
+
         </div>
         <!-- /.row -->
     </section>

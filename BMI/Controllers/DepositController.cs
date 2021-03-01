@@ -86,7 +86,7 @@ namespace BMI.Controllers
                 .Select(k => new ProductionOutputModel
                 {
                     raw_source = k.Key,
-                    lbs = k.Sum(k => k.qty * 2.20462) ,
+                    lbs = k.Sum(k => k.qty * 2.20462),
                     rm_cost = Convert.ToDouble(
                         (_db.Rm_detail.Where(a => a.raw_source == k.Key).Sum(a => a.qty_received * a.usd_price) / _db.Rm_detail.Where(a => a.raw_source == k.Key).Sum(a => a.qty_received))
                         * 0.45359237 /
@@ -99,13 +99,20 @@ namespace BMI.Controllers
                 .Select(a => new ProductionOutputModel
                 {
                     raw_source = a.Key,
-                    lbs = a.Sum(k => k.lbs) + _db.Pending.Where(k => k.raw_source == a.Key).Sum(k => k.qty * 2.20462) -  _db.Shipment.Where(k => k.raw_source == a.Key).Sum(k => k.qty * k.MasterBMIModel.lbs),
+                    lbs = a.Sum(k => k.lbs) + _db.Pending.Where(k => k.raw_source == a.Key).Sum(k => k.qty * 2.20462) - _db.Shipment.Where(k => k.raw_source == a.Key).Sum(k => k.qty * k.MasterBMIModel.lbs),
                     amount = (a.Sum(k => k.lbs) + _db.Pending.Where(k => k.raw_source == a.Key).Sum(k => k.qty * 2.20462) - _db.Shipment.Where(k => k.raw_source == a.Key).Sum(k => k.qty * k.MasterBMIModel.lbs)) * a.Average(k => k.rm_cost),
                 })
-                .Where(k=>k.lbs > 10)
+                .Where(k => k.lbs > 10)
                 .ToList();
 
-            ViewBag.amount = Math.Round( Convert.ToDouble(model.otw.Sum(a => a.amount_received) + model.in_plant.Sum(a => a.amount_received) + model.fg.Sum(a => a.amount)),2);
+            ViewBag.otw_qty = Math.Round(model.otw.Sum(a => a.total_qty), 2);
+            ViewBag.otw_amount = Math.Round(Convert.ToDouble(model.otw.Sum(a => a.amount_pl)), 2);
+            ViewBag.plant_qty = Math.Round(model.in_plant.Sum(a => a.total_qty), 2);
+            ViewBag.plant_amount = Math.Round(Convert.ToDouble(model.in_plant.Sum(a => a.amount_received)), 2);
+            ViewBag.fg_qty = Math.Round(model.fg.Sum(a => a.lbs), 2);
+            ViewBag.fg_amount = Math.Round(model.fg.Sum(a => a.amount), 2);
+
+            ViewBag.amount = Math.Round(Convert.ToDouble(model.otw.Sum(a => a.amount_pl) + model.in_plant.Sum(a => a.amount_received) + model.fg.Sum(a => a.amount)), 2);
 
             return await Task.Run(() => View(model));
         }

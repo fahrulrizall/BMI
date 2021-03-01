@@ -76,10 +76,10 @@ namespace BMI.Controllers
                     ex_rate = a.ex_rate,
                     landing_site = a.landing_site,
                     qty_pl = a.qty_pl,
-                    amount_pl = Math.Round(  Math.Round(Convert.ToDouble (a.usd_price * a.ex_rate),2) * Math.Round( Convert.ToDouble(a.qty_pl),2),2),
+                    amount_pl =  Convert.ToDouble( Convert.ToDecimal(a.usd_price) * Convert.ToDecimal( a.ex_rate) * Convert.ToDecimal( a.qty_pl)),
                     landing_site_received = a.landing_site_received,
                     qty_received = a.qty_received,
-                    amount_received = Math.Round(Math.Round(Convert.ToDouble(a.usd_price * a.ex_rate), 2) * Math.Round(Convert.ToDouble(a.qty_received), 2), 2),
+                    amount_received = Convert.ToDouble(Convert.ToDecimal(a.usd_price) * Convert.ToDecimal(a.ex_rate) * Convert.ToDecimal(a.qty_received)),
                 })
                 .ToList();
             ViewBag.raw_source = raw_source;

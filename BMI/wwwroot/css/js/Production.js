@@ -220,6 +220,7 @@ $(function () {
             dataType: 'json',
             success: function (data) {
                 data.forEach(function (e) {
+                    console.log(e)
                     var date = new Date(e.date);
                     yr = date.getFullYear();
                     month = date.getMonth() + 1;

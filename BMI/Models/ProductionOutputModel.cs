@@ -54,5 +54,7 @@ namespace BMI.Models
         public int minute { get; set; } 
         [NotMapped]
         public DateTime production_date { get; set; }
+        [NotMapped]
+        public string? status { get; set; }
     }
 }

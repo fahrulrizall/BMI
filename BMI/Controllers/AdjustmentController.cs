@@ -27,12 +27,20 @@ namespace BMI.Controllers
         }
 
         [Authorize(Roles = "CC,Admin")]
-        public async Task< IActionResult> Adjustment(string status)
+        public async Task< IActionResult> AdjustmentFG(string status)
         {
             var obj = _db.AdjustmentFG
                 .Where(k => k.status == status)
                 .Include(k => k.MasterBMIModel)
                 .Include(k => k.POModel)
+                .AsEnumerable()
+                .GroupBy(a=>a.POModel)
+                .Select(a=> new POModel
+                {
+                    pt = a.Key.pt,
+                    po = a.Key.po,
+                    batch = a.Key.batch
+                })
                 .ToList();
 
             if (obj != null) {
@@ -224,6 +232,18 @@ namespace BMI.Controllers
             var obj = _db.AdjustmentRaw.Include(a => a.Masterdatamodel).Where(a => a.status == status).ToList();
             ViewBag.status = status;
             return View(obj);
+        }
+
+        public async Task<IActionResult> DetailFG(string po)
+        {
+            var result = _db.AdjustmentFG
+                .Include(a=>a.POModel)
+                .Include(a=>a.MasterBMIModel)
+                .Where(a => a.po == po)
+                .ToList();
+                ViewBag.po = po;
+            
+            return await Task.Run(() => View(result));
         }
 
      
