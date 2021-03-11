@@ -49,9 +49,25 @@ namespace BMI.Controllers
                 return await Task.Run(()=> View(obj));
             }
             return await Task.Run(() => View("NotFound"));
-            
+        }
+        
+        public async Task<IActionResult> DetailFG(string po)
+        {
+            var result = _db.AdjustmentFG
+                .Include(a => a.POModel)
+                .Include(a => a.MasterBMIModel)
+                .Where(a => a.po == po)
+                .ToList();
+            ViewBag.po = po;
+
+            return await Task.Run(() => View(result));
         }
 
+        public async Task<JsonResult> Getdataitem(int id)
+        {
+            var obj = _db.AdjustmentFG.Include(a => a.POModel).Where(a => a.id_adjustmentFG == id).First();
+            return await Task.Run(() => Json(obj));
+        }
 
         [HttpPost]
         [AutoValidateAntiforgeryToken]
@@ -78,7 +94,7 @@ namespace BMI.Controllers
                 _db.SaveChanges();
                 TempData["msg"] = "Item Succesfully Added";
                 TempData["result"] = "success";
-                return await Task.Run(()=> Redirect(Request.Headers["Referer"].ToString()));
+                return await Task.Run(() => Redirect(Request.Headers["Referer"].ToString()));
             }
             TempData["msg"] = "Failed Add Item";
             TempData["result"] = "failed";
@@ -120,7 +136,7 @@ namespace BMI.Controllers
         [HttpPost]
         [AutoValidateAntiforgeryToken]
         [Authorize(Roles = "CC,Admin")]
-        public async Task< IActionResult> Delete(int id, string status)
+        public async Task<IActionResult> Delete(int id, string status)
         {
             var obj = _db.AdjustmentFG.Find(id);
             if (obj != null)
@@ -138,11 +154,40 @@ namespace BMI.Controllers
         }
 
 
-        public async Task<JsonResult>  Getdataitem(int id)
+        // adjusmnet raw line
+        [Authorize(Roles = "CC,Admin")]
+        public async Task<IActionResult> AdjustmentRaw(string status)
         {
-            var obj = _db.AdjustmentFG.Include(a=>a.POModel).Where(a=>a.id_adjustmentFG == id).First();
-            return await Task.Run(()=> Json(obj));
+            var obj = _db.AdjustmentRaw
+                .Where(k => k.status == status)
+                .AsEnumerable()
+                .GroupBy(k=>k.raw_source)
+                .Select(a => new AdjustmentRawModel
+                {
+                    raw_source = a.Key
+                })
+                .ToList();
+
+            if (obj != null)
+            {
+                ViewBag.status = status;
+                TempData["status"] = status;
+                return await Task.Run(() => View(obj));
+            }
+            return await Task.Run(() => View("NotFound"));
         }
+
+
+        public async Task<IActionResult> DetailRaw(string raw)
+        {
+            var result = _db.AdjustmentRaw
+                .Include(a => a.Masterdatamodel)
+                .Where(a => a.raw_source == raw)
+                .ToList();
+            ViewBag.raw = raw;
+            return await Task.Run(() => View(result));
+        }
+
 
         public async Task<JsonResult> Getitemraw(int id)
         {
@@ -206,8 +251,6 @@ namespace BMI.Controllers
 
         }
 
-
-
         [AutoValidateAntiforgeryToken]
         [Authorize(Roles = "CC,Admin")]
         public IActionResult Deleteraw(int id)
@@ -226,27 +269,11 @@ namespace BMI.Controllers
             return Redirect(Request.Headers["Referer"].ToString());
         }
 
-        [Authorize(Roles = "CC,Admin")]
-        public IActionResult AdjustmentRaw(string status)
-        {
-            var obj = _db.AdjustmentRaw.Include(a => a.Masterdatamodel).Where(a => a.status == status).ToList();
-            ViewBag.status = status;
-            return View(obj);
-        }
 
-        public async Task<IActionResult> DetailFG(string po)
-        {
-            var result = _db.AdjustmentFG
-                .Include(a=>a.POModel)
-                .Include(a=>a.MasterBMIModel)
-                .Where(a => a.po == po)
-                .ToList();
-                ViewBag.po = po;
-            
-            return await Task.Run(() => View(result));
-        }
+      
 
-     
+
+      
 
 
 

@@ -26,8 +26,6 @@ namespace BMI.Models
         public float qty { get; set; }
         public string landing_site { get; set; }
 
-        
-        
         #nullable enable
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime? created_at { get; set; }
@@ -36,7 +34,7 @@ namespace BMI.Models
         public string? updated_by { get; set; }
         [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}", ApplyFormatInEditMode = true)]
         public DateTime? gi_date { get; set; }
-        
+
 
         [NotMapped]
         public int hour { get; set; }

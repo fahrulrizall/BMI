@@ -155,31 +155,6 @@ namespace BMI.Controllers
                                     rowDataList = item.ItemArray.ToList();
                                     var po = Convert.ToString(_db.PO.Where(a => a.pt == Convert.ToInt32(rowDataList[2])).Select(a => a.po).First());
                                     
-                                    var ft_code = new string[] {
-                                        "202028",
-                                        "202026",
-                                        "202020",
-                                        "202024",
-                                        "202049",
-                                        "202050",
-                                        "202048",
-                                        "202045",
-                                        "202047",
-                                        "202044",
-                                        "202046",
-                                        "202041",
-                                        "202043",
-                                        "202040",
-                                        "202042",
-                                     };
-
-                                    var site_new = Convert.ToString(rowDataList[6]) ;
-
-                                    if (ft_code.Contains(Convert.ToString(rowDataList[4])))
-                                    {
-                                        site_new = Convert.ToString(rowDataList[6] + " FT");
-                                    }
-
                                     prod_input.Add(new ProductionInputModel
                                     {
                                         po_bmi = Convert.ToString(rowDataList[0]),
@@ -188,7 +163,7 @@ namespace BMI.Controllers
                                         raw_source = Convert.ToString(rowDataList[3]),
                                         sap_code = Convert.ToString(rowDataList[4]),
                                         qty = Convert.ToSingle(rowDataList[5]),
-                                        landing_site = site_new,
+                                        landing_site = Convert.ToString(rowDataList[6]),
                                         created_at = DateTime.Now,
                                         created_by = User.Identity.Name,
                                         gi_date = date
@@ -210,6 +185,32 @@ namespace BMI.Controllers
                                 {
                                     rowDataList = item.ItemArray.ToList();
                                     var source_site = _db.Production_input.Where(k => k.po_bmi == Convert.ToString(rowDataList[0]) && k.date == Convert.ToDateTime(rowDataList[1])).First();
+
+                                    var ft_code = new string[] {
+                                        "202028",
+                                        "202026",
+                                        "202020",
+                                        "202024",
+                                        "202049",
+                                        "202050",
+                                        "202048",
+                                        "202045",
+                                        "202047",
+                                        "202044",
+                                        "202046",
+                                        "202041",
+                                        "202043",
+                                        "202040",
+                                        "202042",
+                                     };
+
+                                    var fairtrade_status = "NFT";
+
+                                    if (ft_code.Contains(source_site.sap_code))
+                                    {
+                                        fairtrade_status = "FT";
+                                    }
+
                                     var po = Convert.ToString(_db.PO.Where(a => a.pt == Convert.ToInt32(rowDataList[2])).Select(a => a.po).First());
                                     prod_output.Add(new ProductionOutputModel
                                     {
@@ -220,6 +221,7 @@ namespace BMI.Controllers
                                         qty = Convert.ToSingle(rowDataList[4]),
                                         raw_source = source_site.raw_source,
                                         landing_site = source_site.landing_site,
+                                        fairtrade_status = fairtrade_status,
                                         created_at = DateTime.Now,
                                         created_by = User.Identity.Name,
                                         gr_date = date
@@ -265,7 +267,7 @@ namespace BMI.Controllers
                     bmi_code = a.Key.bmi_code,
                     MasterBMIModel = a.Max(m => m.MasterBMIModel),
                     qty_production = a.Sum(x => x.qty)  
-                    - _db.AdjustmentFG.Where(c => c.status == "rounded" && c.bmi_code == a.Key.bmi_code && c.po == a.Key.po).Sum(a => a.qty * a.MasterBMIModel.lbs / 2.204),
+                    - _db.AdjustmentFG.Where(c => c.status == "Adjustment" && c.bmi_code == a.Key.bmi_code && c.po == a.Key.po).Sum(a => a.qty * a.MasterBMIModel.lbs / 2.204),
                     available = Convert.ToInt32( a.Sum(x => x.qty * 2.204 / x.MasterBMIModel.lbs) 
                     - _db.AdjustmentFG.Where(c => c.bmi_code == a.Key.bmi_code && c.po == a.Key.po).Sum(a => a.qty)
                     - _db.Shipment.Where(c=>c.batch == po && c.bmi_code== a.Key.bmi_code).Sum(c=>c.qty)
@@ -524,7 +526,7 @@ namespace BMI.Controllers
                     bmi_code = destroyFGModel.bmi_code,
                     qty = destroyFGModel.qty,
                     po = destroyFGModel.po,
-                    status = "rounded",
+                    status = "Adjustment",
                     created_at = DateTime.Now,
                     created_by = User.Identity.Name
                 };

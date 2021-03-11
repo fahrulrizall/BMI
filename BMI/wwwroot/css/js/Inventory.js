@@ -55,3 +55,7 @@ $('.close-detail-raw-material').on('click', function () {
     $('#detail-raw-table').attr('class', 'col-md-12');
     $('#detail-raw-material').hide();
 })
+
+function addrows() {
+    console.log("dasdadasdasda")
+}

@@ -4,14 +4,16 @@ using BMI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BMI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210304070104_add_deposit_table_vendor_string")]
+    partial class add_deposit_table_vendor_string
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -546,9 +548,6 @@ namespace BMI.Migrations
 
                     b.Property<DateTime>("date")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("fairtrade_status")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("gr_date")
                         .HasColumnType("datetime2");

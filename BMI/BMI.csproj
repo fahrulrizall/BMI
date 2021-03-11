@@ -156,6 +156,12 @@
     <Compile Remove="Migrations\20201204064614_add_extend_identity.Designer.cs" />
     <Compile Remove="Migrations\20201210021602_change_database.cs" />
     <Compile Remove="Migrations\20201210021602_change_database.Designer.cs" />
+    <Compile Remove="Migrations\20210304035223_add_deposit_table.cs" />
+    <Compile Remove="Migrations\20210304035223_add_deposit_table.Designer.cs" />
+    <Compile Remove="Migrations\20210304074302_add_deposit_table_vendor_string_1.cs" />
+    <Compile Remove="Migrations\20210304074302_add_deposit_table_vendor_string_1.Designer.cs" />
+    <Compile Remove="Migrations\20210304074607_add_deposit_table_vendor_string_1.cs" />
+    <Compile Remove="Migrations\20210304074607_add_deposit_table_vendor_string_1.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

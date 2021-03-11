@@ -109,6 +109,7 @@ namespace BMI.Controllers
                 var list_rm_detail = _db.Rm_detail.Where(x => x.raw_source == rmModel.raw_source).ToList();
                 if (rmModel.status == "Plant")
                 {
+                    // edit bagian RM
                     obj.eta = rmModel.eta;
                     obj.etd = rmModel.etd;
                     obj.container = rmModel.container;
@@ -116,6 +117,7 @@ namespace BMI.Controllers
                     obj.updated_by = User.Identity.Name;
                     obj.status = "Plant";
 
+                    // edit RM_DETAIL
                     list_rm_detail.ForEach(a =>
                     {
                         a.qty_received = a.qty_pl;

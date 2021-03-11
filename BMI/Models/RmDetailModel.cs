@@ -52,11 +52,10 @@ namespace BMI.Models
         public string? created_by { get; set; }
         public string? updated_by { get; set; }
 
-
         [NotMapped]
         public double total_qty { get; set; }
         [NotMapped]
-        public float qty { get; set; }
+        public float? qty { get; set; }
         [NotMapped]
         public double? amount_pl { get; set; }
         [NotMapped]

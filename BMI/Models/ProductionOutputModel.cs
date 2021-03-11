@@ -34,6 +34,7 @@ namespace BMI.Models
         public string? updated_by { get; set; }
         [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}", ApplyFormatInEditMode = true)]
         public DateTime? gr_date { get; set; }
+        public string? fairtrade_status { get; set; }
 
         [NotMapped]
         public double qty_production { get; set; }

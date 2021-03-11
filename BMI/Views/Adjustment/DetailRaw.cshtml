@@ -1,6 +1,6 @@
 ﻿@model IEnumerable<BMI.Models.AdjustmentRawModel>
 @{
-    ViewData["Title"] = ViewBag.status;
+    ViewData["Title"] = ViewBag.raw;
 }
 <div class="content-wrapper">
     <section class="content-header">
@@ -13,14 +13,14 @@
 
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title"> @ViewBag.status List</h3>
-                        <div class="card-tools ">
+                        <h3 class="card-title"> @ViewBag.raw</h3>
+                        @*<div class="card-tools ">
                             <button class="btn btn-sm float-right mx-1 add-destroy-raw"
                                     data-toggle="modal" data-target="#modal-default">
                                 <i class="fa fa-plus">
                                 </i>
                             </button>
-                        </div>
+                        </div>*@
                     </div>
 
                     <div class="card-body">

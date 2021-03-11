@@ -1,0 +1,107 @@
+﻿@model List<RmChecking>
+@{
+    ViewData["Title"] = "Adjustment Raw Material";
+}
+<div class="content-wrapper">
+    <section class="content-header">
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">@ViewBag.raw_source </h3>
+                            <form asp-controller="Inventory" asp-action="FixAdjustment" method="post">
+                                 @for (int i = 0; i < Model.Count; i++)
+                                 {
+                                    <input asp-for="@Model[i].raw_source" type="hidden" value="@ViewBag.raw_source">
+                                    <input asp-for="@Model[i].landing_site_prod" type="hidden" value="@Model[i].landing_site_prod">
+                                    <input asp-for="@Model[i].sap_code_prod" type="hidden" value="@Model[i].sap_code_prod">
+                                    <input asp-for="@Model[i].diffrence" type="hidden" value="@Model[i].diffrence">
+                                 }
+                                <div>
+                                    <button type="submit" value="Create" class="float-right mx-2">
+                                        <i class="fa fa-adjust">
+                                        </i>
+                                    </button>
+                                </div>
+
+                            </form>
+                        </div>
+
+                        <div class="card-body">
+                            <table class="table table-bordered table-striped table-sm">
+                                <thead>
+                                    <tr>
+                                        <th colspan="4" style="text-align:center">
+                                            Receiving
+                                        </th>
+                                        <th colspan="4" style="text-align:center">
+                                            Production
+                                        </th>
+                                        <th>
+
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <th style="width: 5%;font-size:small">
+                                            Landing Site
+                                        </th>
+                                        <th style="width: 5%;font-size:small">
+                                            SAP Code
+                                        </th>
+                                        <th style="width: 15%;font-size:small">
+                                            Description
+                                        </th>
+                                        <th style="width: 5%;font-size:small">
+                                            Qty
+                                        </th>
+                                        <th style="width: 5%;font-size:small">
+                                            Landing Site
+                                        </th>
+                                        <th style="width: 5%;font-size:small">
+                                            SAP Code
+                                        </th>
+                                        <th style="width: 15%;font-size:small">
+                                            Description
+                                        </th>
+                                        <th style="width: 5%;font-size:small">
+                                            Qty
+                                        </th>
+                                        <th style="width: 5%;font-size:small">
+                                            Diffrence
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var obj in Model)
+                                    {
+                                        <tr>
+                                            <td style="font-size:small">@obj.landing_site_rm</td>
+                                            <td style="font-size:small">@obj.sap_code_rm</td>
+                                            <td style="font-size:small">@obj.masterdatamodel_rm.description</td>
+                                            <td style="font-size:small">@obj.qty_rm</td>
+                                            <td style="font-size:small">@obj.landing_site_prod</td>
+                                            <td style="font-size:small">@obj.sap_code_prod</td>
+                                            <td style="font-size:small">@obj.masterdatamodel_prod.description</td>
+                                            <td style="font-size:small">@obj.qty_prod</td>
+                                            <td style="font-size:small">@obj.diffrence</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </section>
+    <!-- /.content -->
+</div>

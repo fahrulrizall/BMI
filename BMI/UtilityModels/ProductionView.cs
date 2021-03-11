@@ -35,6 +35,7 @@ namespace BMI.Models
         public List<ProductionOutputModel> ProductionOutputModel { get; set; }
         public List<CategoryView> CategoryView { get; set; }
         public List<RepackModel> RepackModel { get; set; }
+        public List<RmDetailModel> RmDetailModel { get; set; }
 
     }
 }

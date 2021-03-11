@@ -28,6 +28,9 @@
                                     <th style="width: 5%;font-size:small">
                                         Available Qty
                                     </th>
+                                    <th style="width: 3%;font-size:small">
+                                        Available Qty
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -36,6 +39,14 @@
                                     <tr>
                                         <td class="btn text text-sm detail-raw-material" data-raw="@obj.raw_source">@obj.raw_source</td>
                                         <td style="font-size:small">@obj.total.ToString("0.00")</td>
+                                        <td>
+                                            <form asp-controller="Inventory" asp-route-raw="@obj.raw_source" asp-action="Adjustment" method="post">
+                                                <button type="submit" class="btn btn-xs btn-warning">
+                                                        <i class="fa fa-edit" style="color:whitesmoke">
+                                                        </i>
+                                                    </button>
+                                            </form>
+                                        </td>
                                     </tr>
                                 }
                             </tbody>

@@ -4,14 +4,16 @@ using BMI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BMI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210302013151_add_landing_site_adjustmentRAW")]
+    partial class add_landing_site_adjustmentRAW
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -186,27 +188,6 @@ namespace BMI.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
-            modelBuilder.Entity("BMI.Models.DepositModel", b =>
-                {
-                    b.Property<int>("id_deposit")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<float>("amount")
-                        .HasColumnType("real");
-
-                    b.Property<string>("deposit_detail")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("paid_on")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("id_deposit");
-
-                    b.ToTable("Deposit");
-                });
-
             modelBuilder.Entity("BMI.Models.Fgmodel", b =>
                 {
                     b.Property<int>("id_fg")
@@ -247,30 +228,6 @@ namespace BMI.Migrations
                     b.HasIndex("sap_code");
 
                     b.ToTable("Fg");
-                });
-
-            modelBuilder.Entity("BMI.Models.FundModel", b =>
-                {
-                    b.Property<int>("id_fund")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<float>("ex_rate")
-                        .HasColumnType("real");
-
-                    b.Property<float>("idr_amount")
-                        .HasColumnType("real");
-
-                    b.Property<float>("usd_amount")
-                        .HasColumnType("real");
-
-                    b.Property<string>("vendor")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("id_fund");
-
-                    b.ToTable("Fund");
                 });
 
             modelBuilder.Entity("BMI.Models.MasterBMIModel", b =>
@@ -546,9 +503,6 @@ namespace BMI.Migrations
 
                     b.Property<DateTime>("date")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("fairtrade_status")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("gr_date")
                         .HasColumnType("datetime2");

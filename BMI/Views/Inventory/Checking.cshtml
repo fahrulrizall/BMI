@@ -1,0 +1,117 @@
+﻿@model RmChecking
+@{
+    ViewData["Title"] = "Adjustment Raw Material";
+}
+<div class="content-wrapper">
+    <section class="content-header">
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">@ViewBag.raw_source </h3>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+
+                    <div class="card-body">
+                        <table class="table table-bordered table-striped table-sm">
+                            <thead>
+                                <tr>
+                                    <th colspan="4" style="text-align:center">
+                                        Receiving
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <th style="width: 5%;font-size:small">
+                                        Landing Site
+                                    </th>
+                                    <th style="width: 5%;font-size:small">
+                                        SAP Code
+                                    </th>
+                                    <th style="width: 15%;font-size:small">
+                                        Description
+                                    </th>
+                                    <th style="width: 5%;font-size:small">
+                                        Qty
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var obj in Model.RmDetailModel)
+                                {
+                                    <tr>
+                                        <td style="font-size:small">@obj.landing_site</td>
+                                        <td style="font-size:small">@obj.sap_code</td>
+                                        <td style="font-size:small">@obj.Masterdatamodel.description</td>
+                                        <td style="font-size:small">@obj.qty</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+
+
+
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <table class="table table-bordered table-striped table-sm">
+                            <thead>
+                                <tr>
+                                    <th colspan="4" style="text-align:center">
+                                        Receiving
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <th style="width: 5%;font-size:small">
+                                        Landing Site
+                                    </th>
+                                    <th style="width: 5%;font-size:small">
+                                        SAP Code
+                                    </th>
+                                    <th style="width: 15%;font-size:small">
+                                        Description
+                                    </th>
+                                    <th style="width: 5%;font-size:small">
+                                        Qty
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var obj in Model.ProductionInputModel)
+                                {
+                                    <tr>
+                                        <td style="font-size:small">@obj.landing_site</td>
+                                        <td style="font-size:small">@obj.sap_code</td>
+                                        <td style="font-size:small">@obj.Masterdatamodel.description</td>
+                                        <td style="font-size:small">@obj.qty</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+
+
+
+
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </section>
+    <!-- /.content -->
+</div>

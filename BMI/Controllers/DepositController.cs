@@ -111,8 +111,14 @@ namespace BMI.Controllers
             ViewBag.plant_amount = Math.Round(Convert.ToDouble(model.in_plant.Sum(a => a.amount_received)), 2);
             ViewBag.fg_qty = Math.Round(model.fg.Sum(a => a.lbs), 2);
             ViewBag.fg_amount = Math.Round(model.fg.Sum(a => a.amount), 2);
-
             ViewBag.amount = Math.Round(Convert.ToDouble(model.otw.Sum(a => a.amount_pl) + model.in_plant.Sum(a => a.amount_received) + model.fg.Sum(a => a.amount)), 2);
+
+            model.fund = _db.Fund.ToList();
+            model.deposit = _db.Deposit.ToList();
+            ViewBag.total_fund = model.fund.Sum(a => a.usd_amount);
+            ViewBag.total_deposit = model.deposit.Sum(a => a.amount);
+
+            ViewBag.amount_difference = Math.Round(Convert.ToDouble(model.otw.Sum(a => a.amount_pl) + model.in_plant.Sum(a => a.amount_received) + model.fg.Sum(a => a.amount) + model.fund.Sum(a => a.usd_amount) - model.deposit.Sum(a => a.amount)),2);
 
             return await Task.Run(() => View(model));
         }
@@ -132,6 +138,8 @@ namespace BMI.Controllers
                 if (allowedExtensions.Contains(checkextension))
                 {
                     List<PendingModel> Pending = new List<PendingModel>();
+                    List<DepositModel> Deposit = new List<DepositModel>();
+                    List<FundModel> Fund = new List<FundModel>();
                     string path = Path.Combine(this.Environment.WebRootPath, "Uploads");
 
                     string filePath = Path.Combine(path, fileName);
@@ -176,15 +184,90 @@ namespace BMI.Controllers
                                         created_by = User.Identity.Name
                                     });
                                 }
+                                stream.Close();
+                                System.IO.File.Delete(filePath);
                                 _db.Pending.AddRange(Pending);
                                 _db.SaveChanges();
                                 TempData["msg"] = "File Succesfully Uploaded";
                                 TempData["result"] = "success";
                                 return RedirectToAction("Index");
+                            } else if (excelDataReader.FieldCount == 3)
+                            {
+                                var conf = new ExcelDataSetConfiguration()
+                                {
+                                    ConfigureDataTable = a => new ExcelDataTableConfiguration
+                                    {
+                                        UseHeaderRow = true
+                                    }
+                                };
+
+                                DataSet dataSet = excelDataReader.AsDataSet(conf);
+                                DataRowCollection row = dataSet.Tables["Deposit"].Rows;
+                                List<object> rowDataList = null;
+
+                                _db.Deposit.RemoveRange();
+                                _db.SaveChanges();
+
+                                foreach (DataRow item in row)
+                                {
+                                    rowDataList = item.ItemArray.ToList();
+                                    Deposit.Add(new DepositModel
+                                    {
+                                        deposit_detail = Convert.ToString(rowDataList[0]),
+                                        paid_on = Convert.ToDateTime(rowDataList[1]),
+                                        amount = Convert.ToSingle(rowDataList[2])
+                                    });
+                                }
+                                stream.Close();
+                                System.IO.File.Delete(filePath);
+                                _db.Deposit.AddRange(Deposit);
+                                _db.SaveChanges();
+                                TempData["msg"] = "File Succesfully Uploaded";
+                                TempData["result"] = "success";
+                                return RedirectToAction("Index");
+                            }else if (excelDataReader.FieldCount == 4)
+                            {
+                                var conf = new ExcelDataSetConfiguration()
+                                {
+                                    ConfigureDataTable = a => new ExcelDataTableConfiguration
+                                    {
+                                        UseHeaderRow = true
+                                    }
+                                };
+
+                                DataSet dataSet = excelDataReader.AsDataSet(conf);
+                                DataRowCollection row = dataSet.Tables["Fund"].Rows;
+                                List<object> rowDataList = null;
+
+                                _db.Fund.RemoveRange();
+                                _db.SaveChanges();
+
+                                foreach (DataRow item in row)
+                                {
+                                    rowDataList = item.ItemArray.ToList();
+                                    Fund.Add(new FundModel
+                                    {
+                                        vendor = Convert.ToString(rowDataList[0]),
+                                        idr_amount = Convert.ToSingle(rowDataList[1]),
+                                        ex_rate = Convert.ToSingle(rowDataList[2]),
+                                        usd_amount = Convert.ToSingle(rowDataList[3]),
+                                    });
+                                }
+                                stream.Close();
+                                System.IO.File.Delete(filePath);
+                                _db.Fund.AddRange(Fund);
+                                _db.SaveChanges();
+                                TempData["msg"] = "File Succesfully Uploaded";
+                                TempData["result"] = "success";
+                                return RedirectToAction("Index");
                             }
-                            TempData["msg"] = "Field Column not Match";
-                            TempData["result"] = "failed";
-                            return RedirectToAction("Index");
+                            else
+                            {
+                                TempData["msg"] = "Field Column not Match";
+                                TempData["result"] = "failed";
+                                return RedirectToAction("Index");
+                            }
+
                         }
                     }
                 }

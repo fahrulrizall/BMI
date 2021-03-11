@@ -4,14 +4,16 @@ using BMI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BMI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210310102607_add_ft_status")]
+    partial class add_ft_status
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -492,6 +494,9 @@ namespace BMI.Migrations
                     b.Property<DateTime>("date")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("fairtrade_status")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime?>("gi_date")
                         .HasColumnType("datetime2");
 
@@ -702,6 +707,9 @@ namespace BMI.Migrations
 
                     b.Property<float?>("ex_rate")
                         .HasColumnType("real");
+
+                    b.Property<string>("fairtrade_status")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("landing_site")
                         .HasColumnType("nvarchar(max)");

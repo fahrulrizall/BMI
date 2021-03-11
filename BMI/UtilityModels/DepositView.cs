@@ -14,5 +14,7 @@ namespace BMI.Models
         public List<RmDetailModel> otw { get; set; }
         public List<RmDetailModel> in_plant { get; set; }
         public List<ProductionOutputModel> fg { get; set; }
+        public List<FundModel> fund { get; set; }
+        public List<DepositModel> deposit { get; set; }
     }
 }

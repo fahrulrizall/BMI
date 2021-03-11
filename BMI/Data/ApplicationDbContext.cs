@@ -34,6 +34,8 @@ namespace BMI.Data
         public DbSet<AdjustmentRawModel> AdjustmentRaw { get; set; }
         public DbSet<RepackModel> Repack { get; set; }
         public DbSet<PendingModel> Pending { get; set; }
+        public DbSet<FundModel> Fund { get; set; }
+        public DbSet<DepositModel> Deposit { get; set; }
 
     }
 }

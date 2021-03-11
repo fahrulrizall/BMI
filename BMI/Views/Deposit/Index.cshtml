@@ -12,95 +12,213 @@
 
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title"> Deposit BMI</h3>
+                        <h3 class="card-title" style="font-weight:bold">BMI Deposit Inventory</h3>
                         <div class="card-tools ">
                             <a href="#" type="button" class="btn btn-sm btn-default float-right"
-                               data-toggle="modal" data-target="#modal-upload">Upload File</a>
-                            @*<a href="~/sample/Template.xlsx" type="button" class="btn  btn-sm btn-default float-right mx-1">Download Template</a>*@
+                               data-toggle="modal" data-target="#modal-upload">
+                                <i class="fa fa-upload">
+                                </i>
+                            </a>
                         </div>
                     </div>
-
+                    <!-- /.card-header -->
                     <div class="card-body">
-                        <table class="table table-bordered table-striped table-sm">
-                            <thead>
-                                <tr>
-                                    <th style="width: 10%;font-size:small">
-                                        Raw Source
-                                    </th>
-                                    <th style="width: 10%;font-size:small">
-                                        Qty
-                                    </th>
-                                    <th style="width: 10%;font-size:small">
-                                        Amount
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var obj in Model.otw)
-                                {
-                                    <tr class="otw">
-                                        <td class="text text-sm">@obj.raw_source</td>
-                                        <td style="font-size:small">@((obj.total_qty).ToString("0.00")) Kgs</td>
-                                        <td style="font-size:small">@Convert.ToDecimal(obj.amount_pl).ToString("C")</td>
-                                    </tr>
-                                }
-                                <tr>
-                                    <td class="text text-sm btn otw-show" style="font-weight:bold">On The Water</td>
-                                    <td class="text text-sm" style="font-weight:bold">@ViewBag.otw_qty Kgs</td>
-                                    <td class="text text-sm" style="font-weight:bold">@Convert.ToDecimal(ViewBag.otw_amount).ToString("C")</td>
-                                </tr>
+                        <form role="form">
+                            <div class="row">
+                                    <label style="font-weight:bold">Inventory</label>
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th style="font-size:small">Source</th>
+                                                <th style="font-size:small">Qty</th>
+                                                <th style="font-size:small">Amount</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var obj in Model.otw)
+                                            {
+                                                <tr class="otw">
+                                                    <td class="text text-sm">@obj.raw_source</td>
+                                                    <td style="font-size:small">@((obj.total_qty).ToString("0.00")) Kgs</td>
+                                                    <td style="font-size:small">@Convert.ToDecimal(obj.amount_pl).ToString("C")</td>
+                                                </tr>
+                                            }
+                                            <tr>
+                                                <td class="text text-sm btn otw-show" style="font-weight:bold">On The Water</td>
+                                                <td class="text text-sm" style="font-weight:bold">@ViewBag.otw_qty Kgs</td>
+                                                <td class="text text-sm" style="font-weight:bold">@Convert.ToDecimal(ViewBag.otw_amount).ToString("C")</td>
+                                            </tr>
+                                            @foreach (var obj in Model.in_plant)
+                                            {
+                                                <tr class="plant">
+                                                    <td class="text text-sm">@obj.raw_source</td>
+                                                    <td style="font-size:small">@((obj.total_qty).ToString("0.00")) Kgs</td>
+                                                    <td style="font-size:small">@Convert.ToDecimal(obj.amount_received).ToString("C")</td>
+                                                </tr>
+                                            }
+                                            <tr>
+                                                <td class="text text-sm btn plant-show" style="font-weight:bold">In Plant</td>
+                                                <td class="text text-sm" style="font-weight:bold">@ViewBag.plant_qty Kgs</td>
+                                                <td class="text text-sm" style="font-weight:bold">@Convert.ToDecimal(ViewBag.plant_amount).ToString("C")</td>
+                                            </tr>
+                                            @foreach (var obj in Model.fg)
+                                            {
+                                                <tr class="fg">
+                                                    <td class="text text-sm">@obj.raw_source</td>
+                                                    <td style="font-size:small">@((obj.lbs).ToString("0.00")) Lbs </td>
+                                                    <td style="font-size:small">@Convert.ToDecimal(obj.amount).ToString("C")</td>
+                                                </tr>
+                                            }
+                                            <tr>
+                                                <td class="text text-sm btn fg-show" style="font-weight:bold">Finished Goods</td>
+                                                <td class="text text-sm" style="font-weight:bold">@ViewBag.fg_qty Lbs</td>
+                                                <td class="text text-sm" style="font-weight:bold">@Convert.ToDecimal(ViewBag.fg_amount).ToString("C")</td>
+                                            </tr>
 
-                                @foreach (var obj in Model.in_plant)
-                                {
-                                    <tr class="plant">
-                                        <td class="text text-sm">@obj.raw_source</td>
-                                        <td style="font-size:small">@((obj.total_qty).ToString("0.00")) Kgs</td>
-                                        <td style="font-size:small">@Convert.ToDecimal(obj.amount_received).ToString("C")</td>
-                                    </tr>
-                                }
-                                <tr>
-                                    <td class="text text-sm btn plant-show" style="font-weight:bold">In Plant</td>
-                                    <td class="text text-sm" style="font-weight:bold">@ViewBag.plant_qty Kgs</td>
-                                    <td class="text text-sm" style="font-weight:bold">@Convert.ToDecimal(ViewBag.plant_amount).ToString("C")</td>
-                                </tr>
-                                @foreach (var obj in Model.fg)
-                                {
-                                    <tr class="fg">
-                                        <td class="text text-sm">@obj.raw_source</td>
-                                        <td style="font-size:small">@((obj.lbs).ToString("0.00")) Lbs </td>
-                                        <td style="font-size:small">@Convert.ToDecimal(obj.amount).ToString("C")</td>
-                                    </tr>
-                                }
-                                <tr>
-                                    <td class="text text-sm btn fg-show" style="font-weight:bold">Finished Goods</td>
-                                    <td class="text text-sm" style="font-weight:bold">@ViewBag.fg_qty Lbs</td>
-                                    <td class="text text-sm" style="font-weight:bold">@Convert.ToDecimal(ViewBag.fg_amount).ToString("C")</td>
-                                </tr>
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <td class="text text-sm" colspan="2" style="font-weight:bold">Total</td>
-                                    <td class="text text-sm" style="font-weight:bold">@Convert.ToDecimal(ViewBag.amount).ToString("C") </td>
-                                </tr>
-                            </tfoot>
-                        </table>
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <td class="text text-sm" style="font-weight:bold">Total Inventory</td>
+                                                <td style="font-size:small"></td>
+                                                <td class="text text-sm" style="font-weight:bold">@Convert.ToDecimal(ViewBag.amount).ToString("C") </td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                             
+
+                            </div>
+                        </form>
+                    
                     </div>
                     <!-- /.card-body -->
                 </div>
-                <!-- /.card -->
             </div>
 
 
+
+            <div class="col-md-7">
+                <!-- general form elements disabled -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title" style="font-weight:bold">BMI Deposits</h3>
+                        <div class="card-tools ">
+                            <a asp-controller="Inventory" asp-action="" data-toggle="modal" data-target="#modal-upload" class="btn btn-sm btn-default float-right mx-2">
+                                <i class="fa fa-upload">
+                                </i>
+                            </a>
+                        </div>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <form role="form">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <label>Funds at BOGI/HarSam/ASTB/BMI</label>
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th class="text text-sm">Description</th>
+                                                <th style="font-size:small">Amount (IDR)</th>
+                                                <th style="font-size:small">Exchange Rate</th>
+                                                <th style="font-size:small">Amount (USD)</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var obj in Model.fund)
+                                            {
+                                            <tr>
+                                                <td class="text text-sm">@obj.vendor</td>
+                                                <td style="font-size:small">@Convert.ToDecimal(obj.idr_amount).ToString("C2", System.Globalization.CultureInfo.GetCultureInfo("en-id"))</td>
+                                                <td style="font-size:small">@Convert.ToDecimal(obj.ex_rate).ToString("C2", System.Globalization.CultureInfo.GetCultureInfo("en-id"))</td>
+                                                <td style="font-size:small">@Convert.ToDecimal(obj.usd_amount).ToString("C2")</td>
+                                            </tr>
+                                            }
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <td class="text text-sm" style="font-weight:bold">Total Deposit TO Vendor</td>
+                                                <td style="font-size:small"></td>
+                                                <td style="font-size:small"></td>
+                                                <td style="font-size:small">@Convert.ToDecimal(ViewBag.total_fund).ToString("C2")</td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+
+                            </div>
+                        </form>
+
+                        <form role="form">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <label style="font-weight:bold">CTP Deposits</label>
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th class="text text-sm">Description</th>
+                                                <th style="font-size:small">Deposit Paid On</th>
+                                                <th style="font-size:small">Today</th>
+                                                <th style="font-size:small">Days Ots</th>
+                                                <th style="font-size:small">Amount(USD)</th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var obj in Model.deposit)
+                                            {
+                                                <tr>
+                                                    <td class="text text-sm">@obj.deposit_detail</td>
+                                                    <td style="font-size:small">@Html.DisplayFor(modelItem => obj.paid_on)</td>
+                                                    <td style="font-size:small">@((DateTime.Now).ToString("yyyy/mm/dd"))</td>
+                                                    <td style="font-size:small">@Convert.ToInt32((DateTime.Now - obj.paid_on).TotalDays)</td>
+                                                    <td style="font-size:small">@obj.amount</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <td class="text text-sm" style="font-weight:bold">TOTAL CTP DEPOSITS TO BMI</td>
+                                                <td style="font-size:small"></td>
+                                                <td style="font-size:small"></td>
+                                                <td style="font-size:small"></td>
+                                                <td style="font-size:small">@Convert.ToDecimal(ViewBag.total_deposit).ToString("C2")</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text text-sm" style="font-weight:bold">AMOUNT DIFFERENCE </td>
+                                                <td style="font-size:small"></td>
+                                                <td style="font-size:small"></td>
+                                                <td style="font-size:small"></td>
+                                                <td style="font-size:small">@Convert.ToDecimal(ViewBag.amount_difference).ToString("C2")</td>
+                                            </tr>
+                                        </tfoot>
+                                       
+                                            
+                                      
+                                    </table>
+                                </div>
+
+                            </div>
+                        </form>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+            </div>
         </div>
-        <!-- /.row -->
+
+        
+
+
+            <!-- /.row -->
     </section>
     <!-- /.content -->
+
 </div>
 
 <div class="modal fade" id="modal-upload">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
+
                 <h5 class="modal-title" id="formModalLabel">Upload File</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>

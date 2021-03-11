@@ -20,6 +20,7 @@ namespace BMI.Models
         public double qty { get; set; }
         #nullable enable
         public string? reason { get; set; }
+        public string? landing_site { get; set; }
         public string? status { get; set; }
         public string? created_by { get; set; }
         public string? updated_by { get; set; }

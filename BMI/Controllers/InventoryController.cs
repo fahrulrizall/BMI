@@ -63,6 +63,35 @@ namespace BMI.Controllers
             return await Task.Run(()=> View(result));
         }
 
+
+
+        public async Task<IActionResult> EachDetailFG(string bmi_code)
+        {
+            var fg = _db.Production_output
+                .Include(a => a.MasterBMIModel)
+                .Include(a => a.POModel)
+                .Where(a => a.POModel.pt_status == "Open" || a.POModel.pt_status == "Process")
+                .Where(a => a.bmi_code == bmi_code)
+                .AsEnumerable()
+                .GroupBy(a => a.po)
+                .Select(a => new
+                {
+                    batch = a.Key,
+                    POModel = a.Max(b => b.POModel),
+                    total = Convert.ToInt32(a.Sum(b => b.qty * 2.204 / b.MasterBMIModel.lbs)
+                    - _db.Shipment.Where(c => c.bmi_code == bmi_code && c.batch == a.Key).Sum(a => a.qty)
+                    - _db.AdjustmentFG.Where(c => c.bmi_code == bmi_code && c.po == a.Key).Sum(a => a.qty)
+                    - _db.Repack.Where(c => c.from_bmi_code == bmi_code && c.from_po == a.Key).Sum(a => a.qty * 2.204 / a.fromMasterBMIModel.lbs)
+                    + _db.Repack.Where(c => c.to_bmi_code == bmi_code && c.to_po == a.Key).Sum(a => a.qty * 2.204 / a.toMasterBMIModel.lbs)),
+                })
+                .Where(a => a.total >= 1)
+                .OrderByDescending(a => a.POModel.batch)
+                .ToList();
+            return await Task.Run(() => Json(fg));
+
+        }
+
+
         public async Task<IActionResult> DetailRaw()
         {
             var raw = _db.Rm_detail
@@ -73,39 +102,12 @@ namespace BMI.Controllers
                  {
                      raw_source = k.Key,
                      Masterdatamodel = k.Max(m => m.Masterdatamodel),
-                     total = Convert.ToDouble(k.Sum(k => k.qty_received) -
-                     _db.Production_input.Where(c => c.raw_source == k.Key).Sum(a => a.qty) -
-                     _db.AdjustmentRaw.Where(c => c.raw_source == k.Key).Sum(a => a.qty))
+                     total = Convert.ToDouble(k.Sum(k => k.qty_received)
+                     -( _db.Production_input.Where(c => c.raw_source == k.Key).Sum(a => a.qty) 
+                     + _db.AdjustmentRaw.Where(c => c.raw_source == k.Key).Sum(a => a.qty) )  )
                  })
-                 .Where(k => k.total > 0)
                  .ToList();
             return await Task.Run(()=> View(raw));
-        }
-
-        public async Task<IActionResult> EachDetailFG (string bmi_code)
-        {
-            var fg = _db.Production_output
-                .Include(a=>a.MasterBMIModel)
-                .Include(a=>a.POModel)
-                .Where(a=> a.POModel.pt_status == "Open" || a.POModel.pt_status == "Process")
-                .Where(a => a.bmi_code == bmi_code)
-                .AsEnumerable()
-                .GroupBy(a => a.po )
-                .Select(a => new
-                {
-                    batch = a.Key,
-                    POModel = a.Max(b=>b.POModel),
-                    total = Convert.ToInt32( a.Sum(b => b.qty * 2.204 / b.MasterBMIModel.lbs)
-                    - _db.Shipment.Where(c => c.bmi_code == bmi_code && c.batch == a.Key).Sum(a => a.qty)
-                    - _db.AdjustmentFG.Where(c => c.bmi_code == bmi_code && c.po == a.Key).Sum(a => a.qty)
-                    - _db.Repack.Where(c => c.from_bmi_code == bmi_code && c.from_po == a.Key).Sum(a => a.qty * 2.204 / a.fromMasterBMIModel.lbs)
-                    + _db.Repack.Where(c => c.to_bmi_code == bmi_code && c.to_po == a.Key).Sum(a => a.qty * 2.204 / a.toMasterBMIModel.lbs)),
-                })
-                .Where(a => a.total >= 1)
-                .OrderByDescending(a=>a.POModel.batch)
-                .ToList();
-            return await Task.Run(() => Json(fg));
-
         }
 
 
@@ -126,7 +128,6 @@ namespace BMI.Controllers
                      - _db.Production_input.Where(c => c.raw_source == raw_source && c.sap_code == k.Key.sap_code).Sum(a => a.qty) 
                      - _db.AdjustmentRaw.Where(c => c.raw_source == raw_source && c.sap_code == k.Key.sap_code).Sum(a => a.qty))
                  })
-                 .Where(k => k.total > 0)
                  .ToList();
             return await Task.Run(() => Json(raw));
         }
@@ -271,6 +272,85 @@ namespace BMI.Controllers
             }
         }
 
+        public async Task<IActionResult> Adjustment(string raw)
+        {
+            var model = new RmChecking();
+            model.RmDetailModel = _db.Rm_detail
+                .Include(a => a.Masterdatamodel)
+                .Where(a => a.raw_source == raw)
+                .AsEnumerable()
+                .GroupBy(a => new { a.landing_site_received, a.sap_code })
+                .Select(a => new RmDetailModel
+                {
+                    landing_site = a.Key.landing_site_received,
+                    Masterdatamodel = a.Max(b => b.Masterdatamodel),
+                    sap_code = a.Key.sap_code,
+                    qty = a.Sum(b => b.qty_received)
+                })
+                .OrderBy(a => a.landing_site).ThenBy(a => a.sap_code)
+                .ToList();
+
+            model.ProductionInputModel = _db.Production_input
+                .Include(a => a.Masterdatamodel)
+                .Where(a => a.raw_source == raw)
+                .AsEnumerable()
+                .GroupBy(a => new { a.landing_site, a.sap_code })
+                .Select(a => new ProductionInputModel
+                {
+                    landing_site = a.Key.landing_site,
+                    Masterdatamodel = a.Max(b => b.Masterdatamodel),
+                    sap_code = a.Key.sap_code,
+                    qty = Convert.ToSingle(a.Sum(a => a.qty) + _db.AdjustmentRaw.Where(c=>c.sap_code == a.Key.sap_code && c.landing_site == a.Key.landing_site).Sum(c=>c.qty))
+                })
+                .OrderBy(a => a.landing_site).ThenBy(a => a.sap_code)
+                .ToList();
+
+            if (model.RmDetailModel.Count == model.ProductionInputModel.Count)
+            {
+                var checking = from i in model.ProductionInputModel
+                             join r in model.RmDetailModel on new { i.landing_site, i.sap_code } equals new { r.landing_site, r.sap_code }
+                             select new RmChecking
+                             {
+                                 landing_site_rm = r.landing_site,
+                                 sap_code_rm = r.sap_code,
+                                 masterdatamodel_rm = r.Masterdatamodel,
+                                 qty_rm = r.qty,
+                                 landing_site_prod = i.landing_site,
+                                 sap_code_prod = i.sap_code,
+                                 masterdatamodel_prod = i.Masterdatamodel,
+                                 qty_prod = i.qty,
+                                 diffrence = Math.Round(Convert.ToDecimal(r.qty - i.qty), 2)
+                             };
+                List<RmChecking> result = checking.ToList();
+                ViewBag.raw_source = raw;
+                return await Task.Run(() => View(result));
+            }
+            ViewBag.raw_source = raw;
+            return await Task.Run(() => View("Checking",model));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> FixAdjustment(List<RmChecking> rmCheckings)
+        {
+            List<AdjustmentRawModel> model = new List<AdjustmentRawModel>();
+            for (int i = 0; i < rmCheckings.Count; i++){
+                model.Add( new AdjustmentRawModel
+                {
+                    raw_source = rmCheckings[i].raw_source,
+                    landing_site = rmCheckings[i].landing_site_prod,
+                    sap_code = rmCheckings[i].sap_code_prod,
+                    qty = Convert.ToDouble(rmCheckings[i].diffrence),
+                    status = "Adjustment",
+                    created_at = DateTime.Now,
+                    created_by = User.Identity.Name
+                });
+            }
+            _db.AdjustmentRaw.AddRange(model);
+            _db.SaveChanges();
+            TempData["msg"] = "Adjustment Succesfully";
+            TempData["result"] = "success";
+            return await Task.Run(() => Redirect(Request.Headers["Referer"].ToString()));
+        }
 
 
     }

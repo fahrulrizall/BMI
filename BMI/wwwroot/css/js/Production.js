@@ -1,5 +1,4 @@
-﻿
-$(function () {
+﻿$(function () {
     //table global pt
     $('.detail-pt-daily').on('click', function () {
         $('.table-production-daily').show();
@@ -107,8 +106,6 @@ $(function () {
             }
         });
     })
-
-
 
     $('.detail-po-daily').on('click', function () {
         $('.table-raw-daily').show();
@@ -238,9 +235,6 @@ $(function () {
         });
 
     });
-
-
-
 
     $('.destroy-fg').on('click', function () {
         //var sap = $(this).data('sap');
