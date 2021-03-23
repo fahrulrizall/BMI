@@ -64,6 +64,9 @@
         var po = $(this).data('po');
         var code = $(this).data('code');
         var batch = $(this).data('batch');
+        var sap = $(this).data('sap');
+        var batchid = $(this).data('batchid');
+        $('#card-title').html(sap +" - "+ batchid);
         $('#table-detail-pdc').html("");
         $.ajax({
             url: '/Shipment/Getpdc',

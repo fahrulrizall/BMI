@@ -64,6 +64,12 @@ namespace BMI.Models
         public string? reason { get; set; }
         [NotMapped]
         public string? status { get; set; }
+        [NotMapped]
+        public double? amount_usd { get; set; }
+        [NotMapped]
+        public DateTime start_date { get; set; }
+        [NotMapped]
+        public DateTime finish_date { get; set; }
 
     }
 }

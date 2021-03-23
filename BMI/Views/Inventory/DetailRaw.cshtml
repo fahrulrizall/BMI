@@ -29,7 +29,7 @@
                                         Available Qty
                                     </th>
                                     <th style="width: 3%;font-size:small">
-                                        Available Qty
+                                        Action
                                     </th>
                                 </tr>
                             </thead>
@@ -41,9 +41,8 @@
                                         <td style="font-size:small">@obj.total.ToString("0.00")</td>
                                         <td>
                                             <form asp-controller="Inventory" asp-route-raw="@obj.raw_source" asp-action="Adjustment" method="post">
-                                                <button type="submit" class="btn btn-xs btn-warning">
-                                                        <i class="fa fa-edit" style="color:whitesmoke">
-                                                        </i>
+                                                <button type="submit" class="btn btn-xs btn-primary">View
+                                                       
                                                     </button>
                                             </form>
                                         </td>

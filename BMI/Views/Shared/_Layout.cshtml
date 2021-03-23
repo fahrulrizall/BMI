@@ -12,8 +12,6 @@
     <link rel="stylesheet" href="~/css/plugins/datatables-bs4/css/dataTables.bootstrap4.css">
     <link rel="stylesheet" href="~/css/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
     <link rel="stylesheet" href="~/css/plugins/toastr/toastr.min.css">
-    @*<link rel="stylesheet" href="~/css/plugins/daterangepicker/daterangepicker.css">
-    <link href="~/css/plugins/select2/css/select2.css" rel="stylesheet" />*@
 
     @*overlayScrollbars*@
     <link rel="stylesheet" href="~/css/adminlte.min.css">
@@ -77,12 +75,12 @@
                         <div class="card card-primary card-outline">
                             <div class="card-body box-profile">
                                 <div class="text-center">
-                                    <img class="profile-user-img img-fluid img-circle" alt="User profile picture" src="~/css/dist/img/man300x300.png" />
+                                    <img class="profile-user-img img-fluid img-circle" alt="User profile picture" src="~/css/dist/img/yinyang.png" />
                                 </div>
 
                                 <h3 class="profile-username text-center">@User.Identity.Name</h3>
 
-                                <p class="text-muted text-center">Staff Cost Analyst</p>
+                                <p class="text-muted text-center">Anova Team</p>
 
                                 @*<ul class="list-group list-group-unbordered mb-3">
                                         <li class="list-group-item">
@@ -137,6 +135,7 @@
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                         <!-- Add icons to the links using the .nav-icon class
                             with font-awesome or any other icon font library -->
+                      
 
 
                         <li class="nav-item has-treeview">
@@ -208,12 +207,12 @@
                             <ul class="nav nav-treeview">
                                 @if (signInManager.IsSignedIn(User) && User.IsInRole("Admin") || User.IsInRole("Planning"))
                                 {
-                                <li class="nav-item">
-                                    <a class="nav-link" asp-route-plant="3700" asp-route-status="Open" asp-controller="PO" asp-action="index">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Purchase Order</p>
-                                    </a>
-                                </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" asp-route-plant="3700" asp-route-status="Open" asp-controller="PO" asp-action="index">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Intercompany PO</p>
+                                        </a>
+                                    </li>
                                 }
                                 <li class="nav-item">
                                     <a class="nav-link" asp-controller="Rm" asp-action="index" asp-route-status="plant">
@@ -266,7 +265,7 @@
                                         </a>
                                     </li>
                                 }
-                                </ul>
+                            </ul>
                         </li>
 
                         @if (signInManager.IsSignedIn(User) && User.IsInRole("Admin") )
@@ -329,8 +328,6 @@
 
     <!-- jQuery -->
     <script src="~/css/plugins/jquery/jquery.min.js"></script>
-    @*<script src="~/css/plugins/jquery-validation/jquery.validate.js"></script>*@
-    @*<script src="~/css/plugins/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>*@
 
 
     <!-- sweetalert -->
@@ -342,10 +339,6 @@
     <script src="~/css/plugins/datatables/jquery.dataTables.js"></script>
     <script src="~/css/plugins/datatables-bs4/js/dataTables.bootstrap4.js"></script>
     <script src="~/css/plugins/bs-custom-file-input/bs-custom-file-input.min.js"></script>
-    @*<script src="~/css/plugins/select2/js/select2.full.min.js"></script>
-    <script src="~/css/plugins/daterangepicker/daterangepicker.js"></script>
-    <script src="~/css/plugins/moment/moment.min.js"></script>
-    <script src="~/css/plugins/inputmask/jquery.inputmask.bundle.js"></script>*@
     <!-- AdminLTE App -->
     <script src="~/css/dist/js/adminlte.min.js"></script>
     <!-- AdminLTE for demo purposes -->

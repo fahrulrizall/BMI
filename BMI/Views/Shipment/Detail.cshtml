@@ -53,7 +53,7 @@
                                     @foreach (var obj in Model)
                                     {
                                         <tr>
-                                            <td style="font-size:small" class="btn shipment-item-detail" data-code="@obj.bmi_code" data-po="@po" data-batch="@obj.batch">@obj.MasterBMIModel.sap_code</td>
+                                            <td style="font-size:small" class="btn shipment-item-detail" data-sap="@obj.MasterBMIModel.sap_code" data-batchid="@obj.POModelBatch.batch" data-code="@obj.bmi_code" data-po="@po" data-batch="@obj.batch">@obj.MasterBMIModel.sap_code</td>
                                             <td style="font-size:small">@obj.MasterBMIModel.description</td>
                                             <td style="font-size:small">@obj.qty</td>
                                             <td style="font-size:small">@obj.POModelBatch.batch</td>

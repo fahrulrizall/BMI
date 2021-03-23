@@ -22,7 +22,34 @@ namespace BMI.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var obj = _db.Rm.AsEnumerable().OrderByDescending(a=>a.created_at).ToList();
+            var ft_code = new string[] {
+                "202028",
+                "202026",
+                "202020",
+                "202024",
+                "202049",
+                "202050",
+                "202048",
+                "202045",
+                "202047",
+                "202044",
+                "202046",
+                "202041",
+                "202043",
+                "202040",
+                "202042",
+                };
+
+            var obj = _db.Rm_detail
+                .Where(a=>a.RmModel.status == "Plant" || a.RmModel.status == "Closed")
+                .Where(a => ft_code.Contains(a.sap_code))
+                .OrderByDescending(a => a.created_at)
+                .AsEnumerable()
+                .GroupBy(a => a.raw_source)
+                .Select(a => new RmDetailModel { 
+                    raw_source = a.Key
+                })
+                .ToList();
             return await Task.Run(()=> View(obj));
         }
 
@@ -60,7 +87,7 @@ namespace BMI.Controllers
 
             var output = _db.Production_output
                 .Include(a => a.MasterBMIModel)
-                .Where(a => a.raw_source== raw && a.landing_site.Contains("FT"))
+                .Where(a => a.raw_source== raw && a.fairtrade_status=="FT")
                 .AsEnumerable()
                 .GroupBy(a => a.raw_source)
                 .Select(a => new
@@ -134,7 +161,7 @@ namespace BMI.Controllers
 
            var output = _db.Production_output
                 .Include(a => a.MasterBMIModel)
-                .Where(a => a.date >= start_date && a.date <= finish_date && a.landing_site.Contains("FT") )
+                .Where(a => a.date >= start_date && a.date <= finish_date && a.fairtrade_status=="FT" )
                 .AsEnumerable()
                 .GroupBy(a=>a.raw_source)
                 .Select(a=> new  
@@ -210,7 +237,7 @@ namespace BMI.Controllers
 
             var output = _db.Production_output
                  .Include(a => a.MasterBMIModel)
-                 .Where(a => a.date >= start_date && a.date <= finish_date && a.landing_site.Contains("FT"))
+                 .Where(a => a.date >= start_date && a.date <= finish_date && a.fairtrade_status=="FT")
                  .AsEnumerable()
                  .GroupBy(a => a.raw_source)
                  .Select(a => new

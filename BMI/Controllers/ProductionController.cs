@@ -177,7 +177,7 @@ namespace BMI.Controllers
                                 TempData["result"] = "success";
                                 return await Task.Run(() => Redirect(Request.Headers["Referer"].ToString()));
                             }
-                            else if (excelDataReader.FieldCount == 5)
+                            else if (excelDataReader.FieldCount == 6)
                             {
                                 DataRowCollection row = dataSet.Tables["GR"].Rows;
 
@@ -222,6 +222,7 @@ namespace BMI.Controllers
                                         raw_source = source_site.raw_source,
                                         landing_site = source_site.landing_site,
                                         fairtrade_status = fairtrade_status,
+                                        grade = Convert.ToString(rowDataList[5]),
                                         created_at = DateTime.Now,
                                         created_by = User.Identity.Name,
                                         gr_date = date
@@ -375,18 +376,19 @@ namespace BMI.Controllers
                 .GroupBy(a => a.landing_site)
                 .Select(a => new RepackModel
                 {
-                    landing_site = a.Key,
+                    landing_site = a.Key + " " +a.Max(b=>b.fairtrade_status),
                     cases = Convert.ToInt32(a.Sum(x => x.qty * 2.204) / a.Max(b => b.MasterBMIModel.lbs))
                 }).ToList();
 
             var repack = _db.Repack
+                .Include(a=> a.toMasterBMIModel)
                 .Where(a => a.to_po == po && a.to_bmi_code == bmicode && a.raw_source == raw_source && a.production_date == pdc) 
                 .AsEnumerable()
                 .GroupBy(a => a.landing_site)
                 .Select(a => new RepackModel
                 {
                     landing_site = a.Key,
-                    cases = a.Sum(b => b.qty)
+                    cases = Convert.ToInt32(a.Sum(b => b.qty * 2.204 / a.Max(b=>b.toMasterBMIModel.lbs)))
                 }).ToList();
 
 

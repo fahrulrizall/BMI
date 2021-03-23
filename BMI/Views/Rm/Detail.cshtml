@@ -38,10 +38,10 @@
                                         Site
                                     </th>
                                     <th style="width: 5%;font-size:small">
-                                        Qty
+                                        Qty Kg
                                     </th>
                                     <th style="width: 5%;font-size:small">
-                                        Amount
+                                       Amount
                                     </th>
                                     @if (status == "Plant" || status == "Closed")
                                     {
@@ -55,6 +55,9 @@
                                             Amount Received
                                         </th>
                                     }
+                                    <th style="width: 5%;font-size:small">
+                                        Amount
+                                    </th>
 
                                     <th style="width: 3%;font-size:small">
                                         Actions
@@ -64,33 +67,33 @@
                             <tbody>
                                 @foreach (var obj in Model)
                                 {
-                                    <tr>
-                                        <td style="font-size:small">@obj.sap_code</td>
-                                        <td style="font-size:small">@obj.Masterdatamodel.description</td>
-                                        <td style="font-size:small">@Convert.ToDecimal(obj.usd_price).ToString("C")</td>
-                                        <td style="font-size:small">@Convert.ToDecimal(obj.ex_rate).ToString("C2", System.Globalization.CultureInfo.GetCultureInfo("en-id"))</td>
-                                        <td style="font-size:small">@obj.landing_site</td>
-                                        <td style="font-size:small">@obj.qty_pl Kg</td>
-                                        <td style="font-size:small">@Convert.ToDecimal(obj.amount_pl).ToString("C2", System.Globalization.CultureInfo.GetCultureInfo("en-id"))</td>
-                                        @if (status == "Plant" || status == "Closed")
-                                        {
-                                            <td style="font-size:small">@obj.landing_site_received</td>
-                                            <td style="font-size:small">@obj.qty_received Kg</td>
-                                            <td style="font-size:small">@Convert.ToDecimal(obj.amount_received).ToString("C2", System.Globalization.CultureInfo.GetCultureInfo("en-id"))</td>
-                                        }
-
-                                        <td>
-                                            <form asp-controller="Rm" asp-action="Deleteitem" asp-route-id="@obj.id_raw" asp-route-raw_source="@obj.raw_source" method="post" class="d-inline">
-                                                <a href="#" class="btn btn-xs btn-warning change-item-detail"
-                                                   data-toggle="modal" data-target="#modal-default" data-id="@obj.id_raw">
-                                                    <i class="fa fa-edit" style="color:ghostwhite;outline:thin"></i>
-                                                </a>
-                                                <button type="submit" onclick="return confirm ('Delete Item @obj.sap_code' );" class="btn btn-xs btn-danger">
-                                                    <i class="fa fa-trash"></i>
-                                                </button>
-                                            </form>
-                                        </td>
-                                    </tr>
+                                <tr>
+                                    <td style="font-size:small">@obj.sap_code</td>
+                                    <td style="font-size:small">@obj.Masterdatamodel.description</td>
+                                    <td style="font-size:small">@Convert.ToDecimal(obj.usd_price).ToString("C")</td>
+                                    <td style="font-size:small">@Convert.ToDecimal(obj.ex_rate).ToString("C2", System.Globalization.CultureInfo.GetCultureInfo("en-id"))</td>
+                                    <td style="font-size:small">@obj.landing_site</td>
+                                    <td style="font-size:small">@obj.qty_pl</td>
+                                    <td style="font-size:small">@Convert.ToDecimal(obj.amount_pl).ToString("C2", System.Globalization.CultureInfo.GetCultureInfo("en-id"))</td>
+                                    @if (status == "Plant" || status == "Closed")
+                                    {
+                                        <td style="font-size:small">@obj.landing_site_received</td>
+                                        <td style="font-size:small">@obj.qty_received</td>
+                                        <td style="font-size:small">@Convert.ToDecimal(obj.amount_received).ToString("C2", System.Globalization.CultureInfo.GetCultureInfo("en-id"))</td>
+                                    }
+                                    <td style="font-size:small">@Convert.ToDecimal(obj.amount_usd).ToString("C")</td>
+                                    <td>
+                                        <form asp-controller="Rm" asp-action="Deleteitem" asp-route-id="@obj.id_raw" asp-route-raw_source="@obj.raw_source" method="post" class="d-inline">
+                                            <a href="#" class="btn btn-xs btn-warning change-item-detail"
+                                               data-toggle="modal" data-target="#modal-default" data-id="@obj.id_raw">
+                                                <i class="fa fa-edit" style="color:ghostwhite;outline:thin"></i>
+                                            </a>
+                                            <button type="submit" onclick="return confirm ('Delete Item @obj.sap_code' );" class="btn btn-xs btn-danger">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
                                 }
                             </tbody>
                             <tfoot>
@@ -103,6 +106,7 @@
                                         <th style="width: 2%;font-size:small"></th>
                                         <th style="width: 2%;font-size:small">@(ViewBag.qty_received) Kgs</th>
                                         <th style="width: 2%;font-size:small">@Convert.ToDecimal(ViewBag.amount_received).ToString("C2", System.Globalization.CultureInfo.GetCultureInfo("en-id"))</th>
+                                        <th style="width: 2%;font-size:small">@Convert.ToDecimal(ViewBag.usd_amount).ToString("C")</th>
                                         <th style="width: 2%;font-size:small"></th>
                                     }
                                     else
@@ -110,6 +114,7 @@
                                         <th style="width: 2%;font-size:small" colspan="5">Total</th>
                                         <th style="width: 2%;font-size:small">@(ViewBag.qty_pl) Kgs</th>
                                         <th style="width: 2%;font-size:small">@Convert.ToDecimal(ViewBag.amount_pl).ToString("C2", System.Globalization.CultureInfo.GetCultureInfo("en-id"))</th>
+                                        <th style="width: 2%;font-size:small">@Convert.ToDecimal(ViewBag.usd_amount).ToString("C")</th>
                                         <th style="width: 2%;font-size:small"></th>
                                     }
                                 </tr>

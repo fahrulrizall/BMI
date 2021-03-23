@@ -16,7 +16,7 @@
                         <div class="card-title">
                             <form method="get" asp-action="Daily" asp-controller="Production">
                                 <div class="input-group input-group-sm">
-                                    <input type="date" asp-for="First().date">
+                                    <input type="date" asp-for="First().date" value="@DateTime.Now" >
                                     <span class="input-group-append">
                                         <button type="submit" value="Create" class="btn btn-primary">Go!</button>
                                     </span>

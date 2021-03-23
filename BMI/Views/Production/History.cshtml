@@ -147,7 +147,7 @@
                         <div class="form-group">
                             <label class="col-form-label">Production Date</label>
                             <div class="input-group">
-                                <input class="form-control" type="date" asp-for="date" />
+                                <input class="form-control" type="date" asp-for="date" value="@DateTime.Now" />
                                 <span asp-validation-for="date" class="text-danger" style="font-size:smaller"> </span>
                             </div>
                         </div>

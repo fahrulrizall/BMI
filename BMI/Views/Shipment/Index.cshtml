@@ -135,15 +135,15 @@
                             </div>
                             <div class="form-group row">
                                 <label class="col-sm-3">ETD</label>
-                                <input type="date" class="col-sm-9 form-control" asp-for="First().etd">
+                                <input type="date" class="col-sm-9 form-control" asp-for="First().etd" value="@DateTime.Now">
                             </div>
                             <div class="form-group row">
                                 <label class="col-sm-3">ETA</label>
-                                <input type="date" class="col-sm-9 form-control" asp-for="First().eta">
+                                <input type="date" class="col-sm-9 form-control" asp-for="First().eta" value="@DateTime.Now">
                             </div>
                             <div class="form-group row">
                                 <label class="col-sm-3">Doc Date</label>
-                                <input type="date" class="col-sm-9 form-control" asp-for="First().document_date">
+                                <input type="date" class="col-sm-9 form-control" asp-for="First().document_date" value="@DateTime.Now">
                             </div>
                             <div class="form-group row">
                                 <label class="col-sm-3">Carrier</label>

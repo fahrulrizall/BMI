@@ -300,7 +300,7 @@ namespace BMI.Controllers
                     landing_site = a.Key.landing_site,
                     Masterdatamodel = a.Max(b => b.Masterdatamodel),
                     sap_code = a.Key.sap_code,
-                    qty = Convert.ToSingle(a.Sum(a => a.qty) + _db.AdjustmentRaw.Where(c=>c.sap_code == a.Key.sap_code && c.landing_site == a.Key.landing_site).Sum(c=>c.qty))
+                    qty = Convert.ToSingle( Math.Round( (a.Sum(a => a.qty) + _db.AdjustmentRaw.Where(c=>c.sap_code == a.Key.sap_code && c.landing_site == a.Key.landing_site).Sum(c=>c.qty)),2))
                 })
                 .OrderBy(a => a.landing_site).ThenBy(a => a.sap_code)
                 .ToList();
@@ -334,16 +334,20 @@ namespace BMI.Controllers
         {
             List<AdjustmentRawModel> model = new List<AdjustmentRawModel>();
             for (int i = 0; i < rmCheckings.Count; i++){
-                model.Add( new AdjustmentRawModel
+                if (rmCheckings[i].diffrence != 0 )
                 {
-                    raw_source = rmCheckings[i].raw_source,
-                    landing_site = rmCheckings[i].landing_site_prod,
-                    sap_code = rmCheckings[i].sap_code_prod,
-                    qty = Convert.ToDouble(rmCheckings[i].diffrence),
-                    status = "Adjustment",
-                    created_at = DateTime.Now,
-                    created_by = User.Identity.Name
-                });
+                    model.Add(new AdjustmentRawModel
+                    {
+                        raw_source = rmCheckings[i].raw_source,
+                        landing_site = rmCheckings[i].landing_site_prod,
+                        sap_code = rmCheckings[i].sap_code_prod,
+                        qty = Convert.ToDouble(rmCheckings[i].diffrence),
+                        status = "Adjustment",
+                        created_at = DateTime.Now,
+                        created_by = User.Identity.Name
+                    });
+                }
+               
             }
             _db.AdjustmentRaw.AddRange(model);
             _db.SaveChanges();

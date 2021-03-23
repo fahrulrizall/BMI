@@ -80,6 +80,7 @@ namespace BMI.Controllers
                     landing_site_received = a.landing_site_received,
                     qty_received = a.qty_received,
                     amount_received = Convert.ToDouble(Convert.ToDecimal(a.usd_price) * Convert.ToDecimal(a.ex_rate) * Convert.ToDecimal(a.qty_received)),
+                    amount_usd = a.usd_price * a.qty_pl
                 })
                 .ToList();
             ViewBag.raw_source = raw_source;
@@ -88,6 +89,7 @@ namespace BMI.Controllers
             ViewBag.amount_pl = Math.Round( Convert.ToDouble( list.Sum(a => a.amount_pl)),2);
             ViewBag.qty_received = Math.Round(Convert.ToDecimal(list.Sum(a => a.qty_received)),2);
             ViewBag.amount_received = Math.Round(Convert.ToDouble(list.Sum(a => a.amount_received)),2);
+            ViewBag.usd_amount = Math.Round(Convert.ToDouble(list.Sum(a => a.amount_usd)), 2);
             return await Task.Run(()=> View(list));
         }
 

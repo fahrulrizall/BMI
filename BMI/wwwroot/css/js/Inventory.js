@@ -4,6 +4,7 @@ $('.detail-fg').on('click', function () {
     $('#fg-detail-batch').html("");
     var code = $(this).data('code');
     var sap_code = $(this).data('sap');
+    $("#card-title").html(sap_code)
     $("#list-fg-inventory").attr('class', 'col-md-7');
     $('#detail-fg-inventory').show();
     $('#card-title-detail').html(sap_code);
@@ -14,11 +15,19 @@ $('.detail-fg').on('click', function () {
         dataType: 'json',
         success: function (data) {
             data.forEach(function (e) {
-                console.log(e)
-                $('#fg-detail-batch').append("<tr><td class='text-sm'>" + sap_code + "</td><td class='text-sm'>" + e.poModel.batch + "</td><td class='text-sm'>" + e.total + "</td></tr>")
+                $('#fg-detail-batch').append("<tr><td class='text-sm'>" + sap_code + "</td><td class='text-sm'>" + e.poModel.batch + "</td><td class='text-sm caseavailable'>" + e.total + "</td></tr>")
+                calc_case_available()
             })
         }
     });
+
+    function calc_case_available() {
+        var sum = 0;
+        $('.caseavailable').each(function () {
+            sum += parseInt($(this).text())
+        });
+        $('#totalavailable').text(sum);
+    };
 })
 
 $('.close-detail-fg').on('click', function () {
@@ -55,7 +64,3 @@ $('.close-detail-raw-material').on('click', function () {
     $('#detail-raw-table').attr('class', 'col-md-12');
     $('#detail-raw-material').hide();
 })
-
-function addrows() {
-    console.log("dasdadasdasda")
-}

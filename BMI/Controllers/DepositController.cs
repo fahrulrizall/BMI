@@ -170,8 +170,7 @@ namespace BMI.Controllers
                                 DataRowCollection row = dataSet.Tables["Pending"].Rows;
                                 List<object> rowDataList = null;
 
-                                _db.Pending.RemoveRange();
-                                _db.SaveChanges();
+                                _db.Database.ExecuteSqlRaw("TRUNCATE TABLE Pending");
 
                                 foreach (DataRow item in row)
                                 {
@@ -205,8 +204,7 @@ namespace BMI.Controllers
                                 DataRowCollection row = dataSet.Tables["Deposit"].Rows;
                                 List<object> rowDataList = null;
 
-                                _db.Deposit.RemoveRange();
-                                _db.SaveChanges();
+                                _db.Database.ExecuteSqlRaw("TRUNCATE TABLE Deposit");
 
                                 foreach (DataRow item in row)
                                 {
@@ -239,8 +237,7 @@ namespace BMI.Controllers
                                 DataRowCollection row = dataSet.Tables["Fund"].Rows;
                                 List<object> rowDataList = null;
 
-                                _db.Fund.RemoveRange();
-                                _db.SaveChanges();
+                                _db.Database.ExecuteSqlRaw("TRUNCATE TABLE Fund");
 
                                 foreach (DataRow item in row)
                                 {

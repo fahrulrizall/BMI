@@ -35,6 +35,7 @@ namespace BMI.Models
         [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}", ApplyFormatInEditMode = true)]
         public DateTime? gr_date { get; set; }
         public string? fairtrade_status { get; set; }
+        public string? grade { get; set; }
 
         [NotMapped]
         public double qty_production { get; set; }
@@ -57,5 +58,6 @@ namespace BMI.Models
         public DateTime production_date { get; set; }
         [NotMapped]
         public string? status { get; set; }
+
     }
 }

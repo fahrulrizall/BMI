@@ -30,9 +30,6 @@ namespace BMI.Models
         public string? created_by { get; set; }
         public string? updated_by { get; set; }
 
-        [NotMapped]
-        public DateTime start_date { get; set; }
-        [NotMapped]
-        public DateTime finish_date { get; set; }
+     
     }
 }
