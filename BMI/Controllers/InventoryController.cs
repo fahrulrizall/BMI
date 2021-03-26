@@ -94,7 +94,7 @@ namespace BMI.Controllers
 
         public async Task<IActionResult> DetailRaw()
         {
-            var raw = _db.Rm_detail
+            var rm = _db.Rm_detail
                  .Where(k => k.RmModel.status == "Plant")
                  .AsEnumerable()
                  .GroupBy(k => k.raw_source)
@@ -102,12 +102,10 @@ namespace BMI.Controllers
                  {
                      raw_source = k.Key,
                      Masterdatamodel = k.Max(m => m.Masterdatamodel),
-                     total = Convert.ToDouble(k.Sum(k => k.qty_received)
-                     -( _db.Production_input.Where(c => c.raw_source == k.Key).Sum(a => a.qty) 
-                     + _db.AdjustmentRaw.Where(c => c.raw_source == k.Key).Sum(a => a.qty) )  )
+                     total = Convert.ToDouble(k.Sum(a=>a.qty_received) - ( _db.Production_input.Where(a=>a.raw_source== k.Key).Sum(a=>a.qty) + _db.AdjustmentRaw.Where(a => a.raw_source == k.Key).Sum(a => a.qty)))
                  })
                  .ToList();
-            return await Task.Run(()=> View(raw));
+            return await Task.Run(()=> View(rm));
         }
 
 
@@ -300,7 +298,7 @@ namespace BMI.Controllers
                     landing_site = a.Key.landing_site,
                     Masterdatamodel = a.Max(b => b.Masterdatamodel),
                     sap_code = a.Key.sap_code,
-                    qty = Convert.ToSingle( Math.Round( (a.Sum(a => a.qty) + _db.AdjustmentRaw.Where(c=>c.sap_code == a.Key.sap_code && c.landing_site == a.Key.landing_site).Sum(c=>c.qty)),2))
+                    qty_raw = Math.Round(( a.Sum(a => a.qty) + (float?) _db.AdjustmentRaw.Where(c => c.raw_source==raw && c.sap_code == a.Key.sap_code && c.landing_site == a.Key.landing_site).Sum(c => c.qty) ??0),2)
                 })
                 .OrderBy(a => a.landing_site).ThenBy(a => a.sap_code)
                 .ToList();
@@ -318,8 +316,8 @@ namespace BMI.Controllers
                                  landing_site_prod = i.landing_site,
                                  sap_code_prod = i.sap_code,
                                  masterdatamodel_prod = i.Masterdatamodel,
-                                 qty_prod = i.qty,
-                                 diffrence = Math.Round(Convert.ToDecimal(r.qty - i.qty), 2)
+                                 qty_prod = i.qty_raw,
+                                 diffrence = Math.Round(Convert.ToDecimal(r.qty - i.qty_raw), 2)
                              };
                 List<RmChecking> result = checking.ToList();
                 ViewBag.raw_source = raw;

@@ -16,7 +16,7 @@ namespace BMI.Models
         public string landing_site_prod { get; set; }
         public string sap_code_prod { get; set; }
         public Masterdatamodel masterdatamodel_prod { get; set; }
-        public float? qty_prod { get; set; }
+        public double? qty_prod { get; set; }
 
         public decimal diffrence { get; set; }
 
