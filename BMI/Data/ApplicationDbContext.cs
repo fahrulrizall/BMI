@@ -11,16 +11,15 @@ namespace BMI.Data
 {
     public class ApplicationDbContext:IdentityDbContext<ApplicationUser>
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) :base(options)
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
-            
+
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
         }
-        public DbSet<RegisterView> User { get; set; }
         public DbSet<Fgmodel> Fg { get; set; }
         public DbSet<RmDetailModel> Rm_detail { get; set; }
         public DbSet<RmModel> Rm { get; set; }
@@ -36,6 +35,12 @@ namespace BMI.Data
         public DbSet<PendingModel> Pending { get; set; }
         public DbSet<FundModel> Fund { get; set; }
         public DbSet<DepositModel> Deposit { get; set; }
-
+        public DbSet<RmPlantModel> Rm_plant { get; set; }
+        public DbSet<VendorModel> Vendor { get; set; }
+        public DbSet<RmPlantDetailModel> Rm_plant_detail { get; set; }
+        public DbSet<DateVesselModel> Date_vessel { get; set; }
+        public DbSet<QtyLine1Input> QtyLine1Input { get; set; }
+        public DbSet<QtyLine1Output> QtyLine1Output { get; set; }
     }
 }
+

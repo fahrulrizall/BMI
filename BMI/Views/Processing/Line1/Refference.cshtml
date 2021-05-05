@@ -1,0 +1,130 @@
+﻿@model List<BMI.UtilityModels.RefferenceView>
+@{string reff = ViewBag.Refference; }
+@{
+    ViewData["Title"] = reff;
+}
+<div class="content-wrapper">
+    <section class="content-header">
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-12">
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title"> @reff</h3>
+                        <div class="card-tools ">
+                            <button class="btn btn-sm float-right mx-1 add-new-cutting"
+                                    data-toggle="modal" data-target="#modal-default" data-reff="@reff">
+                                <i class="fa fa-plus">
+                                </i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <table id="example1" class="table table-bordered table-striped table-sm">
+                            <thead>
+                                <tr>
+                                    <th style="width: 10%;font-size:small">
+                                        Refference
+                                    </th>
+                                    <th style="width: 23%;font-size:small">
+                                        Date
+                                    </th>
+                                    <th style="width: 5%;font-size:small">
+                                        Vessel
+                                    </th>
+                                    <th style="width: 5%;font-size:small">
+                                        Input
+                                    </th>
+                                    <th style="width: 5%;font-size:small">
+                                        Output
+                                    </th>
+                                    <th style="width: 3%;font-size:small">
+                                        Action
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var obj in Model)
+                                {
+                                    <tr>
+                                        <td class="text text-sm">@obj.Refference</td>
+                                        <td class="text text-sm">@Html.DisplayFor(a=>obj.Date)</td>
+                                        <td class="text text-sm">@obj.Vessel</td>
+                                        <td class="text text-sm"><a style="color:black" asp-controller="Processing" asp-action="Detail" asp-route-id="@obj.Id" asp-route-type="input">@obj.Input</a></td>
+                                        <td class="text text-sm"><a style="color:black" asp-controller="Processing" asp-action="Detail" asp-route-id="@obj.Id" asp-route-type="output">@obj.Output</a></td>
+                                        <td>
+                                            <form asp-controller="Processing" asp-route-id="@obj.Id"  asp-action="DeleteDateVessel" method="post">
+                                                <a data-toggle="modal" data-target="#modal-default" data-reff="@obj.Refference" data-id="@obj.Id" class="btn btn-xs btn-warning update-date-vessel">
+                                                    <i class="fa fa-edit" style="color:whitesmoke;outline:thin">
+                                                    </i>
+                                                </a>
+                                                <button type="submit" onclick="return confirm ('Delete Item @obj.Refference on @obj.Date');" data-id="@obj.Id" class="btn btn-xs btn-danger delete-date-vessel">
+                                                    <i class="fa fa-trash">
+                                                    </i>
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </section>
+    <!-- /.content -->
+</div>
+
+
+<div class="modal fade" id="modal-default">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="formModalLabel">Add Item</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body mb-2">
+                <form method="POST" asp-controller="Processing" asp-action="CreateDateVessel">
+                    <div class="card-body">
+                        <input type="hidden" class="form-control" id="Refference" name="Refference" value="@reff">
+                        <input type="hidden" class="form-control" id="Id" name="Id">
+                        <div class="form-group">
+                            <label >Processing Date</label>
+                            <input type="date" class="form-control" asp-for="FirstOrDefault().Date">
+                            <span asp-validation-for="FirstOrDefault().Date" class="text-danger" style="font-size:smaller"> </span>
+                        </div>
+                        <div class="form-group">
+                            <label >Vessel</label>
+                            @*<input type="text" step="any" class="form-control" asp-for="FirstOrDefault().Vessel"
+                                   placeholder="Vessel">*@
+                            <select class="form-control" asp-for="FirstOrDefault().Vessel">
+                              
+                            </select>
+                            <span asp-validation-for="FirstOrDefault().Vessel" class="text-danger" style="font-size:smaller"> </span>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" value="Create" class="btn btn-primary">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

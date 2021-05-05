@@ -162,6 +162,8 @@
     <Compile Remove="Migrations\20210304074302_add_deposit_table_vendor_string_1.Designer.cs" />
     <Compile Remove="Migrations\20210304074607_add_deposit_table_vendor_string_1.cs" />
     <Compile Remove="Migrations\20210304074607_add_deposit_table_vendor_string_1.Designer.cs" />
+    <Compile Remove="Migrations\20210407031126_add_code_role.cs" />
+    <Compile Remove="Migrations\20210407031126_add_code_role.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -170,6 +172,7 @@
     <PackageReference Include="ExcelDataReader.DataSet" Version="3.6.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authorization.Policy" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.2.7" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.8" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.8" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.8" />
@@ -183,6 +186,13 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\Uploads\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Views\Processing\Line1\Index.cshtml" />
+    <None Include="Views\Processing\Line1\InputDetail.cshtml" />
+    <None Include="Views\Processing\Line1\OutputDetail.cshtml" />
+    <None Include="Views\Processing\Line1\Refference.cshtml" />
   </ItemGroup>
 
 </Project>

@@ -1,4 +1,4 @@
-﻿@model MultipleViewAuthorize
+﻿@model IEnumerable<IdentityRole>
 @{
     ViewData["Title"] = "Role Manager";
 }
@@ -11,64 +11,10 @@
 
 
 
-            <div class="col-md-6">
+            <div class="col-md-12">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">User</h3>
-                        <div class="card-tools ">
-                            <a href="/Account/Register" class="btn btn-sm float-right mx-1">
-                                <i class="fa fa-plus">
-                                </i>
-                            </a>
-                        </div>
-                    </div>
-
-                    <div class="card-body">
-                        <table id="example1" class="table table-bordered table-striped table-sm">
-                            <thead>
-                                <tr>
-                                    <th style="width: 20%;font-size:small">
-                                        Email
-                                    </th>
-                                    <th style="width: 5%;font-size:small">
-                                        Action
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var obj in Model.users)
-                                {
-                                    <tr>
-                                        <td style="font-size:small">@obj.Email </td>
-                                        <td>
-                                            <form asp-controller="Account" asp-route-id="@obj.Id" asp-action="DeleteUser" method="post">
-                                                <a data-toggle="modal" data-target="#modal-default" data-id="@obj.Id" class="btn btn-xs btn-warning update-role">
-                                                    <i class="fa fa-lock" style="color:whitesmoke;outline:thin">
-                                                    </i>
-                                                </a>
-                                                <button type="submit" onclick="return confirm ('Delete User @obj.UserName');" class="btn btn-xs btn-danger">
-                                                    <i class="fa fa-trash">
-                                                    </i>
-                                                </button>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                    <!-- /.card-body -->
-                </div>
-                <!-- /.card -->
-            </div>
-
-
-
-
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Role Model</h3>
+                        <h3 class="card-title">Role List</h3>
                         <div class="card-tools ">
                             <button class="btn btn-sm float-right mx-1 add-new-role"
                                     data-toggle="modal" data-target="#modal-default">
@@ -79,11 +25,11 @@
                     </div>
 
                     <div class="card-body">
-                        <table id="example3" class="table table-bordered table-striped table-sm">
+                        <table id="example1" class="table table-bordered table-striped table-sm">
                             <thead>
                                 <tr>
                                     <th style="width: 20%;font-size:small">
-                                        Name
+                                        Role Name
                                     </th>
                                     <th style="width: 5%;font-size:small">
                                         Action
@@ -91,7 +37,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach (var obj in Model.roles)
+                                @foreach (var obj in Model)
                                 {
                                     <tr>
                                         <td style="font-size:small">@obj.Name </td>
@@ -103,6 +49,10 @@
                                                 </a>
                                                 <a asp-action="GetUserRole" asp-controller="Administration" asp-route-id="@obj.Id" asp-route-name="@obj.Name" class="btn btn-xs btn-primary">
                                                     <i class="fa fa-users" style="color:whitesmoke;outline:thin">
+                                                    </i>
+                                                </a>
+                                                <a asp-action="ManageRoleClaims" asp-controller="Administration" asp-route-id="@obj.Id" class="btn btn-xs btn-info">
+                                                    <i class="fa fa-list" style="color:whitesmoke;outline:thin">
                                                     </i>
                                                 </a>
                                                 <button type="submit" onclick="return confirm ('Delete Role @obj.Name');" class="btn btn-xs btn-danger">
@@ -120,9 +70,6 @@
                 </div>
                 <!-- /.card -->
             </div>
-
-
-
 
         </div>
         <!-- /.row -->
@@ -160,7 +107,7 @@
 
 
 
-<div class="modal fade" id="modal-user">
+@*<div class="modal fade" id="modal-user">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -203,7 +150,7 @@
             </div>
         </div>
     </div>
-</div>
+</div>*@
 
 
 

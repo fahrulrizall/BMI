@@ -127,6 +127,7 @@ namespace BMI.Controllers
 
         [HttpPost]
         [AutoValidateAntiforgeryToken]
+        [Authorize(Policy = "Update")]
         public IActionResult Import(IFormFile postedFile)
         {
             if (postedFile != null)

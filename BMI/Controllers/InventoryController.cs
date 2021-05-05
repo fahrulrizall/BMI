@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Text;
 using ClosedXML.Excel;
 using System.IO;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BMI.Controllers
 {
@@ -270,6 +271,8 @@ namespace BMI.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin,CC")]
+        [Authorize(Policy = "Update")]
         public async Task<IActionResult> Adjustment(string raw)
         {
             var model = new RmChecking();
@@ -328,6 +331,8 @@ namespace BMI.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin,CC")]
+        [Authorize(Policy = "Update")]
         public async Task<IActionResult> FixAdjustment(List<RmChecking> rmCheckings)
         {
             List<AdjustmentRawModel> model = new List<AdjustmentRawModel>();

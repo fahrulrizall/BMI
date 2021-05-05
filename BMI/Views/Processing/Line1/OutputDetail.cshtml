@@ -1,0 +1,121 @@
+﻿@model List<BMI.Models.QtyLine1Output>
+@{
+    ViewData["Title"] = ViewBag.Vessel ;
+}
+<div class="content-wrapper">
+    <section class="content-header">
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-12">
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">@ViewBag.Date - @ViewBag.Vessel</h3>
+                        <div class="card-tools ">
+                            <button class="btn btn-sm float-right mx-1 add-output-line1"
+                                    data-toggle="modal" data-target="#modal-default">
+                                <i class="fa fa-plus">
+                                </i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <table class="table table-bordered table-striped table-sm">
+                            <thead>
+                                <tr>
+                                    <th style="width: 10%;font-size:small">
+                                        SAP Code
+                                    </th>
+                                    <th style="width: 23%;font-size:small">
+                                        Description
+                                    </th>
+                                    <th style="width: 5%;font-size:small">
+                                        Qty
+                                    </th>
+                                    <th style="width: 3%;font-size:small">
+                                        Action
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var obj in Model)
+                                {
+                                    <tr>
+                                        <td>@obj.sap_code</td>
+                                        <td>@obj.Masterdatamodel.description</td>
+                                        <td>@obj.qty</td>
+                                        <td>
+                                            <form asp-controller="Processing" asp-route-id="@obj.id" asp-action="DeleteItem" method="post">
+                                                <a data-toggle="modal" data-target="#modal-default" data-id="" class="btn btn-xs btn-warning update-fg">
+                                                    <i class="fa fa-edit" style="color:whitesmoke;outline:thin">
+                                                    </i>
+                                                </a>
+                                                <button type="submit" onclick="return confirm ('Delete Item');" class="btn btn-xs btn-danger">
+                                                    <i class="fa fa-trash">
+                                                    </i>
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                }
+
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </section>
+    <!-- /.content -->
+</div>
+
+
+
+<div class="modal fade" id="modal-default">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="formModalLabel">Add New Item</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body mb-2">
+                <form method="POST" asp-controller="Processing" asp-action="AddItem" enctype="multipart/form-data">
+                    <div class="card-body">
+                        <input type="hidden" name="Id_DateVessel" value="@ViewBag.Id" />
+                        <div class="form-group">
+                            <label class="col-form-label">SAP Code</label>
+                            <div class="input-group">
+                                <input class="form-control" type="number" step="any" asp-for="FirstOrDefault().sap_code" />
+                                <span asp-validation-for="FirstOrDefault().sap_code" class="text-danger" style="font-size:smaller"> </span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-form-label">Qty</label>
+                            <div class="input-group">
+                                <input class="form-control" type="number" step="any" asp-for="FirstOrDefault().qty" />
+                                <span asp-validation-for="FirstOrDefault().qty" class="text-danger" style="font-size:smaller"> </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Upload</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

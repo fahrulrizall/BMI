@@ -103,6 +103,7 @@ namespace BMI.Controllers
         [HttpPost]
         [AutoValidateAntiforgeryToken]
         [Authorize(Roles = "PF,Admin")]
+        [Authorize(Policy = "Update")]
         public async Task<IActionResult> Update(RmModel rmModel)
         {
             if (ModelState.IsValid)
@@ -165,6 +166,7 @@ namespace BMI.Controllers
         [HttpPost]
         [AutoValidateAntiforgeryToken]
         [Authorize(Roles = "PF,Admin")]
+        [Authorize(Policy = "Create")]
         public async Task<IActionResult> Import(IFormFile postedFile)
         {
             if (postedFile != null)
@@ -275,6 +277,7 @@ namespace BMI.Controllers
         [HttpPost]
         [AutoValidateAntiforgeryToken]
         [Authorize(Roles = "PF,Admin")]
+        [Authorize(Policy = "Delete")]
         public async Task<IActionResult> Delete(string raw_source,string status)
         {
             var rm_detail = _db.Rm_detail.Where(x => x.raw_source == raw_source).ToList();
@@ -290,6 +293,7 @@ namespace BMI.Controllers
         [HttpPost]
         [AutoValidateAntiforgeryToken]
         [Authorize(Roles = "PF,Admin")]
+        [Authorize(Policy = "Update")]
         public async Task<IActionResult> Updatedetail(RmDetailModel rmDetailModel)
         {
             if (ModelState.IsValid)
@@ -324,6 +328,7 @@ namespace BMI.Controllers
         [HttpPost]
         [AutoValidateAntiforgeryToken]
         [Authorize(Roles = "PF,Admin")]
+        [Authorize(Policy = "Delete")]
         public async Task<IActionResult> Deleteitem(int id,string raw_source)
         {
             var obj = _db.Rm_detail.Find(id);
@@ -335,6 +340,7 @@ namespace BMI.Controllers
         }
 
         [Authorize(Roles = "PF,Admin")]
+        [Authorize(Policy = "Delete")]
         public async Task< IActionResult> Adddestroy(AdjustmentRawModel adjustmentRawModel)
         {
             if (ModelState.IsValid)

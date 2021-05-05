@@ -1,0 +1,131 @@
+﻿@model EditUserViewModel
+@{
+    ViewData["Title"] = "Role Manager";
+}
+<div class="content-wrapper">
+    <section class="content-header">
+    </section>
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Edit User</h3>
+                    </div>
+                    <!-- /.card-header -->
+                    <!-- form start -->
+                    <form method="post" asp-action="EditUser" asp-controller="Administration">
+                        <div class="card-body">
+                            <div class="form-group row">
+                                <label class="col-sm-2">ID</label>
+                                <input disabled class="form-control col-sm-5" asp-for="Id">
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-2">Email</label>
+                                <input class="form-control col-sm-5" asp-for="Email">
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-2">User Name</label>
+                                <input class="form-control col-sm-5" asp-for="UserName">
+                                <span asp-validation-for="UserName" class="text-danger"></span>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-2">Departement</label>
+                                <input class="form-control col-sm-5" asp-for="Departement">
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-2">Position</label>
+                                <input class="form-control col-sm-5" asp-for="Position">
+                            </div>
+                            <div asp-validation-summary="All"></div>
+                        </div>
+                        <div class="card-footer">
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                            <a onclick="history.go(-1)" class="btn btn-danger" style="color:white">Cancel</a>
+                        </div>
+                    </form>
+                    <!-- /.card-body -->
+
+                   
+                </div>
+
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">User Roles</h3>
+                    </div>
+                    <!-- /.card-header -->
+                    <!-- form start -->
+                    <form role="form" method="get" asp-controller="Administration" asp-action="ManageUserRoles" asp-route-id="@Model.Id">
+                        <div class="card-body">
+                            <ul class="list-group">
+                                @if (Model.Roles.Any())
+                                {
+                                    foreach (var role in Model.Roles)
+                                    {
+                                        <li class="list-group">- @role</li>
+                                    }
+                                }
+                                else
+                                {
+                                    <li class="list-group">-</li>
+                                }
+
+                            </ul>
+                        </div>
+                        <div class="card-footer">
+                            <button type="submit" class="btn btn-primary">Manage Role</button>
+                        </div>
+                    </form>
+                    <!-- /.card-body -->
+                </div>
+
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">User Claims</h3>
+                    </div>
+                    <!-- /.card-header -->
+                    <!-- form start -->
+                    <form role="form" method="get" asp-controller="Administration" asp-action="ManageUserClaims" asp-route-id="@Model.Id">
+                        <div class="card-body">
+                            <ul class="list-group">
+                                @if (Model.Claims.Any())
+                                {
+                                    foreach (var claim in Model.Claims)
+                                    {
+                                        <li class="list-group">- @claim</li>
+                                    }
+                                }
+                                else
+                                {
+                                    <li class="list-group">-</li>
+                                }
+                            </ul>
+                        </div>
+                        <div class="card-footer">
+                            <button type="submit" class="btn btn-primary">Manage Claims</button>
+                        </div>
+                    </form>
+                    <!-- /.card-body -->
+                </div>
+
+
+
+            </div>
+            </div>
+            </div>
+        <!-- /.row -->
+    </section>
+</div>
+
+
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

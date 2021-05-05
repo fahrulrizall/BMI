@@ -16,6 +16,7 @@ namespace BMI.Models
         public string? description { get; set; }
         public float? lbs { get; set; }
         public string? category { get; set; }
+        public string? hers_code { get; set; }
         public DateTime? created_at { get; set; }
         public DateTime? updated_at { get; set; }
         public string? created_by { get; set; }

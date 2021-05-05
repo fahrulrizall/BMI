@@ -1,0 +1,58 @@
+﻿@model ClaimViewModel
+@{
+    ViewData["Title"] = "Role Manager";
+}
+<div class="content-wrapper">
+    <section class="content-header">
+    </section>
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+
+                    <div class="card card-secondary">
+                        <div class="card-header">
+                            <h3 class="card-title">Manage Claim - @ViewBag.RoleName</h3>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <form role="form" method="post" asp-controller="Administration" asp-action="ManageRoleClaims" asp-route-id="@ViewBag.id">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <!-- checkbox -->
+                                        <div class="form-group">
+                                            @for (int i = 0; i < Model.Claims.Count; i++)
+                                            {
+                                                <div class="custom-control custom-checkbox">
+                                                    <input type="hidden" asp-for="@Model.Claims[i].ClaimType" />
+                                                    <input class="custom-control-input" type="checkbox" asp-for="@Model.Claims[i].IsSelected">
+                                                    <label class="custom-control-label" asp-for="@Model.Claims[i].IsSelected">@Model.Claims[i].ClaimType </label>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <button type="submit" class="btn btn-primary">Update</button>
+                                    <a onclick="history.go(-1)" class="btn btn-danger" style="color:white">Cancel</a>
+                                </div>
+                            </form>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+        <!-- /.row -->
+    </section>
+</div>
+
+
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

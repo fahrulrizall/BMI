@@ -40,6 +40,7 @@ namespace BMI.Controllers
         [HttpPost]
         [AutoValidateAntiforgeryToken]
         [Authorize(Roles = "CC,Admin")]
+        [Authorize(Policy = "Create")]
         public IActionResult Create(Fgmodel obj)
         {
             if (obj.id_fg == 0)
@@ -68,6 +69,7 @@ namespace BMI.Controllers
         [HttpPost]
         [AutoValidateAntiforgeryToken]
         [Authorize(Roles = "CC,Admin")]
+        [Authorize(Policy = "Delete")]
         public IActionResult Delete(int id,int plant)
         {
             var obj = _db.Fg.Find(id);
@@ -81,6 +83,7 @@ namespace BMI.Controllers
         [HttpPost]
         [AutoValidateAntiforgeryToken]
         [Authorize(Roles = "CC,Admin")]
+        [Authorize(Policy = "Update")]
         public IActionResult Update(Fgmodel obj)
         {
             if (ModelState.IsValid)

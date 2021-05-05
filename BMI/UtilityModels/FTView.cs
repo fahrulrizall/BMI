@@ -8,7 +8,8 @@ namespace BMI.Models
     public class FTView
     {
         public string raw_source { get; set; }
-        public double qty { get; set; }
+        public double input_qty { get; set; }
+        public double output_qty { get; set; }
         public double a5384909483 { get; set; }
         public double a5384909495 { get; set; }
         public double a5384909502 { get; set; }

@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BMI.Controllers
 {
-    [Authorize(Roles = "Planning,Admin")]
+    [Authorize(Roles = "Planning,Admin")] 
     public class POController : Controller
     {
         private readonly UserManager<ApplicationUser> userManager;
@@ -46,6 +46,7 @@ namespace BMI.Controllers
 
         [HttpPost]
         [AutoValidateAntiforgeryToken]
+        [Authorize(Policy ="Create")]
         public async Task<IActionResult> Create(POModel POModel, string plant)
         {
             if (ModelState.IsValid)
@@ -78,6 +79,7 @@ namespace BMI.Controllers
             return await Task.Run(() => Json(obj));
         }
 
+        [Authorize(Policy = "Update")]
         public async Task<IActionResult> Update(POModel POModel)
         {
             if (ModelState.IsValid)
@@ -96,7 +98,7 @@ namespace BMI.Controllers
             return await Task.Run(() => Redirect(Request.Headers["Referer"].ToString()));
         }
 
-
+        [Authorize(Policy = "Delete")]
         public async Task<IActionResult> Delete (string po)
         {
             var obj = _db.PO.Find(po);

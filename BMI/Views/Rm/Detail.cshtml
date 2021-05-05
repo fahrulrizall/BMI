@@ -101,10 +101,10 @@
                                     @if (status == "Plant" || status == "Closed")
                                     {
                                         <th style="width: 2%;font-size:small" colspan="5">Total</th>
-                                        <th style="width: 2%;font-size:small">@(ViewBag.qty_pl) Kgs</th>
+                                        <th style="width: 2%;font-size:small">@(ViewBag.qty_pl)</th>
                                         <th style="width: 2%;font-size:small">@Convert.ToDecimal(ViewBag.amount_pl).ToString("C2", System.Globalization.CultureInfo.GetCultureInfo("en-id"))</th>
                                         <th style="width: 2%;font-size:small"></th>
-                                        <th style="width: 2%;font-size:small">@(ViewBag.qty_received) Kgs</th>
+                                        <th style="width: 2%;font-size:small">@(ViewBag.qty_received)</th>
                                         <th style="width: 2%;font-size:small">@Convert.ToDecimal(ViewBag.amount_received).ToString("C2", System.Globalization.CultureInfo.GetCultureInfo("en-id"))</th>
                                         <th style="width: 2%;font-size:small">@Convert.ToDecimal(ViewBag.usd_amount).ToString("C")</th>
                                         <th style="width: 2%;font-size:small"></th>
@@ -112,7 +112,7 @@
                                     else
                                     {
                                         <th style="width: 2%;font-size:small" colspan="5">Total</th>
-                                        <th style="width: 2%;font-size:small">@(ViewBag.qty_pl) Kgs</th>
+                                        <th style="width: 2%;font-size:small">@(ViewBag.qty_pl)</th>
                                         <th style="width: 2%;font-size:small">@Convert.ToDecimal(ViewBag.amount_pl).ToString("C2", System.Globalization.CultureInfo.GetCultureInfo("en-id"))</th>
                                         <th style="width: 2%;font-size:small">@Convert.ToDecimal(ViewBag.usd_amount).ToString("C")</th>
                                         <th style="width: 2%;font-size:small"></th>

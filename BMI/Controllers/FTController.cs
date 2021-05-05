@@ -22,27 +22,27 @@ namespace BMI.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var ft_code = new string[] {
-                "202028",
-                "202026",
-                "202020",
-                "202024",
-                "202049",
-                "202050",
-                "202048",
-                "202045",
-                "202047",
-                "202044",
-                "202046",
-                "202041",
-                "202043",
-                "202040",
-                "202042",
-                };
+            //var ft_code = new List<string> {
+            //    "202028",
+            //    "202026",
+            //    "202020",
+            //    "202024",
+            //    "202049",
+            //    "202050",
+            //    "202048",
+            //    "202045",
+            //    "202047",
+            //    "202044",
+            //    "202046",
+            //    "202041",
+            //    "202043",
+            //    "202040",
+            //    "202042",
+            //    };
 
-            var obj = _db.Rm_detail
-                .Where(a=>a.RmModel.status == "Plant" || a.RmModel.status == "Closed")
-                .Where(a => ft_code.Contains(a.sap_code))
+            var obj = _db.Rm
+                //.Where(a => ft_code.Contains(a.sap_code))
+                .Where(a => a.status == "Plant" || a.status == "Closed")
                 .OrderByDescending(a => a.created_at)
                 .AsEnumerable()
                 .GroupBy(a => a.raw_source)
@@ -102,7 +102,17 @@ namespace BMI.Controllers
                     a5384909501 = a.Where(c => c.MasterBMIModel.sap_code == "5384909501").Sum(c => c.qty),
                     a5384909554 = a.Where(c => c.MasterBMIModel.sap_code == "5384909554").Sum(c => c.qty),
                     a5384909512 = a.Where(c => c.MasterBMIModel.sap_code == "5384909512").Sum(c => c.qty),
-                    qty = a.Sum(c => c.qty)
+                    qty = a.Where(c => 
+                    c.MasterBMIModel.sap_code == "5384909483" ||
+                    c.MasterBMIModel.sap_code == "5384909495" ||
+                    c.MasterBMIModel.sap_code == "5384909502" ||
+                    c.MasterBMIModel.sap_code == "5384909498" ||
+                    c.MasterBMIModel.sap_code == "5384909499" ||
+                    c.MasterBMIModel.sap_code == "5384909491" ||
+                    c.MasterBMIModel.sap_code == "5384909501" ||
+                    c.MasterBMIModel.sap_code == "5384909554" ||
+                    c.MasterBMIModel.sap_code == "5384909512"
+                    ).Sum(c => c.qty)
                 })
                 .ToList();
 
@@ -111,7 +121,7 @@ namespace BMI.Controllers
                          select new FTView
                          {
                              raw_source = i.raw_source,
-                             qty = i.qty,
+                             input_qty = i.qty,
                              a5384909483 = o.a5384909483,
                              a5384909495 = o.a5384909495,
                              a5384909502 = o.a5384909502,
@@ -121,6 +131,7 @@ namespace BMI.Controllers
                              a5384909501 = o.a5384909501,
                              a5384909554 = o.a5384909554,
                              a5384909512 = o.a5384909512,
+                             output_qty = output.Sum(a=>a.qty),
                              yield = ((o.qty / i.qty) * 100).ToString("0.00")
                          };
             ViewBag.raw = raw;
@@ -176,7 +187,17 @@ namespace BMI.Controllers
                     a5384909501 = a.Where(c=>c.MasterBMIModel.sap_code == "5384909501").Sum(c=>c.qty),
                     a5384909554 = a.Where(c=>c.MasterBMIModel.sap_code == "5384909554").Sum(c=>c.qty),
                     a5384909512 = a.Where(c=>c.MasterBMIModel.sap_code == "5384909512").Sum(c=>c.qty),
-                    qty = a.Sum(c=>c.qty)
+                    qty = a.Where(c =>
+                       c.MasterBMIModel.sap_code == "5384909483" ||
+                       c.MasterBMIModel.sap_code == "5384909495" ||
+                       c.MasterBMIModel.sap_code == "5384909502" ||
+                       c.MasterBMIModel.sap_code == "5384909498" ||
+                       c.MasterBMIModel.sap_code == "5384909499" ||
+                       c.MasterBMIModel.sap_code == "5384909491" ||
+                       c.MasterBMIModel.sap_code == "5384909501" ||
+                       c.MasterBMIModel.sap_code == "5384909554" ||
+                       c.MasterBMIModel.sap_code == "5384909512"
+                        ).Sum(c => c.qty)
                 })
                 .ToList();
 
@@ -185,7 +206,7 @@ namespace BMI.Controllers
                       select new FTView
                       {
                           raw_source = i.raw_source,
-                          qty = i.qty,
+                          input_qty = i.qty,
                           a5384909483 = o.a5384909483,
                           a5384909495 = o.a5384909495,
                           a5384909502 = o.a5384909502,
@@ -195,6 +216,7 @@ namespace BMI.Controllers
                           a5384909501 = o.a5384909501,
                           a5384909554 = o.a5384909554,
                           a5384909512 = o.a5384909512,
+                          output_qty = output.Sum(a => a.qty),
                           yield = ((o.qty / i.qty)*100).ToString("0.00")
                       };
             ViewBag.start_date = start_date;
@@ -252,7 +274,17 @@ namespace BMI.Controllers
                      a5384909501 = a.Where(c => c.MasterBMIModel.sap_code == "5384909501").Sum(c => c.qty),
                      a5384909554 = a.Where(c => c.MasterBMIModel.sap_code == "5384909554").Sum(c => c.qty),
                      a5384909512 = a.Where(c => c.MasterBMIModel.sap_code == "5384909512").Sum(c => c.qty),
-                     qty = a.Sum(c => c.qty)
+                     qty = a.Where(c =>
+                       c.MasterBMIModel.sap_code == "5384909483" ||
+                       c.MasterBMIModel.sap_code == "5384909495" ||
+                       c.MasterBMIModel.sap_code == "5384909502" ||
+                       c.MasterBMIModel.sap_code == "5384909498" ||
+                       c.MasterBMIModel.sap_code == "5384909499" ||
+                       c.MasterBMIModel.sap_code == "5384909491" ||
+                       c.MasterBMIModel.sap_code == "5384909501" ||
+                       c.MasterBMIModel.sap_code == "5384909554" ||
+                       c.MasterBMIModel.sap_code == "5384909512"
+                        ).Sum(c => c.qty)
                  })
                  .ToList();
 
@@ -261,7 +293,7 @@ namespace BMI.Controllers
                          select new FTView
                          {
                              raw_source = i.raw_source,
-                             qty = i.qty,
+                             input_qty = i.qty,
                              a5384909483 = o.a5384909483,
                              a5384909495 = o.a5384909495,
                              a5384909502 = o.a5384909502,
@@ -271,6 +303,7 @@ namespace BMI.Controllers
                              a5384909501 = o.a5384909501,
                              a5384909554 = o.a5384909554,
                              a5384909512 = o.a5384909512,
+                             output_qty = output.Sum(a => a.qty),
                              yield = ((o.qty / i.qty) * 100).ToString("0.00")
                          };
             using (var workbook = new XLWorkbook())
@@ -278,7 +311,7 @@ namespace BMI.Controllers
                 var worksheet = workbook.Worksheets.Add("FT Report");
                 var currentRow = 1;
                 worksheet.Cell(currentRow, 1).Value = "Raw Material";
-                worksheet.Cell(currentRow, 2).Value = "Qty";
+                worksheet.Cell(currentRow, 2).Value = "Input Qty";
                 worksheet.Cell(currentRow, 3).Value = "5384909483";
                 worksheet.Cell(currentRow, 4).Value = "5384909495";
                 worksheet.Cell(currentRow, 5).Value = "5384909502";
@@ -288,13 +321,14 @@ namespace BMI.Controllers
                 worksheet.Cell(currentRow, 9).Value = "5384909501";
                 worksheet.Cell(currentRow, 10).Value = "5384909554";
                 worksheet.Cell(currentRow, 11).Value = "5384909512";
-                worksheet.Cell(currentRow, 12).Value = "Yield";
+                worksheet.Cell(currentRow, 12).Value = "Input Qty";
+                worksheet.Cell(currentRow, 13).Value = "Yield";
 
                 foreach (var data in result)
                 {
                     currentRow++;
                     worksheet.Cell(currentRow, 1).Value = data.raw_source;
-                    worksheet.Cell(currentRow, 2).Value = data.qty;
+                    worksheet.Cell(currentRow, 2).Value = data.input_qty;
                     worksheet.Cell(currentRow, 3).Value = data.a5384909483;
                     worksheet.Cell(currentRow, 4).Value = data.a5384909495;
                     worksheet.Cell(currentRow, 5).Value = data.a5384909502;
@@ -304,7 +338,8 @@ namespace BMI.Controllers
                     worksheet.Cell(currentRow, 9).Value = data.a5384909501;
                     worksheet.Cell(currentRow, 10).Value = data.a5384909554;
                     worksheet.Cell(currentRow, 11).Value = data.a5384909512;
-                    worksheet.Cell(currentRow, 12).Value = data.yield;
+                    worksheet.Cell(currentRow, 12).Value = data.output_qty;
+                    worksheet.Cell(currentRow, 13).Value = data.yield;
                 }
 
                 using (var stream = new MemoryStream())

@@ -53,6 +53,9 @@
                                     <th style="width: 5%;font-size:small">
                                         5384909512
                                     </th>
+                                    <th style="width: 3%;font-size:small">
+                                        Output
+                                    </th>
                                     <th style="width: 4%;font-size:small">
                                         Yield
                                     </th>
@@ -61,20 +64,21 @@
                             <tbody>
                                 @foreach (var obj in Model)
                                 {
-                                    <tr>
-                                        <td class="text text-sm">@obj.raw_source</td>
-                                        <td class="text text-sm">@((obj.qty).ToString("0.00"))</td>
-                                        <td class="text text-sm">@((obj.a5384909483).ToString("0.00"))</td>
-                                        <td class="text text-sm">@((obj.a5384909495).ToString("0.00"))</td>
-                                        <td class="text text-sm">@((obj.a5384909502).ToString("0.00"))</td>
-                                        <td class="text text-sm">@((obj.a5384909498).ToString("0.00"))</td>
-                                        <td class="text text-sm">@((obj.a5384909499).ToString("0.00"))</td>
-                                        <td class="text text-sm">@((obj.a5384909491).ToString("0.00"))</td>
-                                        <td class="text text-sm">@((obj.a5384909501).ToString("0.00"))</td>
-                                        <td class="text text-sm">@((obj.a5384909554).ToString("0.00"))</td>
-                                        <td class="text text-sm">@((obj.a5384909512).ToString("0.00"))</td>
-                                        <td class="text text-sm">@obj.yield %</td>
-                                    </tr>
+                                <tr>
+                                    <td class="text text-sm">@obj.raw_source</td>
+                                    <td class="text text-sm">@((obj.input_qty).ToString("0.00"))</td>
+                                    <td class="text text-sm">@((obj.a5384909483).ToString("0.00"))</td>
+                                    <td class="text text-sm">@((obj.a5384909495).ToString("0.00"))</td>
+                                    <td class="text text-sm">@((obj.a5384909502).ToString("0.00"))</td>
+                                    <td class="text text-sm">@((obj.a5384909498).ToString("0.00"))</td>
+                                    <td class="text text-sm">@((obj.a5384909499).ToString("0.00"))</td>
+                                    <td class="text text-sm">@((obj.a5384909491).ToString("0.00"))</td>
+                                    <td class="text text-sm">@((obj.a5384909501).ToString("0.00"))</td>
+                                    <td class="text text-sm">@((obj.a5384909554).ToString("0.00"))</td>
+                                    <td class="text text-sm">@((obj.a5384909512).ToString("0.00"))</td>
+                                    <td class="text text-sm">@((obj.output_qty).ToString("0.00"))</td>
+                                    <td class="text text-sm">@obj.yield %</td>
+                                </tr>
                                 }
                             </tbody>
                         </table>

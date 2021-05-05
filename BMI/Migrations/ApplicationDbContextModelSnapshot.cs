@@ -345,6 +345,9 @@ namespace BMI.Migrations
                     b.Property<string>("description")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("hers_code")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<float?>("lbs")
                         .HasColumnType("real");
 
@@ -586,42 +589,6 @@ namespace BMI.Migrations
                     b.ToTable("Production_output");
                 });
 
-            modelBuilder.Entity("BMI.Models.RegisterView", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("ConfirmPassword")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Department")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
-
-                    b.Property<string>("Position")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("id");
-
-                    b.ToTable("User");
-                });
-
             modelBuilder.Entity("BMI.Models.RepackModel", b =>
                 {
                     b.Property<int>("id_repack")
@@ -637,6 +604,9 @@ namespace BMI.Migrations
 
                     b.Property<DateTime>("date")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("fairtrade_status")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("from_bmi_code")
                         .HasColumnType("nvarchar(450)");

@@ -16,11 +16,11 @@
                         <div class="card-title">
                             <form method="get" asp-action="Daily" asp-controller="Production">
                                 <div class="input-group input-group-sm">
-                                    <input type="date" asp-for="First().date" value="@DateTime.Now" >
+                                    <input type="date" asp-for="FirstOrDefault().date" value="@DateTime.Now" >
                                     <span class="input-group-append">
                                         <button type="submit" value="Create" class="btn btn-primary">Go!</button>
                                     </span>
-                                    <span asp-validation-for="First().date" class="text-danger" style="font-size:smaller"></span>
+                                    <span asp-validation-for="FirstOrDefault().date" class="text-danger" style="font-size:smaller"></span>
                                 </div>
                             </form>
 
@@ -88,30 +88,34 @@
                                     </th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                @foreach (var obj in Model)
-                                {
-
-                                <tr>
-                                    <td>
-                                        <a style="font-size:smaller;color:black" asp-controller="Production" asp-action="Detail" asp-route-po="@obj.po" asp-route-pt="@obj.pt">@obj.pt</a>
-                                    </td>
-                                    <td style="font-size:smaller">@obj.po</td>
-                                    <td style="font-size:smaller">@obj.batch</td>
-                                    @if (status == "Open" || status == "Process")
+                            @if (Model.Count() > 0)
+                            {
+                                <tbody>
+                                    @foreach (var obj in Model)
                                     {
-                                        <td style="font-size:smaller">@((obj.yield).ToString("0.00")) %</td>
+
+                                        <tr>
+                                            <td>
+                                                <a style="font-size:smaller;color:black" asp-controller="Production" asp-action="Detail" asp-route-po="@obj.po" asp-route-pt="@obj.pt">@obj.pt</a>
+                                            </td>
+                                            <td style="font-size:smaller">@obj.po</td>
+                                            <td style="font-size:smaller">@obj.batch</td>
+                                            @if (status == "Open" || status == "Process")
+                                            {
+                                                <td style="font-size:smaller">@((obj.yield).ToString("0.00")) %</td>
+                                            }
+                                            <td style="font-size:smaller">@obj.pt_status</td>
+                                            <td>
+                                                <a style="font-size:small" class="btn btn-xs btn-warning change-pt"
+                                                   data-toggle="modal" data-target="#modal-edit" data-po="@obj.po">
+                                                    <i class="fa fa-edit" style="color:ghostwhite;outline:thin"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
                                     }
-                                    <td style="font-size:smaller">@obj.pt_status</td>
-                                    <td>
-                                        <a style="font-size:small" class="btn btn-xs btn-warning change-pt"
-                                           data-toggle="modal" data-target="#modal-edit" data-po="@obj.po">
-                                            <i class="fa fa-edit" style="color:ghostwhite;outline:thin"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                                }
-                            </tbody>
+                                </tbody>
+                            }
+
 
                         </table>
                     </div>
@@ -142,10 +146,10 @@
             <div class="modal-body mb-2">
                 <form method="POST" asp-controller="Production" asp-action="Updatept">
                     <div class="card-body">
-                        <input type="hidden" class="form-control " asp-for="First().po">
+                        <input type="hidden" class="form-control " asp-for="FirstOrDefault().po">
                         <div class="form-group">
                             <label>Status</label>
-                            <select class="form-control" asp-for="First().pt_status">
+                            <select class="form-control" asp-for="FirstOrDefault().pt_status">
                                 <option>Process</option>
                                 <option>Open</option>
                                 <option>Closed</option>

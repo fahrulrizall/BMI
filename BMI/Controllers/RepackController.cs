@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace BMI.Controllers
 {
+
     public class RepackController : Controller
     {
         private readonly ApplicationDbContext _db;
@@ -64,6 +65,7 @@ namespace BMI.Controllers
         //[HttpPost]
         //[AutoValidateAntiforgeryToken]
         [Authorize(Roles = "CC,Admin")]
+        [Authorize(Policy  = "Delete")]
         public IActionResult Delete(int id)
         {
             var remove = _db.Repack.Find(id);
@@ -83,6 +85,7 @@ namespace BMI.Controllers
         }
 
         [Authorize(Roles = "CC,Admin")]
+        [Authorize(Policy = "Update")]
         public IActionResult Update(RepackModel repackModel)
         {
             if (ModelState.IsValid)

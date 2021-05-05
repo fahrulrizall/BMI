@@ -45,6 +45,22 @@ namespace BMI
                 options.Password.RequireNonAlphanumeric = false;
             }).AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddHttpContextAccessor();
+
+            services.AddAuthorization(option => { 
+                option.AddPolicy("Create", policy => policy.RequireClaim("Create"));
+            });
+
+            services.AddAuthorization(option => {
+                option.AddPolicy("Update", policy => policy.RequireClaim("Update"));
+            });
+
+            services.AddAuthorization(option => {
+                option.AddPolicy("Delete", policy => policy.RequireClaim("Delete"));
+            });
+
+            services.AddScoped<Microsoft.AspNetCore.Identity.IUserClaimsPrincipalFactory<ApplicationUser>, AppClaimsPrincipalFactory>();
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -56,7 +72,7 @@ namespace BMI
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler("/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }

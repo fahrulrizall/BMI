@@ -44,6 +44,7 @@ namespace BMI.Controllers
         [HttpPost]
         [AutoValidateAntiforgeryToken]
         [Authorize(Roles = "CC,Logistic,Admin")]
+        [Authorize(Policy = "Update")]
         public async Task< IActionResult> Update(POModel POModel)
         {
             if (ModelState.IsValid)
@@ -81,7 +82,8 @@ namespace BMI.Controllers
         [HttpPost]
         [AutoValidateAntiforgeryToken]
         [Authorize(Roles = "CC,Logistic,Admin")]
-        public async Task< IActionResult> Delete(string po, string code, string batch)
+        [Authorize(Policy = "Delete")]
+        public async Task< IActionResult> DeleteItem(string po, string code, string batch)
         {
             var obj = _db.Shipment
                 .Where(a => a.po == po && a.bmi_code == code && a.batch == batch)
@@ -137,6 +139,7 @@ namespace BMI.Controllers
         [HttpPost]
         [AutoValidateAntiforgeryToken]
         [Authorize(Roles = "CC,Logistic,Admin")]
+        [Authorize(Policy = "Update")]
         public async Task<IActionResult> Import(IFormFile postedFile, string po)
         {
             if (postedFile != null)
@@ -224,6 +227,7 @@ namespace BMI.Controllers
         }
 
         [Authorize(Roles = "CC,Logistic,Admin")]
+        [Authorize(Policy = "Update")]
         public async Task<IActionResult> Updateitem(ShipmentModel shipmentModel)
         {
             if (ModelState.IsValid)
@@ -249,6 +253,25 @@ namespace BMI.Controllers
                 .Select(a => new { a.pdc,a.raw_source,a.qty}).OrderByDescending(a=>a.pdc)
                 .ToList();
             return await Task.Run(() => Json(obj));
+        }
+
+        public async Task<IActionResult> Delete (string po)
+        {
+            var find_po = _db.PO.Find(po);
+
+            if (find_po == null)
+            {
+                TempData["msg"] = $"PO {po} Not Available";
+                TempData["result"] = "failed";
+                return await Task.Run(() => Redirect(Request.Headers["Referer"].ToString()));
+            }
+
+            var result = _db.Shipment.Where(a => a.po == po).ToList();
+            _db.Shipment.RemoveRange(result);
+            _db.SaveChanges();
+            TempData["msg"] = $"Delete Data PO {po} Succesfully";
+            TempData["result"] = "success";
+            return await Task.Run(() => Redirect(Request.Headers["Referer"].ToString()));
         }
 
 

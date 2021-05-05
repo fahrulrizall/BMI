@@ -22,7 +22,5 @@ namespace BMI.Models
 
         public List<RmDetailModel> RmDetailModel {get;set;}
         public List<ProductionInputModel> ProductionInputModel {get;set;}
-
-
     }
 }

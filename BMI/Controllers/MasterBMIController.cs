@@ -6,9 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using BMI.Data;
 using BMI.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BMI.Controllers
-{
+{  
+    [Authorize(Roles ="Admin")]
     public class MasterBMIController : Controller
     {
         private readonly ApplicationDbContext _db;
@@ -26,6 +28,7 @@ namespace BMI.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = "Create")]
         public async Task<IActionResult> Create(MasterBMIModel masterBMIModel)
         {
             if (ModelState.IsValid)
@@ -59,6 +62,7 @@ namespace BMI.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = "Create")]
         public async Task<IActionResult> Update(MasterBMIModel masterBMIModel)
         {
             if (ModelState.IsValid)
@@ -84,6 +88,7 @@ namespace BMI.Controllers
             return await Task.Run(() => RedirectToAction("Index"));
         }
 
+        [Authorize(Policy = "Delete")]
         public async Task<IActionResult> Delete(string id)
         {
             var obj = _db.Master_BMI.Find(id);

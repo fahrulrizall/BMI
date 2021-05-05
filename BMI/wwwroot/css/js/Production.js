@@ -168,6 +168,7 @@
         $('.destination-pt').hide();
         $('.destination-code').hide();
         $('.production-date').hide();
+        $('.fairtrade-status').hide();
         $('.po').hide();
         $('.date').hide();
         $('.raw-source').hide();
@@ -195,6 +196,7 @@
         $('.destination-code').show();
         $('.raw-source').show();
         $('.production-date').show();
+        $('.fairtrade-status').show();
         $('.date').show();
         $('.po').show();
         $('.landing-site-input').show();
@@ -208,6 +210,7 @@
         $('#date').html("");
         $('#production_date').html("");
         $('#raw_source').html("");
+        //$('#fairtrade_status').html("");
         $('#landing_site').html("");
         $('.modal-body form').attr('action', '/Production/Repack');
         $.ajax({
@@ -217,7 +220,6 @@
             dataType: 'json',
             success: function (data) {
                 data.forEach(function (e) {
-                    console.log(e)
                     var date = new Date(e.date);
                     yr = date.getFullYear();
                     month = date.getMonth() + 1;
@@ -229,7 +231,8 @@
                     $('#production_date').append("<option>" + newdate + "</option>");
                     $('#raw_source').append("<option>" + e.raw_source + "</option>");
                     $('#landing_site').append("<option>" + e.landing_site + "</option>");
-                    $('#bmi_code').val(e.bmi_code)
+                    $('#bmi_code').val(e.bmi_code);
+                    //$('#fairtrade_status').val(e.fairtrade_status);
                 })
             }
         });
@@ -244,6 +247,7 @@
         $('.destination-code').hide();
         $('.raw-source').show();
         $('.production-date').show();
+        $('.fairtrade-status').show();
         $('.reason').show();
         $('.date').hide();
         $('.po').hide();
@@ -273,7 +277,6 @@
                     newdate = yr + '-' + month + '-' + day;
                     $('#production_date').append("<option>" + newdate + "</option>");
                     $('.production_date').on('change', function () {
-                        console.log("asdasdasd")
                     })
                     //$('#raw_source').append("<option>" + e.raw_source + "</option>");
                     //$('#landing_site').append("<option>" + e.landing_site + "</option>");

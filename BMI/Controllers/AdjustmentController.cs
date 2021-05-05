@@ -72,6 +72,7 @@ namespace BMI.Controllers
         [HttpPost]
         [AutoValidateAntiforgeryToken]
         [Authorize(Roles = "CC,Admin")]
+        [Authorize(Policy = "Create")]
         public async Task<IActionResult> Create(AdjustmentFGModel adjustmentFGModel)
         {
             var getPO = _db.PO.Where(a => a.pt == Convert.ToInt32(adjustmentFGModel.pt)).Select(a => a.po).ToList();
@@ -105,6 +106,7 @@ namespace BMI.Controllers
         [HttpPost]
         [AutoValidateAntiforgeryToken]
         [Authorize(Roles = "CC,Admin")]
+        [Authorize(Policy = "Update")]
         public IActionResult Update(AdjustmentFGModel destroyModel)
         {
             var getPO = _db.PO.Where(a => a.pt == Convert.ToInt32(destroyModel.pt)).Select(a => a.po).ToList();
@@ -136,6 +138,7 @@ namespace BMI.Controllers
         [HttpPost]
         [AutoValidateAntiforgeryToken]
         [Authorize(Roles = "CC,Admin")]
+        [Authorize(Policy = "Delete")]
         public async Task<IActionResult> Delete(int id, string status)
         {
             var obj = _db.AdjustmentFG.Find(id);
@@ -156,6 +159,7 @@ namespace BMI.Controllers
 
         // adjusmnet raw line
         [Authorize(Roles = "CC,Admin")]
+        [Authorize(Policy = "Create")]
         public async Task<IActionResult> AdjustmentRaw(string status)
         {
             var obj = _db.AdjustmentRaw
@@ -197,6 +201,7 @@ namespace BMI.Controllers
 
 
         [Authorize(Roles = "CC,Admin")]
+        [Authorize(Policy = "Delete")]
         public IActionResult AddDestroyRaw(AdjustmentRawModel adjustmentRawModel)
         {
             if (adjustmentRawModel.id_adjustmentRaw == 0)
@@ -225,6 +230,7 @@ namespace BMI.Controllers
         [HttpPost]
         [AutoValidateAntiforgeryToken]
         [Authorize(Roles = "CC,Admin")]
+        [Authorize(Policy = "Update")]
         public async Task<IActionResult> UpdateRaw(AdjustmentRawModel adjustmentRawModel)
         {
             if (ModelState.IsValid)
@@ -253,6 +259,7 @@ namespace BMI.Controllers
 
         [AutoValidateAntiforgeryToken]
         [Authorize(Roles = "CC,Admin")]
+        [Authorize(Policy = "Delete")]
         public IActionResult Deleteraw(int id)
         {
             if (id != 0)

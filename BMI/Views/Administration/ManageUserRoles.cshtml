@@ -1,0 +1,61 @@
+﻿@model List<UserRoleViewModel>
+@{
+    ViewData["Title"] = "Role Manager";
+}
+<div class="content-wrapper">
+    <section class="content-header">
+    </section>
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+
+                        <div class="card card-secondary">
+                            <div class="card-header">
+                                <h3 class="card-title">Manage Roles - @ViewBag.UserName</h3>
+                            </div>
+                            <!-- /.card-header -->
+                            <div class="card-body">
+                                <form role="form" method="post" asp-controller="Administration" asp-action="ManageUserRoles" asp-route-id="@ViewBag.id">
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <!-- checkbox -->
+                                            <div class="form-group">
+                                                @for (int i = 0; i < Model.Count; i++)
+                                                {
+                                                    <div class="custom-control custom-checkbox">
+                                                        <input type="hidden" asp-for="@Model[i].RoleId" />
+                                                        <input type="hidden" asp-for="@Model[i].RoleName" />
+                                                        <input class="custom-control-input" type="checkbox" asp-for="@Model[i].IsSelected">
+                                                        <label class="custom-control-label" asp-for="@Model[i].IsSelected">@Model[i].RoleName </label>
+
+                                                    </div>
+                                                }
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <button type="submit" class="btn btn-primary">Update</button>
+                                        <a onclick="history.go(-1)" class="btn btn-danger" style="color:white">Cancel</a>
+                                    </div>
+                                </form>
+                            </div>
+                            <!-- /.card-body -->
+                        </div>
+
+
+                    </div>
+                </div>
+        </div>
+        <!-- /.row -->
+    </section>
+</div>
+
+
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

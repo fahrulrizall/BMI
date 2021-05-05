@@ -92,6 +92,7 @@ namespace BMI.Controllers
         }
 
         [Authorize(Roles = "CC,Admin")]
+        [Authorize(Policy = "Update")]
         public async Task<IActionResult> Updatept(POModel POModel)
         {
             var po = new POModel() { po = POModel.po, pt_status = POModel.pt_status };
@@ -107,6 +108,7 @@ namespace BMI.Controllers
         [HttpPost]
         [AutoValidateAntiforgeryToken]
         [Authorize(Roles = "CC,Admin")]
+        [Authorize(Policy = "Update")]
         public async Task<IActionResult> Import(IFormFile postedFile, DateTime date)
         {
             if (postedFile != null)
@@ -120,6 +122,8 @@ namespace BMI.Controllers
                     List<ProductionInputModel> prod_input = new List<ProductionInputModel>();
                     List<ProductionOutputModel> prod_output = new List<ProductionOutputModel>();
                     List<POModel> bmi_po = new List<POModel>();
+
+                    
                     string path = Path.Combine(this.Environment.WebRootPath, "Uploads");
 
                     string filePath = Path.Combine(path, fileName);
@@ -153,13 +157,20 @@ namespace BMI.Controllers
                                 foreach (DataRow item in row)
                                 {
                                     rowDataList = item.ItemArray.ToList();
-                                    var po = Convert.ToString(_db.PO.Where(a => a.pt == Convert.ToInt32(rowDataList[2])).Select(a => a.po).First());
+                                    var po = _db.PO.Where(a => a.pt == Convert.ToInt32(rowDataList[2])).Select(a => a.po).ToList();
                                     
+                                    if (po.Count == 0)
+                                    {
+                                        TempData["msg"] = $"PO For PT {rowDataList[2]} Not Available";
+                                        TempData["result"] = "warning";
+                                        return await Task.Run(() => Redirect(Request.Headers["Referer"].ToString()));
+                                    }
+
                                     prod_input.Add(new ProductionInputModel
                                     {
                                         po_bmi = Convert.ToString(rowDataList[0]),
                                         date = Convert.ToDateTime(rowDataList[1]),
-                                        po = po,
+                                        po = po.First(),
                                         raw_source = Convert.ToString(rowDataList[3]),
                                         sap_code = Convert.ToString(rowDataList[4]),
                                         qty = Convert.ToSingle(rowDataList[5]),
@@ -186,6 +197,13 @@ namespace BMI.Controllers
                                     rowDataList = item.ItemArray.ToList();
                                     var source_site = _db.Production_input.Where(k => k.po_bmi == Convert.ToString(rowDataList[0]) && k.date == Convert.ToDateTime(rowDataList[1])).First();
 
+                                    if (source_site == null)
+                                    {
+                                        TempData["msg"] = $"Data GI for {source_site.raw_source} Not Available";
+                                        TempData["result"] = "warning";
+                                        return await Task.Run(() => Redirect(Request.Headers["Referer"].ToString()));
+                                    }
+
                                     var ft_code = new string[] {
                                         "202028",
                                         "202026",
@@ -211,12 +229,29 @@ namespace BMI.Controllers
                                         fairtrade_status = "FT";
                                     }
 
-                                    var po = Convert.ToString(_db.PO.Where(a => a.pt == Convert.ToInt32(rowDataList[2])).Select(a => a.po).First());
+                                    var po = _db.PO.Where(a => a.pt == Convert.ToInt32(rowDataList[2])).Select(a => a.po).ToList();
+
+                                    if (po.Count == 0)
+                                    {
+                                        TempData["msg"] = $"PO For PT {rowDataList[2]} Not Available";
+                                        TempData["result"] = "warning";
+                                        return await Task.Run(() => Redirect(Request.Headers["Referer"].ToString()));
+                                    }
+
+                                    var bmi_code = _db.Master_BMI.Find(rowDataList[3]);
+
+                                    if (bmi_code == null)
+                                    {
+                                        TempData["msg"] = $"BMI Code {rowDataList[3]} Not Available";
+                                        TempData["result"] = "warning";
+                                        return await Task.Run(() => Redirect(Request.Headers["Referer"].ToString()));
+                                    }
+
                                     prod_output.Add(new ProductionOutputModel
                                     {
                                         po_bmi = Convert.ToString(rowDataList[0]),
                                         date = Convert.ToDateTime(rowDataList[1]),
-                                        po = po,
+                                        po = po.First(),
                                         bmi_code = Convert.ToString(rowDataList[3]),
                                         qty = Convert.ToSingle(rowDataList[4]),
                                         raw_source = source_site.raw_source,
@@ -331,12 +366,14 @@ namespace BMI.Controllers
                     raw_source = a.Key.raw_source,
                     cases = Convert.ToInt32( a.Sum(x => x.qty *2.204) / a.Max(b=>b.MasterBMIModel.lbs)) ,
                     available = Convert.ToInt32(a.Sum(x => x.qty * 2.204) / a.Max(b => b.MasterBMIModel.lbs)
-                    - _db.Shipment.Where(i=>i.batch == po &&  i.pdc == a.Key.date &&  i.bmi_code == bmicode && i.raw_source == a.Key.raw_source ).Sum(i=>i.qty) 
+                    ///- _db.Shipment.Where(i=>i.batch == po &&  i.pdc == a.Key.date &&  i.bmi_code == bmicode && i.raw_source == a.Key.raw_source ).Sum(i=>i.qty) 
                     - _db.AdjustmentFG.Where( i=>i.status == "destroy" && i.production_date == a.Key.date && i.bmi_code == bmicode && i.raw_source == a.Key.raw_source).Sum(i=>i.qty)
                     - _db.Repack.Where(i =>i.from_po == po && i.production_date == a.Key.date && i.from_bmi_code == bmicode && i.raw_source == a.Key.raw_source).Sum(i => i.qty * 2.204 / i.fromMasterBMIModel.lbs))
                 })
                 .ToList();
 
+
+            // tambahan repack
             var repack = _db.Repack
                 .Where(a => a.to_po == po && a.to_bmi_code == bmicode)
                 .Include(a => a.toMasterBMIModel)
@@ -347,7 +384,8 @@ namespace BMI.Controllers
                     production_date = a.Key.production_date,
                     raw_source = a.Key.raw_source,
                     cases = a.Sum(a => a.qty * 2.204 /a.toMasterBMIModel.lbs),
-                    available = a.Sum(a=>a.qty *2.204 / a.toMasterBMIModel.lbs) - _db.Shipment.Where(b=>b.batch == po && b.pdc == a.Key.production_date && b.bmi_code == a.Key.to_bmi_code && b.raw_source == a.Key.raw_source).Sum(b=>b.qty)
+                    available = a.Sum(a=>a.qty *2.204 / a.toMasterBMIModel.lbs) 
+                    //- _db.Shipment.Where(b=>b.batch == po && b.pdc == a.Key.production_date && b.bmi_code == a.Key.to_bmi_code && b.raw_source == a.Key.raw_source).Sum(b=>b.qty)
                 })
                 .ToList();
 
@@ -360,9 +398,10 @@ namespace BMI.Controllers
                     date = a.Key.production_date,
                     raw_source = a.Key.raw_source,
                     cases = a.Sum(b => b.cases),
-                    available = a.Sum(b => b.available)
+                    available = a.Sum(b => b.available) 
+                    - _db.Shipment.Where(k=>k.batch == po && k.bmi_code == bmicode && k.pdc == a.Key.production_date && k.raw_source == a.Key.raw_source).Sum(k=>k.qty)
                 })
-                .OrderBy(a=>a.date)
+                .OrderBy(a => a.date)
                 .ToList();
             return await Task.Run(()=> Json(result));
         }
@@ -387,7 +426,7 @@ namespace BMI.Controllers
                 .GroupBy(a => a.landing_site)
                 .Select(a => new RepackModel
                 {
-                    landing_site = a.Key,
+                    landing_site = a.Key +" "+ a.Max(b=>b.fairtrade_status),
                     cases = Convert.ToInt32(a.Sum(b => b.qty * 2.204 / a.Max(b=>b.toMasterBMIModel.lbs)))
                 }).ToList();
 
@@ -512,13 +551,16 @@ namespace BMI.Controllers
                     bmi_code = code,
                     raw_source = a.Key.raw_source,
                     landing_site = a.Max(b=>b.landing_site),
+                    //fairtrade_status = a.Max(b=>b.fairtrade_status),
                     po = a.Max(k => k.po)
                 })
+                .OrderBy(m=>m.date)
                 .ToList();
             return await Task.Run(()=> Json(obj));
         }
 
         [Authorize(Roles = "CC,Admin")]
+        [Authorize(Policy = "Update")]
         public async Task<IActionResult> Adjustment(AdjustmentFGModel destroyFGModel)
         {
             if (ModelState.IsValid)
@@ -544,6 +586,7 @@ namespace BMI.Controllers
         }
 
         [Authorize(Roles = "CC,Admin")]
+        [Authorize(Policy = "Update")]
         public async Task<IActionResult> Repack(ProductionView productionView)
         {
             var to_po = Convert.ToString(_db.PO.Where(a => a.pt == Convert.ToInt32(productionView.destination_pt)).Select(a => a.po).First());
@@ -560,6 +603,7 @@ namespace BMI.Controllers
                 to_po = to_po,
                 to_bmi_code = productionView.to_bmi_code,
                 landing_site = productionView.landing_site,
+                fairtrade_status = productionView.fairtrade_status,
                 created_by = User.Identity.Name,
                 created_at = DateTime.Now
             };
@@ -609,6 +653,7 @@ namespace BMI.Controllers
         }
 
         [Authorize(Roles = "CC,Admin")]
+        [Authorize(Policy = "Delete")]
         public async Task<IActionResult> DeleteGI(DateTime date)
         {
             var datetime = _db.Production_input.Where(a => a.gi_date == date).ToList();
@@ -626,6 +671,7 @@ namespace BMI.Controllers
         }
 
         [Authorize(Roles = "CC,Admin")]
+        [Authorize(Policy = "Delete")]
         public async Task<IActionResult> DeleteGR(DateTime date)
         {
             var datetime = _db.Production_output.Where(a => a.gr_date == date).ToList();
@@ -643,6 +689,7 @@ namespace BMI.Controllers
         }
 
         [Authorize(Roles = "CC,Admin")]
+        [Authorize(Policy = "Delete")]
         public async Task<IActionResult> Destroy(ProductionView productionView)
         {
            
@@ -682,21 +729,46 @@ namespace BMI.Controllers
              .Include(k => k.POModel)
              .AsEnumerable()
              .GroupBy(k => new { k.date, k.po_bmi, k.bmi_code })
-             .Select(a => new ProductionOutputModel
+             .Select(a => new ProductionView
              {
                  po_bmi = a.Key.po_bmi,
                  date = a.Key.date,
                  raw_source = a.Max(m => m.raw_source),
-                 landing_site = a.Max(m => m.landing_site),
+                 landing_site = a.Max(m => m.landing_site) + " " + a.Max(m=>m.fairtrade_status),
                  bmi_code = a.Key.bmi_code,
                  qty = a.Sum(x => x.qty),
-                 lbs = a.Sum(x=>x.qty * 2.204),
+                 lbs = Math.Round( (a.Sum(x=>x.qty * 2.204)),2),
                  cases = Convert.ToInt32(a.Sum(x => x.qty * 2.204 / a.Max(m => m.MasterBMIModel.lbs))),
                  MasterBMIModel = a.Max(m => m.MasterBMIModel),
                  POModel = a.Max(m => m.POModel)
              })
              .OrderBy(a=>a.date).ThenBy(a=>a.po_bmi)
              .ToList();
+
+            var repack = _db.Repack
+                .Where(a=>a.to_po == po)
+                .Include(k => k.toMasterBMIModel)
+                .Include(k => k.toPOModel)
+                .AsEnumerable()
+                .GroupBy(k => new {k.production_date,k.po,k.to_bmi_code })
+                .Select(a=> new ProductionView
+                {
+                    po_bmi = a.Key.po,
+                    date = a.Key.production_date,
+                    raw_source = a.Max(m => m.raw_source),
+                    landing_site = a.Max(m => m.landing_site) +" "+ a.Max(m=>m.fairtrade_status),
+                    bmi_code = a.Key.to_bmi_code,
+                    qty = a.Sum(x => x.qty),
+                    lbs = Math.Round(( a.Sum(x => x.qty * 2.204)),2),
+                    cases = Convert.ToInt32(a.Sum(x => x.qty * 2.204 / a.Max(m => m.toMasterBMIModel.lbs))),
+                    MasterBMIModel = a.Max(m => m.toMasterBMIModel),
+                    POModel = a.Max(m => m.toPOModel)
+                })
+                .OrderBy(a => a.date).ThenBy(a => a.po_bmi)
+                .ToList();
+
+            var union = new List<ProductionView>(ProductionOutput);
+            union.AddRange(repack);
 
             using (var workbook = new XLWorkbook())
             {
@@ -714,7 +786,7 @@ namespace BMI.Controllers
                 worksheet.Cell(currentRow, 10).Value = "FG Qty in CS";
                 worksheet.Cell(currentRow, 11).Value = "FG Batch";
 
-                foreach (var data in ProductionOutput)
+                foreach (var data in union)
                 {
                     currentRow++;
                     worksheet.Cell(currentRow, 1).Value = data.po_bmi;
