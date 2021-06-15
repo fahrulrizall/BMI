@@ -3,6 +3,7 @@
     ViewData["Title"] = "Shipment";
 }
 @{string po = ViewBag.po; }
+@{int no = ViewBag.no; }
 
 <div class="content-wrapper">
     <section class="content-header">
@@ -16,7 +17,7 @@
 
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Shipment @po</h3>
+                        <h3 class="card-title">Shipment @no - @po</h3>
                         <div class="card-tools">
                             <a href="#" type="button" class="btn btn-sm btn-default float-right mx-1"
                                data-toggle="modal" data-target="#modal-upload">

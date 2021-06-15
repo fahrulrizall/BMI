@@ -186,6 +186,57 @@ namespace BMI.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
+            modelBuilder.Entity("BMI.Models.CostAnalystModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("PO")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("SAP_Code")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<float>("Target_Lbs")
+                        .HasColumnType("real");
+
+                    b.Property<string>("Version")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PO");
+
+                    b.HasIndex("SAP_Code");
+
+                    b.ToTable("CostAnalyst");
+                });
+
+            modelBuilder.Entity("BMI.Models.DateVesselModel", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("refference")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("vessel")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("refference");
+
+                    b.ToTable("Date_vessel");
+                });
+
             modelBuilder.Entity("BMI.Models.DepositModel", b =>
                 {
                     b.Property<int>("id_deposit")
@@ -333,6 +384,12 @@ namespace BMI.Migrations
                     b.Property<string>("sap_code")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<float?>("PF3710")
+                        .HasColumnType("real");
+
+                    b.Property<float?>("PF3770")
+                        .HasColumnType("real");
+
                     b.Property<string>("category")
                         .HasColumnType("nvarchar(max)");
 
@@ -349,6 +406,9 @@ namespace BMI.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<float?>("lbs")
+                        .HasColumnType("real");
+
+                    b.Property<float?>("standard_price")
                         .HasColumnType("real");
 
                     b.Property<DateTime?>("updated_at")
@@ -589,6 +649,63 @@ namespace BMI.Migrations
                     b.ToTable("Production_output");
                 });
 
+            modelBuilder.Entity("BMI.Models.QtyLine1Input", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("id_dateVessel")
+                        .HasColumnType("int");
+
+                    b.Property<float>("qty")
+                        .HasColumnType("real");
+
+                    b.Property<string>("refference")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("id_dateVessel");
+
+                    b.ToTable("QtyLine1Input");
+                });
+
+            modelBuilder.Entity("BMI.Models.QtyLine1Output", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("batch")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("datevesselmodelid")
+                        .HasColumnType("int");
+
+                    b.Property<int>("id_dateVessel")
+                        .HasColumnType("int");
+
+                    b.Property<float>("qty")
+                        .HasColumnType("real");
+
+                    b.Property<string>("refference")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("sap_code")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("datevesselmodelid");
+
+                    b.HasIndex("sap_code");
+
+                    b.ToTable("QtyLine1Output");
+                });
+
             modelBuilder.Entity("BMI.Models.RepackModel", b =>
                 {
                     b.Property<int>("id_repack")
@@ -652,6 +769,26 @@ namespace BMI.Migrations
                     b.HasIndex("to_po");
 
                     b.ToTable("Repack");
+                });
+
+            modelBuilder.Entity("BMI.Models.RmCostModel", b =>
+                {
+                    b.Property<int>("Id_Material")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Material")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PO")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id_Material");
+
+                    b.HasIndex("PO");
+
+                    b.ToTable("Rm_Cost");
                 });
 
             modelBuilder.Entity("BMI.Models.RmDetailModel", b =>
@@ -749,6 +886,106 @@ namespace BMI.Migrations
                     b.ToTable("Rm");
                 });
 
+            modelBuilder.Entity("BMI.Models.SAP_PODetailModel", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<float>("qty_pl")
+                        .HasColumnType("real");
+
+                    b.Property<float>("qty_received")
+                        .HasColumnType("real");
+
+                    b.Property<string>("refference")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("sap_code")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("style")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<float>("unit_price")
+                        .HasColumnType("real");
+
+                    b.Property<string>("vessel")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("refference");
+
+                    b.HasIndex("sap_code");
+
+                    b.ToTable("SAP_PO_Detail");
+                });
+
+            modelBuilder.Entity("BMI.Models.SAP_POModel", b =>
+                {
+                    b.Property<string>("refference")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("bl_no")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("container")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("delivery_date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("destination")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("eta")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("etd")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("invoice")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("loading_port")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("pgi")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("pgr")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("pgr_date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("plant")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("return_no")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("sap_po")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("shipping_line")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("status")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("vendor")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("refference");
+
+                    b.HasIndex("vendor");
+
+                    b.ToTable("SAP_PO");
+                });
+
             modelBuilder.Entity("BMI.Models.ShipmentModel", b =>
                 {
                     b.Property<string>("id_shipment")
@@ -797,6 +1034,19 @@ namespace BMI.Migrations
                     b.HasIndex("po");
 
                     b.ToTable("Shipment");
+                });
+
+            modelBuilder.Entity("BMI.Models.VendorModel", b =>
+                {
+                    b.Property<string>("code")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("code");
+
+                    b.ToTable("Vendor");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -948,6 +1198,24 @@ namespace BMI.Migrations
                         .HasForeignKey("sap_code");
                 });
 
+            modelBuilder.Entity("BMI.Models.CostAnalystModel", b =>
+                {
+                    b.HasOne("BMI.Models.POModel", "POModel")
+                        .WithMany()
+                        .HasForeignKey("PO");
+
+                    b.HasOne("BMI.Models.Masterdatamodel", "masterdatamodel")
+                        .WithMany()
+                        .HasForeignKey("SAP_Code");
+                });
+
+            modelBuilder.Entity("BMI.Models.DateVesselModel", b =>
+                {
+                    b.HasOne("BMI.Models.SAP_POModel", "SAP_POModel")
+                        .WithMany()
+                        .HasForeignKey("refference");
+                });
+
             modelBuilder.Entity("BMI.Models.Fgmodel", b =>
                 {
                     b.HasOne("BMI.Models.Masterdatamodel", "Masterdatamodel")
@@ -986,6 +1254,26 @@ namespace BMI.Migrations
                         .HasForeignKey("po");
                 });
 
+            modelBuilder.Entity("BMI.Models.QtyLine1Input", b =>
+                {
+                    b.HasOne("BMI.Models.DateVesselModel", "datevesselmodel")
+                        .WithMany()
+                        .HasForeignKey("id_dateVessel")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("BMI.Models.QtyLine1Output", b =>
+                {
+                    b.HasOne("BMI.Models.DateVesselModel", "datevesselmodel")
+                        .WithMany()
+                        .HasForeignKey("datevesselmodelid");
+
+                    b.HasOne("BMI.Models.Masterdatamodel", "Masterdatamodel")
+                        .WithMany()
+                        .HasForeignKey("sap_code");
+                });
+
             modelBuilder.Entity("BMI.Models.RepackModel", b =>
                 {
                     b.HasOne("BMI.Models.MasterBMIModel", "fromMasterBMIModel")
@@ -1005,6 +1293,13 @@ namespace BMI.Migrations
                         .HasForeignKey("to_po");
                 });
 
+            modelBuilder.Entity("BMI.Models.RmCostModel", b =>
+                {
+                    b.HasOne("BMI.Models.POModel", "POModel")
+                        .WithMany()
+                        .HasForeignKey("PO");
+                });
+
             modelBuilder.Entity("BMI.Models.RmDetailModel", b =>
                 {
                     b.HasOne("BMI.Models.RmModel", "RmModel")
@@ -1014,6 +1309,24 @@ namespace BMI.Migrations
                     b.HasOne("BMI.Models.Masterdatamodel", "Masterdatamodel")
                         .WithMany()
                         .HasForeignKey("sap_code");
+                });
+
+            modelBuilder.Entity("BMI.Models.SAP_PODetailModel", b =>
+                {
+                    b.HasOne("BMI.Models.SAP_POModel", "SAP_POModel")
+                        .WithMany()
+                        .HasForeignKey("refference");
+
+                    b.HasOne("BMI.Models.Masterdatamodel", "Masterdatamodel")
+                        .WithMany()
+                        .HasForeignKey("sap_code");
+                });
+
+            modelBuilder.Entity("BMI.Models.SAP_POModel", b =>
+                {
+                    b.HasOne("BMI.Models.VendorModel", "VendorModel")
+                        .WithMany()
+                        .HasForeignKey("vendor");
                 });
 
             modelBuilder.Entity("BMI.Models.ShipmentModel", b =>

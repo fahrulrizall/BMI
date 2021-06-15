@@ -31,7 +31,7 @@
                                     <th style="width: 10%;font-size:small">
                                         Refference
                                     </th>
-                                    <th style="width: 23%;font-size:small">
+                                    <th style="width: 5%;font-size:small">
                                         Date
                                     </th>
                                     <th style="width: 5%;font-size:small">
@@ -43,6 +43,9 @@
                                     <th style="width: 5%;font-size:small">
                                         Output
                                     </th>
+                                    <th style="width: 5%;font-size:small">
+                                        Yield
+                                    </th>
                                     <th style="width: 3%;font-size:small">
                                         Action
                                     </th>
@@ -51,25 +54,26 @@
                             <tbody>
                                 @foreach (var obj in Model)
                                 {
-                                    <tr>
-                                        <td class="text text-sm">@obj.Refference</td>
-                                        <td class="text text-sm">@Html.DisplayFor(a=>obj.Date)</td>
-                                        <td class="text text-sm">@obj.Vessel</td>
-                                        <td class="text text-sm"><a style="color:black" asp-controller="Processing" asp-action="Detail" asp-route-id="@obj.Id" asp-route-type="input">@obj.Input</a></td>
-                                        <td class="text text-sm"><a style="color:black" asp-controller="Processing" asp-action="Detail" asp-route-id="@obj.Id" asp-route-type="output">@obj.Output</a></td>
-                                        <td>
-                                            <form asp-controller="Processing" asp-route-id="@obj.Id"  asp-action="DeleteDateVessel" method="post">
-                                                <a data-toggle="modal" data-target="#modal-default" data-reff="@obj.Refference" data-id="@obj.Id" class="btn btn-xs btn-warning update-date-vessel">
-                                                    <i class="fa fa-edit" style="color:whitesmoke;outline:thin">
-                                                    </i>
-                                                </a>
-                                                <button type="submit" onclick="return confirm ('Delete Item @obj.Refference on @obj.Date');" data-id="@obj.Id" class="btn btn-xs btn-danger delete-date-vessel">
-                                                    <i class="fa fa-trash">
-                                                    </i>
-                                                </button>
-                                            </form>
-                                        </td>
-                                    </tr>
+                                <tr>
+                                    <td class="text text-sm">@obj.Refference</td>
+                                    <td class="text text-sm">@Html.DisplayFor(a => obj.Date)</td>
+                                    <td class="text text-sm">@obj.Vessel</td>
+                                    <td class="text text-sm"><a style="color:black" asp-controller="Processing" asp-action="Detail" asp-route-id="@obj.Id" asp-route-type="input">@obj.Input</a></td>
+                                    <td class="text text-sm"><a style="color:black" asp-controller="Processing" asp-action="Detail" asp-route-id="@obj.Id" asp-route-type="output">@obj.Output</a></td>
+                                    <td class="text text-sm">@obj.Yield %</td>
+                                    <td>
+                                        <form asp-controller="Processing" asp-route-id="@obj.Id" asp-action="DeleteDateVessel" method="post">
+                                            <a data-toggle="modal" data-target="#modal-default" data-reff="@obj.Refference" data-id="@obj.Id" class="btn btn-xs btn-warning update-date-vessel">
+                                                <i class="fa fa-edit" style="color:whitesmoke;outline:thin">
+                                                </i>
+                                            </a>
+                                            <button type="submit" onclick="return confirm ('Delete Item @obj.Refference on @obj.Date');" data-id="@obj.Id" class="btn btn-xs btn-danger delete-date-vessel">
+                                                <i class="fa fa-trash">
+                                                </i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
                                 }
                             </tbody>
                         </table>

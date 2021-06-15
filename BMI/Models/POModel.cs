@@ -44,7 +44,9 @@ namespace BMI.Models
         public string? port_receipt { get; set; }
         public int? shipment_no { get; set; }
         public string? po_status { get; set; }
-
+        //public CostMaterial? CostMaterial { get; set; }
+        //[ForeignKey("CostMaterial")]
+        //public int? Id_Material { get; set; }
         public DateTime? created_at { get; set; }
         public DateTime? updated_at { get; set; }
         public string? created_by { get; set; }

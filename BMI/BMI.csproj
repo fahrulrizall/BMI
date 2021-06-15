@@ -164,6 +164,14 @@
     <Compile Remove="Migrations\20210304074607_add_deposit_table_vendor_string_1.Designer.cs" />
     <Compile Remove="Migrations\20210407031126_add_code_role.cs" />
     <Compile Remove="Migrations\20210407031126_add_code_role.Designer.cs" />
+    <Compile Remove="Migrations\20210520045040_remove_coloumn_datevessl.cs" />
+    <Compile Remove="Migrations\20210520045040_remove_coloumn_datevessl.Designer.cs" />
+    <Compile Remove="Migrations\20210607025435_change_table_name.cs" />
+    <Compile Remove="Migrations\20210607025435_change_table_name.Designer.cs" />
+    <Compile Remove="Migrations\20210607030200_change_table_name.cs" />
+    <Compile Remove="Migrations\20210607030200_change_table_name.Designer.cs" />
+    <Compile Remove="Migrations\20210607031247_change_table_name.cs" />
+    <Compile Remove="Migrations\20210607031247_change_table_name.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

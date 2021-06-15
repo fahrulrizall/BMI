@@ -10,12 +10,12 @@ namespace BMI.Models
     public class QtyLine1Input
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public string id { get; set; }
+        //[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int id { get; set; }
 
         public DateVesselModel datevesselmodel { get; set; }
         [ForeignKey("datevesselmodel")]
-        public string id_dateVessel { get; set; }
+        public int id_dateVessel { get; set; }
         public string refference { get; set; }
         public float qty { get; set; }
     }

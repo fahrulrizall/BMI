@@ -1,6 +1,4 @@
 ﻿$(function () {
-
-
     //untuk bmi raws
     $('.change-container').on('click', function () {
         var raw = $(this).data('raw');
@@ -87,5 +85,8 @@
         $('#id_raw').val("");
         $('.modal-body form').attr('action', '/Rm/Duplicateitem');
     });
+
+
+    
 
 });

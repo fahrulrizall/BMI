@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BMI.Models
 {
-    public class RmPlantModel
+    public class SAP_POModel
     {
         [Key]
         public string refference { get; set; }

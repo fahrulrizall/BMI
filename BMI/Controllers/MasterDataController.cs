@@ -33,15 +33,17 @@ namespace BMI.Controllers
         {
             if (ModelState.IsValid)
             {
-                var obj = new Masterdatamodel
-                {
-                    sap_code = masterdatamodel.sap_code,
-                    description = masterdatamodel.description,
-                    lbs = masterdatamodel.lbs,
-                    category = masterdatamodel.category,
-                    created_at = DateTime.Now
-                };
-                _db.Master_data.Add(obj);
+                //var obj = new Masterdatamodel
+                //{
+                //    sap_code = masterdatamodel.sap_code,
+                //    hers_code = masterdatamodel.hers_code,
+                //    description = masterdatamodel.description,
+                //    lbs = masterdatamodel.lbs,
+                //    category = masterdatamodel.category,
+                //    created_at = DateTime.Now
+                //};
+                //_db.Master_data.Add(obj);
+                _db.Master_data.Update(masterdatamodel);
                 _db.SaveChanges();
                 TempData["msg"] = "Item Succesfully Added";
                 TempData["result"] = "success";
@@ -66,14 +68,17 @@ namespace BMI.Controllers
         {
             if (ModelState.IsValid)
             {
-                var obj = _db.Master_data.Find(masterdatamodel.sap_code);
+                _db.Master_data.Update(masterdatamodel);
 
-                obj.description = masterdatamodel.description;
-                obj.lbs = masterdatamodel.lbs;
-                obj.category = masterdatamodel.category;
-                obj.updated_at = DateTime.Now;
 
-                _db.Entry(obj).State = EntityState.Modified;
+                //var obj = _db.Master_data.Find(masterdatamodel.sap_code);
+
+                //obj.description = masterdatamodel.description;
+                //obj.lbs = masterdatamodel.lbs;
+                //obj.category = masterdatamodel.category;
+                //obj.updated_at = DateTime.Now;
+
+                //_db.Entry(obj).State = EntityState.Modified;
                 _db.SaveChanges();
 
                 TempData["msg"] = "Item Succesfully Updated";

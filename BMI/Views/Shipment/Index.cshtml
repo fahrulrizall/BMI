@@ -71,7 +71,7 @@
                                     {
                                         <tr>
                                             <td>
-                                                <a style="font-size:small;color:black" asp-controller="Shipment" asp-action="Detail" asp-route-po="@obj.po">
+                                                <a style="font-size:small;color:black" asp-controller="Shipment" asp-action="Detail" asp-route-po="@obj.po" asp-route-no="@obj.shipment_no">
                                                     @Html.DisplayFor(modelItem => obj.po)
                                                 </a>
                                             </td>

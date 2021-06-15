@@ -21,6 +21,9 @@ namespace BMI.Models
         public DateTime? updated_at { get; set; }
         public string? created_by { get; set; }
         public string? updated_by { get; set; }
+        public float? standard_price { get; set; }
+        public float? PF3770 { get; set; }
+        public float? PF3710 { get; set; }
 
     }
 }

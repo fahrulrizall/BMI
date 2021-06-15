@@ -38,13 +38,13 @@ namespace BMI.Controllers
 
         public IActionResult Index(int line)
         {
-            var result = _db.Rm_plant.AsEnumerable().GroupBy(a => a.refference)
+            var result = _db.SAP_PO.AsEnumerable().GroupBy(a => a.refference)
                 .Select(a => new RefferenceView
                 {
                     Refference = a.Key,
-                    Input = Math.Round( _db.QtyLine1Input.Where(b=>b.refference == a.Key).Sum(b=>b.qty),2),
-                    Output = Math.Round( _db.QtyLine1Output.Where(b => b.refference == a.Key).Sum(b => b.qty),2),
-                    Yield = Math.Round( _db.QtyLine1Output.Where(b => b.refference == a.Key).Sum(b => b.qty) / _db.QtyLine1Input.Where(b => b.refference == a.Key).Sum(b => b.qty),2)
+                    Input = Math.Round(_db.QtyLine1Input.Where(b => b.refference == a.Key).Sum(b => b.qty), 2),
+                    Output = Math.Round(_db.QtyLine1Output.Where(b => b.refference == a.Key).Sum(b => b.qty), 2),
+                    Yield = Math.Round(_db.QtyLine1Output.Where(b => b.refference == a.Key).Sum(b => b.qty) / _db.QtyLine1Input.Where(b => b.refference == a.Key).Sum(b => b.qty), 2)
                 })
                 .ToList();
             ViewBag.line = line;
@@ -58,11 +58,12 @@ namespace BMI.Controllers
                 .Select(a => new RefferenceView
                 {
                     Id = a.Key,
-                    Refference = a.Max(b=>b.refference),
+                    Refference = a.Max(b => b.refference),
                     Date = a.Max(b => b.date),
                     Vessel = a.Max(b => b.vessel),
-                    Input = Math.Round( _db.QtyLine1Input.Where(b => b.id_dateVessel == a.Key).Sum(b=>b.qty),2),
-                    Output = Math.Round( _db.QtyLine1Output.Where(b => b.id_dateVessel == a.Key).Sum(b => b.qty),2)
+                    Input = Math.Round(_db.QtyLine1Input.Where(b => b.id_dateVessel == a.Key).Sum(b => b.qty), 2),
+                    Output = Math.Round(_db.QtyLine1Output.Where(b => b.id_dateVessel == a.Key).Sum(b => b.qty), 2),
+                    Yield = Math.Round((_db.QtyLine1Output.Where(b => b.id_dateVessel == a.Key).Sum(b => b.qty) / _db.QtyLine1Input.Where(b => b.id_dateVessel == a.Key).Sum(b => b.qty)) * 100, 2)
                 })
                 .ToList();
             ViewBag.Refference = reff;
@@ -71,14 +72,14 @@ namespace BMI.Controllers
 
         public async Task<IActionResult> GetVessel(string reff)
         {
-            var result = _db.Rm_plant_detail
+            var result = _db.SAP_PO_Detail
                 .Where(a => a.refference == reff)
                 .GroupBy(a => a.vessel)
                 .Select(a => a.Key).ToList();
             return await Task.Run(() => Json(result));
         }
 
-        public async Task<IActionResult> CreateDateVessel (DateVesselModel dateVessel)
+        public async Task<IActionResult> CreateDateVessel(DateVesselModel dateVessel)
         {
             _db.Date_vessel.Add(dateVessel);
             _db.SaveChanges();
@@ -87,7 +88,7 @@ namespace BMI.Controllers
 
         public async Task<IActionResult> UpdateDateVessel(DateVesselModel dateVesselModel)
         {
-            if (dateVesselModel.id != null)
+            if (dateVesselModel == null)
             {
                 _db.Date_vessel.Update(dateVesselModel);
                 _db.SaveChanges();
@@ -104,7 +105,7 @@ namespace BMI.Controllers
         {
             if (id != null)
             {
-                var result =  _db.Date_vessel.Find(id);
+                var result = _db.Date_vessel.Find(id);
                 _db.Date_vessel.Remove(result);
                 _db.SaveChanges();
                 TempData["msg"] = "Item Succesfully Deleted";
@@ -116,7 +117,7 @@ namespace BMI.Controllers
             return await Task.Run(() => Redirect(Request.Headers["Referer"].ToString()));
         }
 
-        public async Task<IActionResult> Import(IFormFile postedFile, string id)
+        public async Task<IActionResult> Import(IFormFile postedFile, int id, string reff)
         {
             if (postedFile != null)
             {
@@ -164,7 +165,9 @@ namespace BMI.Controllers
                                     var obj = new QtyLine1Input
                                     {
                                         id_dateVessel = id,
-                                        qty = Convert.ToSingle(rowDataList[0])
+                                        qty = Convert.ToSingle(rowDataList[0]),
+                                        refference = reff
+
                                     };
                                     _db.QtyLine1Input.Add(obj);
                                     _db.SaveChanges();
@@ -198,13 +201,14 @@ namespace BMI.Controllers
 
 
 
-        public async Task<IActionResult> Detail(string id,string type)
+        public async Task<IActionResult> Detail(int id, string type)
         {
 
             var newid = _db.Date_vessel.Find(id);
-            ViewBag.Date = newid.date.Year +"-"+ newid.date.Month +"-"+ newid.date.Day;
+            ViewBag.Date = newid.date.Year + "-" + newid.date.Month + "-" + newid.date.Day;
             ViewBag.Vessel = newid.vessel;
             ViewBag.Id = id;
+            ViewBag.reff = newid.refference;
             if (type == "input")
             {
                 var input = new RangeView()
@@ -229,10 +233,10 @@ namespace BMI.Controllers
             }
 
             var output = _db.QtyLine1Output
-                .Include(a=>a.Masterdatamodel)
-                .Where(a=>a.id_dateVessel == id)
+                .Include(a => a.Masterdatamodel)
+                .Where(a => a.id_dateVessel == id)
                 .ToList();
-            return await Task.Run(() => View("Line1/OutputDetail", output)) ;
+            return await Task.Run(() => View("Line1/OutputDetail", output));
 
         }
 
@@ -251,9 +255,30 @@ namespace BMI.Controllers
             return await Task.Run(() => Redirect(Request.Headers["Referer"].ToString()));
         }
 
-        public async Task<IActionResult> DeleteItem (string id)
+        public async Task<IActionResult> UpdateItem(QtyLine1Output qtyLine1Output)
         {
-            if (id != null) 
+            if (qtyLine1Output == null)
+            {
+                _db.QtyLine1Output.Update(qtyLine1Output);
+                _db.SaveChanges();
+                TempData["msg"] = "Item Succesfully Updated";
+                TempData["result"] = "success";
+                return await Task.Run(() => Redirect(Request.Headers["Referer"].ToString()));
+            }
+            TempData["msg"] = "Item Failed to Update";
+            TempData["result"] = "failed";
+            return await Task.Run(() => Redirect(Request.Headers["Referer"].ToString()));
+        }
+
+        public async Task<JsonResult> GetDetailOutput(string id)
+        {
+            var result = _db.QtyLine1Output.Find(id);
+            return await Task.Run(() => Json(result));
+        }
+
+        public async Task<IActionResult> DeleteItem(string id)
+        {
+            if (id != null)
             {
                 var result = _db.QtyLine1Output.Find(id);
                 _db.QtyLine1Output.Remove(result);

@@ -26,13 +26,13 @@
                             <ul class="nav nav-pills">
                                 @if (status == "Open")
                                 {
-                                    <li class="nav-item"><a class="nav-link active" asp-controller="PO" asp-action="Index" asp-route-plant="3700" asp-route-status="Open">Open</a></li>
-                                    <li class="nav-item"><a class="nav-link" asp-controller="PO" asp-action="Index" asp-route-plant="3700" asp-route-status="Closed">Closed</a></li>
+                                    <li class="nav-item"><a class="nav-link active" asp-controller="PO" asp-action="Index" asp-route-plant="@ViewBag.plant" asp-route-status="Open">Open</a></li>
+                                    <li class="nav-item"><a class="nav-link" asp-controller="PO" asp-action="Index" asp-route-plant="@ViewBag.plant" asp-route-status="Closed">Closed</a></li>
                                 }
                                 else
                                 {
-                                    <li class="nav-item"><a class="nav-link" asp-controller="PO" asp-action="Index" asp-route-plant="3700" asp-route-status="Open">Open</a></li>
-                                    <li class="nav-item"><a class="nav-link active" asp-controller="PO" asp-action="Index" asp-route-plant="3700" asp-route-status="Closed">Closed</a></li>
+                                    <li class="nav-item"><a class="nav-link" asp-controller="PO" asp-action="Index" asp-route-plant="@ViewBag.plant" asp-route-status="Open">Open</a></li>
+                                    <li class="nav-item"><a class="nav-link active" asp-controller="PO" asp-action="Index" asp-route-plant="@ViewBag.plant" asp-route-status="Closed">Closed</a></li>
                                 }
                             </ul>
                         </div>
@@ -49,9 +49,13 @@
                                     <th style="width: 23%;font-size:small">
                                         PT
                                     </th>
-                                    <th style="width: 23%;font-size:small">
-                                        Batch
-                                    </th>
+                                    @if (ViewBag.plant == "3700")
+                                    {
+                                        <th style="width: 23%;font-size:small">
+                                            Batch
+                                        </th>
+                                    }
+
                                     <th style="width: 23%;font-size:small">
                                         Status
                                     </th>
@@ -64,9 +68,12 @@
                                 @foreach (var obj in Model)
                                 {
                                     <tr>
-                                        <td style="font-size:small">@obj.po</td>
+                                        <td style="font-size:small"><a asp-controller="PO" asp-action="Detail" asp-route-po="@obj.po" asp-route-pt="@obj.pt" style="color:black;font-size:small">@obj.po</a></td>
                                         <td style="font-size:small">PT# @obj.pt</td>
+                                        @if (ViewBag.plant == "3700")
+                                        {
                                         <td style="font-size:small">@obj.batch</td>
+                                        }
                                         <td style="font-size:small">@obj.po_status</td>
                                         <td>
                                             <form asp-controller="PO" asp-route-po="@obj.po" asp-action="Delete" method="post">
@@ -112,15 +119,23 @@
                         <input type="hidden" name="plant" id="plant" value="@ViewBag.plant" />
                         <div class="form-group purchase-order">
                             <label>Purchase Order</label>
-                            <input type="number" step="any" class="form-control" asp-for="First().po"
+                            <input type="number" step="any" class="form-control" asp-for="FirstOrDefault().po"
                                    placeholder="Purchase Order">
-                            <span asp-validation-for="First().po" class="text-danger" style="font-size:smaller"> </span>
+                            <span asp-validation-for="FirstOrDefault().po" class="text-danger" style="font-size:smaller"> </span>
                         </div>
                         <div class="form-group">
                             <label>Production Target</label>
-                            <input type="text" class="form-control" asp-for="First().pt"
+                            <input type="text" class="form-control" asp-for="FirstOrDefault().pt"
                                    placeholder="Production Target">
-                            <span asp-validation-for="First().pt" class="text-danger" style="font-size:smaller"> </span>
+                            <span asp-validation-for="FirstOrDefault().pt" class="text-danger" style="font-size:smaller"> </span>
+                        </div>
+                        <div class="form-group">
+                            <label>Status</label>
+                            <select class="form-control" asp-for="FirstOrDefault().po_status">
+                                <option>Open</option>
+                                <option>Closed</option>
+                            </select>
+                            <span asp-validation-for="FirstOrDefault().po_status" class="text-danger" style="font-size:smaller"> </span>
                         </div>
                     </div>
                     <div class="modal-footer">

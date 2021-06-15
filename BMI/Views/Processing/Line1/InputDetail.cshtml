@@ -13,7 +13,7 @@
 
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">@ViewBag.Date - @ViewBag.Vessel</h3>
+                        <h3 class="card-title">@ViewBag.Date - @ViewBag.Vessel - @ViewBag.reff</h3>
                         <div class="card-tools ">
                             <button class="btn btn-sm float-right mx-1"
                                     data-toggle="modal" data-target="#modal-default">
@@ -128,6 +128,7 @@
                                     <input type="file" class="custom-file-input" name="postedFile" id="postedFile" accept="application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
                                     <label class="custom-file-label" for="exampleInputFile">Choose file</label>
                                     <input type="hidden" name="id" id="id" value=@ViewBag.Id />
+                                    <input type="hidden" name="reff" id="reff" value=@ViewBag.reff />
                                 </div>
                             </div>
                         </div>

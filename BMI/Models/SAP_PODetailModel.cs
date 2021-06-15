@@ -7,13 +7,13 @@ using System.ComponentModel.DataAnnotations;
 
 namespace BMI.Models
 {
-    public class RmPlantDetailModel
+    public class SAP_PODetailModel
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public string id_rmmowidetail { get; set; }
-        public RmPlantModel RMMOWIModel { get; set; }
-        [ForeignKey("RMMOWIModel")]
+        //[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int id { get; set; }
+        public SAP_POModel SAP_POModel { get; set; }
+        [ForeignKey("SAP_POModel")]
         public string refference { get; set; }
         public Masterdatamodel Masterdatamodel { get; set; }
         [ForeignKey("Masterdatamodel")]

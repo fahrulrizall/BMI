@@ -30,11 +30,23 @@
                                     <th style="width: 7%;font-size:small">
                                         SAP Code
                                     </th>
-                                    <th style="width: 23%;font-size:small">
+                                    <th style="width: 15%;font-size:small">
                                         Description
+                                    </th>
+                                    <th style="width: 5%;font-size:small">
+                                        # Code
                                     </th>
                                     <th style="width: 3%;font-size:small">
                                         Lbs
+                                    </th>
+                                    <th style="width: 5%;font-size:small">
+                                        3770 PF
+                                    </th>
+                                    <th style="width: 5%;font-size:small">
+                                        3710 PF
+                                    </th>
+                                    <th style="width: 5%;font-size:small">
+                                        Std Price
                                     </th>
                                     <th style="width: 8%;font-size:small">
                                         Category
@@ -47,24 +59,28 @@
                             <tbody>
                                 @foreach (var obj in Model)
                                 {
-                                    <tr>
-                                        <td style="font-size:small">@obj.sap_code</td>
-                                        <td style="font-size:small">@obj.description</td>
-                                        <td style="font-size:small">@obj.lbs</td>
-                                        <td style="font-size:small">@obj.category</td>
-                                        <td>
-                                            <form asp-controller="MasterData" asp-route-id="@obj.sap_code" asp-action="Delete" method="post">
-                                                <a data-toggle="modal" data-target="#modal-default" data-id="@obj.sap_code" class="btn btn-xs btn-warning update-master-data">
-                                                    <i class="fa fa-edit" style="color:whitesmoke;outline:thin">
-                                                    </i>
-                                                </a>
-                                                <button type="submit" onclick="return confirm ('Delete Item @obj.sap_code');" class="btn btn-xs btn-danger">
-                                                    <i class="fa fa-trash">
-                                                    </i>
-                                                </button>
-                                            </form>
-                                        </td>
-                                    </tr>
+                                <tr>
+                                    <td style="font-size:small">@obj.sap_code</td>
+                                    <td style="font-size:small">@obj.description</td>
+                                    <td style="font-size:small">@obj.hers_code</td>
+                                    <td style="font-size:small">@obj.lbs</td>
+                                    <td style="font-size:small">@obj.PF3770</td>
+                                    <td style="font-size:small">@obj.PF3710</td>
+                                    <td style="font-size:small">@obj.standard_price</td>
+                                    <td style="font-size:small">@obj.category</td>
+                                    <td>
+                                        <form asp-controller="MasterData" asp-route-id="@obj.sap_code" asp-action="Delete" method="post">
+                                            <a data-toggle="modal" data-target="#modal-default" data-id="@obj.sap_code" class="btn btn-xs btn-warning update-master-data">
+                                                <i class="fa fa-edit" style="color:whitesmoke;outline:thin">
+                                                </i>
+                                            </a>
+                                            <button type="submit" onclick="return confirm ('Delete Item @obj.sap_code');" class="btn btn-xs btn-danger">
+                                                <i class="fa fa-trash">
+                                                </i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
                                 }
                             </tbody>
                         </table>
@@ -106,10 +122,34 @@
                             <span asp-validation-for="First().description" class="text-danger" style="font-size:smaller"> </span>
                         </div>
                         <div class="form-group">
+                            <label>HERS Code</label>
+                            <input type="number" step="any" class="form-control" asp-for="First().hers_code"
+                                   placeholder="Hers Code">
+                            <span asp-validation-for="First().hers_code" class="text-danger" style="font-size:smaller"> </span>
+                        </div>
+                        <div class="form-group">
                             <label>Lbs</label>
                             <input type="number" step="any" class="form-control" asp-for="First().lbs"
                                    placeholder="Lbs">
                             <span asp-validation-for="First().lbs" class="text-danger" style="font-size:smaller"> </span>
+                        </div>
+                        <div class="form-group">
+                            <label>3770 Processing Fee</label>
+                            <input type="number" step="any" class="form-control" asp-for="First().PF3770"
+                                   placeholder="Processing Fee 3770">
+                            <span asp-validation-for="First().PF3770" class="text-danger" style="font-size:smaller"> </span>
+                        </div>
+                        <div class="form-group">
+                            <label>3710 Processing Fee</label>
+                            <input type="number" step="any" class="form-control" asp-for="First().PF3710"
+                                   placeholder="Processing Fee 3710">
+                            <span asp-validation-for="First().PF3710" class="text-danger" style="font-size:smaller"> </span>
+                        </div>
+                        <div class="form-group">
+                            <label>Standard Price</label>
+                            <input type="number" step="any" class="form-control" asp-for="First().standard_price"
+                                   placeholder="Standard Price">
+                            <span asp-validation-for="First().standard_price" class="text-danger" style="font-size:smaller"> </span>
                         </div>
                         <div class="form-group">
                             <label>Category</label>

@@ -8,7 +8,7 @@ namespace BMI.UtilityModels
 {
     public class RefferenceView
     {
-        public string Id { get; set; }
+        public int Id { get; set; }
         public string Refference { get; set; }
         public double Input { get; set; }
         public double Output { get; set; }

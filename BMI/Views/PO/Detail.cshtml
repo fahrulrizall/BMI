@@ -1,0 +1,212 @@
+﻿@model List<CostAnalystModel>
+@{
+    ViewData["Title"] = "Cost Analyst";
+}
+<div class="content-wrapper">
+    <section class="content-header">
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-12">
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">@ViewBag.po - PT @ViewBag.pt</h3>
+                        <div>
+                            <button class="btn btn-sm float-right mx-1"
+                                    data-toggle="modal" data-target="#modal-default">
+                                <i class="fa fa-upload">
+                                </i>
+                            </button>
+                        </div>
+                        <div>
+                            <button class="btn btn-sm float-right mx-1 select-material" data-po="@ViewBag.po"
+                                    data-toggle="modal" data-target="#modal-material">
+                                <i class="fa fa-cubes">
+                                </i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <table class="table table-bordered table-striped table-sm">
+                            <thead>
+                                <tr>
+                                    <th style="width: 8%;font-size:small">
+                                        Item
+                                    </th>
+                                    <th style="width: 20%;font-size:small">
+                                        Description
+                                    </th>
+                                    <th style="width: 10%;font-size:small">
+                                        Group
+                                    </th>
+                                    <th style="width: 5%;font-size:small">
+                                        Price
+                                    </th>
+                                    <th style="width: 5%;font-size:small">
+                                        LBS
+                                    </th>
+                                    <th style="width: 5%;font-size:small">
+                                        Proc Fee
+                                    </th>
+                                    <th style="width: 5%;font-size:small">
+                                        Std Price
+                                    </th>
+                                    <th style="width: 1%;font-size:small">
+                                        %
+                                    </th>
+                                    <th style="width: 4%;font-size:small">
+                                        Result
+                                    </th>
+                                    <th style="width: 5%;font-size:small">
+                                        Action
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var obj in Model)
+                                {
+                                    <tr>
+                                        <td style="font-size:small"> @obj.SAP_Code</td>
+                                        <td style="font-size:small"> @obj.masterdatamodel.description</td>
+                                        <td style="font-size:small"> @obj.masterdatamodel.category</td>
+                                        <td style="font-size:small"> @obj.Price</td>
+                                        <td style="font-size:small"> @obj.Target_Lbs</td>
+                                        <td style="font-size:small"> @((obj.masterdatamodel.PF3770))</td>
+                                        <td style="font-size:small"> @obj.masterdatamodel.standard_price</td>
+                                        <td style="font-size:small"> @obj.Yield</td>
+                                        <td style="font-size:small"> @obj.Result</td>
+                                        <td>
+                                            <form asp-controller="PO" asp-route-id="@obj.Id" asp-action="DeleteMaterial" method="post">
+                                                <a data-toggle="modal" data-target="#modal-update" data-id="@obj.Id" data-code="@obj.SAP_Code" class="btn btn-xs btn-warning update-material-ca">
+                                                    <i class="fa fa-edit" style="color:whitesmoke;outline:thin">
+                                                    </i>
+                                                </a>
+                                                <button type="submit" onclick="return confirm ('Delete Item @obj.SAP_Code ? ');" class="btn btn-xs btn-danger">
+                                                    <i class="fa fa-trash">
+                                                    </i>
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td class="text text-sm" style="font-weight:bold" colspan="4">Total</td>
+                                    <td class="text text-sm" style="font-weight:bold">@ViewBag.total_lbs</td>
+                                    <td colspan="2"></td>
+                                    <td class="text text-sm" style="font-weight:bold">100</td>
+                                    <td class="text text-sm" style="font-weight:bold">@ViewBag.total_result</td>
+                                    <td></td>
+                                </tr>  
+                            </tfoot>
+                        </table>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </section>
+    <!-- /.content -->
+</div>
+
+
+
+<div class="modal fade" id="modal-default">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="formModalLabel">Upload File</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body mb-2">
+                <form method="POST" asp-controller="PO" asp-action="Import" enctype="multipart/form-data">
+                    <div class="card-body">
+                        <div class="form-group input-file">
+                            <label for="exampleInputFile">File input</label>
+                            <div class="input-group">
+                                <div class="custom-file">
+                                    <input type="file" class="custom-file-input" name="postedFile" id="postedFile" accept="application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+                                    <label class="custom-file-label" for="exampleInputFile">Choose file</label>
+                                </div>
+                            </div>
+                        </div>
+                        @*<div class="form-group">
+                            <label>Version</label>
+                            <textarea class="form-control" rows="3" name="version" id="version" placeholder="Enter ..."></textarea>
+                        </div>*@
+                        <input type="hidden" name="po" value="@ViewBag.po" />
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Upload</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal-material">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="formModalLabel">Select Raw Material</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body mb-2">
+                <form method="POST" asp-controller="PO" asp-action="UpdateMaterial" enctype="multipart/form-data">
+                    <input type="hidden" value="@ViewBag.po" name="po" />
+                    <div class="form-group">
+                        <select class="select2 show-material" name="Material" id="Material" multiple="multiple" data-placeholder="Select Materials" style="width: 100%; background-color:blue">
+                          
+                        </select>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>                    
+    </div>
+</div>
+
+<div class="modal fade" id="modal-update">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="formModalLabel">Update Material</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body mb-2">
+                <form method="POST" asp-controller="PO" asp-action="UpdateMaterial" enctype="multipart/form-data">
+                    <input type="hidden" asp-for="FirstOrDefault().Id" />
+                    <div class="form-group">
+                        <input class="form-control" type="number" asp-for="FirstOrDefault().Target_Lbs" placeholder="Update Qty" style="width: 100%;" />
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

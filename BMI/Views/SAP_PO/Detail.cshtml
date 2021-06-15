@@ -1,0 +1,226 @@
+﻿@model IEnumerable<BMI.Models.SAP_PODetailModel>
+@{string refference = ViewBag.refference; }
+@{string status = ViewBag.status; }
+@{
+    ViewData["Title"] = refference;
+}
+<div class="content-wrapper">
+    <section class="content-header">
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-12">
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Detail List of @refference - @status</h3>
+                    </div>
+
+                    <div class="card-body">
+                        <table class="table table-bordered table-striped table-sm">
+                            <thead>
+                                <tr>
+                                    <th style="width: 5%;font-size:small">
+                                        Code
+                                    </th>
+                                    <th style="width: 10%;font-size:small">
+                                        Description
+                                    </th>
+                                    <th style="width: 2%;font-size:small">
+                                        Style
+                                    </th>
+                                    <th style="width: 6%;font-size:small">
+                                        Vessel
+                                    </th>
+                                    <th style="width: 3%;font-size:small">
+                                        Price
+                                    </th>
+                                    <th style="width: 3%;font-size:small">
+                                        Kg PL
+                                    </th>
+                                    <th style="width: 3%;font-size:small">
+                                        $ PL
+                                    </th>
+                                    @if (status == "Plant" || status == "Closed")
+                                    {
+                                        <th style="width: 4%;font-size:small">
+                                            Kg Received
+                                        </th>
+                                        <th style="width: 4%;font-size:small">
+                                            $ Received
+                                        </th>
+                                    }
+                                    <th style="width: 3%;font-size:small">
+                                        Actions
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var obj in Model)
+                                {
+                                <tr>
+                                    <td style="font-size:small">@obj.sap_code</td>
+                                    <td style="font-size:small">@obj.Masterdatamodel.description</td>
+                                    <td style="font-size:small">@obj.style</td>
+                                    <td style="font-size:small">@obj.vessel</td>
+                                    <td style="font-size:small">@Convert.ToDecimal(obj.unit_price).ToString("C")</td>
+                                    <td style="font-size:small">@obj.qty_pl</td>
+                                    <td style="font-size:small">@Convert.ToDecimal(obj.amount_pl).ToString("C")</td>
+                                    @if (status == "Plant" || status == "Closed")
+                                    {
+                                        <td style="font-size:small">@obj.qty_received</td>
+                                        <td style="font-size:small">@Convert.ToDecimal(obj.amount_received).ToString("C")</td>
+                                    }
+                                    <td>
+                                        <form asp-controller="Rm" asp-action="DeleteItemRMPlant" asp-route-id="@obj.id" asp-route-raw_source="@obj.refference" method="post" class="d-inline">
+                                            <a href="#" class="btn btn-xs btn-warning change-item-detail-plant"
+                                               data-toggle="modal" data-target="#modal-default" data-id="@obj.id">
+                                                <i class="fa fa-edit" style="color:ghostwhite;outline:thin"></i>
+                                            </a>
+                                            <button type="submit" onclick="return confirm ('Delete Item @obj.sap_code' );" class="btn btn-xs btn-danger">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                }
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    @if (status == "Plant" || status == "Closed")
+                                    {
+                                        <th style="width: 2%;font-size:small" colspan="5">Total</th>
+                                        <th style="width: 2%;font-size:small">@(ViewBag.qty_pl)</th>
+                                        <th style="width: 2%;font-size:small">@Convert.ToDecimal(ViewBag.amount_pl).ToString("C")</th>
+                                        <th style="width: 2%;font-size:small">@(ViewBag.qty_received)</th>
+                                        <th style="width: 2%;font-size:small">@Convert.ToDecimal(ViewBag.amount_received).ToString("C")</th>
+                                        <th style="width: 2%;font-size:small"></th>
+                                    }
+                                    else
+                                    {
+                                        <th style="width: 2%;font-size:small" colspan="5">Total</th>
+                                        <th style="width: 2%;font-size:small">@(ViewBag.qty_pl)</th>
+                                        <th style="width: 2%;font-size:small">@(Convert.ToDecimal(ViewBag.amount_pl).ToString("C"))</th>
+                                        <th></th>
+                                    }
+                                </tr>
+                            </tfoot>
+                        </table>
+                </div>
+                <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+        </div>
+        <!-- /.col -->
+    </div>
+    <!-- /.row -->
+</section>
+<!-- /.content -->
+</div>
+
+
+
+<div class="modal fade" id="modal-default">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="formModalLabel">Add New Item</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="POST" asp-controller="SAP_PO" asp-action="UpdateDetail" class="form-horizontal">
+                    <div class="card-body">
+                        <input type="hidden" asp-for="First().id">
+                        <div class="form-group row">
+                            <label class="col-sm-3  col-form-label"> Hers Code</label>
+                            <div class="col-sm-9">
+                                <input type="text" placeholder="Item Code" class="form-control" asp-for="First().sap_code">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">Style</label>
+                            <div class="col-sm-9">
+                                <input type="text" step="any" placeholder="USD Price" class="form-control" asp-for="First().style">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">Vessel</label>
+                            <div class="col-sm-9">
+                                <input type="text" step="any" class="form-control" placeholder="IDR Rate" asp-for="First().vessel">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">Unit Price</label>
+                            <div class="col-sm-9">
+                                <input type="text" placeholder="Landing Site" class="form-control" asp-for="First().unit_price">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">Qty PL</label>
+                            <div class="col-sm-9">
+                                <input type="number" step="any" class="form-control" placeholder="Packing List" asp-for="First().qty_pl">
+                            </div>
+                        </div>
+                        @if (status == "Plant" || status == "Closed")
+                        {
+                            <hr />
+                            <div class="form-group row">
+                                <label class="col-sm-3 col-form-label">Qty Received</label>
+                                <div class="col-sm-9">
+                                    <input type="number" step="any" class="form-control" placeholder="Qty Received" asp-for="First().qty_received">
+                                </div>
+                            </div>
+                        }
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Update</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+     /.modal-content 
+</div>
+
+<div class="modal fade" id="modal-destroy">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="formModalLabel">Destroy Material</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="POST" asp-controller="Rm" asp-action="Adddestroy" class="form-horizontal">
+                    <div class="card-body">
+                        <input type="hidden" asp-for="First().sap_code">
+                        <input type="hidden" asp-for="First().refference">
+                        <input type="hidden" id="status" name="status" value="destroy">
+                        <div class="form-group">
+                            <label>Qty</label>
+                            <div>
+                                <input type="number" step="any" placeholder="Qty" class="form-control" asp-for="First().qty_received">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Reason</label>
+                            <div>
+                                <input type="text" step="any" placeholder="Please Input Reason" class="form-control" asp-for="First().qty_received">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Destroy</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+     /.modal-content 
+</div>

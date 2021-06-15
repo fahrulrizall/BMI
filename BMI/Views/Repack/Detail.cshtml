@@ -41,10 +41,10 @@
                                 </tr>
                                 <tr>
                                     <th style="width: 3%">
-                                        Date
+                                        PDC
                                     </th>
                                     <th style="width: 3%">
-                                        PDC
+                                        Source
                                     </th>
                                     <th style="width: 1%">
                                         PT
@@ -80,29 +80,29 @@
                                 @foreach (var obj in Model)
                                     {
 
-                                    <tr>
-                                        <td style="font-size:smaller">@Html.DisplayFor(modelitem => obj.date) </td>
-                                        <td style="font-size:smaller">@Html.DisplayFor(modelitem => obj.production_date)</td>
-                                        <td style="font-size:smaller">@obj.fromPOModel.pt</td>
-                                        <td style="font-size:smaller">@obj.fromMasterBMIModel.sap_code</td>
-                                        <td style="font-size:smaller">@obj.fromMasterBMIModel.description</td>
-                                        <td style="font-size:smaller">@obj.qty</td>
-                                        <td style="font-size:smaller">@obj.toPOModel.pt</td>
-                                        <td style="font-size:smaller">@obj.toMasterBMIModel.sap_code</td>
-                                        <td style="font-size:smaller">@obj.toMasterBMIModel.description</td>
-                                        <td style="font-size:smaller">@obj.qty</td>
-                                        <td>
-                                            <form asp-controller="Repack" asp-action="Delete" asp-route-id="@obj.id_repack" method="post">
-                                                @*<a style="font-size:small" class="btn btn-xs btn-warning change-repack"
-                                                   data-toggle="modal" data-target="#modal-default" data-id="@obj.id_repack">
-                                                    <i class="fa fa-edit" style="color:ghostwhite;outline:thin"></i>
-                                                </a>*@
-                                                <button type="submit" onclick="return confirm ('Delete Repack Item ?');" class="btn btn-xs btn-danger">
-                                                    <i class="fa fa-trash"></i>
-                                                </button>
-                                            </form>
-                                        </td>
-                                    </tr>
+                                <tr>
+                                    <td style="font-size:smaller">@Html.DisplayFor(modelitem => obj.production_date)</td>
+                                    <td style="font-size:smaller">@obj.raw_source</td>
+                                    <td style="font-size:smaller">@obj.fromPOModel.pt</td>
+                                    <td style="font-size:smaller">@obj.fromMasterBMIModel.sap_code</td>
+                                    <td style="font-size:smaller">@obj.fromMasterBMIModel.description</td>
+                                    <td style="font-size:smaller">@obj.qty</td>
+                                    <td style="font-size:smaller">@obj.toPOModel.pt</td>
+                                    <td style="font-size:smaller">@obj.toMasterBMIModel.sap_code</td>
+                                    <td style="font-size:smaller">@obj.toMasterBMIModel.description</td>
+                                    <td style="font-size:smaller">@obj.qty</td>
+                                    <td>
+                                        <form asp-controller="Repack" asp-action="Delete" asp-route-id="@obj.id_repack" method="post">
+                                            @*<a style="font-size:small" class="btn btn-xs btn-warning change-repack"
+                   data-toggle="modal" data-target="#modal-default" data-id="@obj.id_repack">
+                    <i class="fa fa-edit" style="color:ghostwhite;outline:thin"></i>
+                </a>*@
+                                            <button type="submit" onclick="return confirm ('Delete Repack Item ?');" class="btn btn-xs btn-danger">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
                                     }
                             </tbody>
 

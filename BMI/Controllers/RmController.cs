@@ -28,7 +28,7 @@ namespace BMI.Controllers
         private IWebHostEnvironment Environment;
         private IConfiguration Configuration;
 
-        public RmController(ApplicationDbContext db,IWebHostEnvironment _environment, IConfiguration _configuration)
+        public RmController(ApplicationDbContext db, IWebHostEnvironment _environment, IConfiguration _configuration)
         {
             _db = db;
             Environment = _environment;
@@ -56,19 +56,20 @@ namespace BMI.Controllers
                 {
                     ViewBag.status = "Closed";
                 }
-               
-                return await Task.Run(()=> View(list));
+
+                return await Task.Run(() => View(list));
             }
             return NotFound();
         }
 
-        public async Task<IActionResult> Detail (string raw_source, string status)
+        public async Task<IActionResult> Detail(string raw_source, string status)
         {
             var list = _db.Rm_detail
                 .Where(x => x.raw_source == raw_source)
                 .Include(x => x.Masterdatamodel)
-                .OrderBy(e => e.landing_site).ThenByDescending(e=>e.Masterdatamodel.description)
-                .Select(a=> new RmDetailModel { 
+                .OrderBy(e => e.landing_site).ThenByDescending(e => e.Masterdatamodel.description)
+                .Select(a => new RmDetailModel
+                {
                     id_raw = a.id_raw,
                     sap_code = a.sap_code,
                     Masterdatamodel = a.Masterdatamodel,
@@ -76,7 +77,7 @@ namespace BMI.Controllers
                     ex_rate = a.ex_rate,
                     landing_site = a.landing_site,
                     qty_pl = a.qty_pl,
-                    amount_pl =  Convert.ToDouble( Convert.ToDecimal(a.usd_price) * Convert.ToDecimal( a.ex_rate) * Convert.ToDecimal( a.qty_pl)),
+                    amount_pl = Convert.ToDouble(Convert.ToDecimal(a.usd_price) * Convert.ToDecimal(a.ex_rate) * Convert.ToDecimal(a.qty_pl)),
                     landing_site_received = a.landing_site_received,
                     qty_received = a.qty_received,
                     amount_received = Convert.ToDouble(Convert.ToDecimal(a.usd_price) * Convert.ToDecimal(a.ex_rate) * Convert.ToDecimal(a.qty_received)),
@@ -85,19 +86,19 @@ namespace BMI.Controllers
                 .ToList();
             ViewBag.raw_source = raw_source;
             ViewBag.status = status;
-            ViewBag.qty_pl = Math.Round( Convert.ToDecimal( list.Sum(a => a.qty_pl)),2);
-            ViewBag.amount_pl = Math.Round( Convert.ToDouble( list.Sum(a => a.amount_pl)),2);
-            ViewBag.qty_received = Math.Round(Convert.ToDecimal(list.Sum(a => a.qty_received)),2);
-            ViewBag.amount_received = Math.Round(Convert.ToDouble(list.Sum(a => a.amount_received)),2);
+            ViewBag.qty_pl = Math.Round(Convert.ToDecimal(list.Sum(a => a.qty_pl)), 2);
+            ViewBag.amount_pl = Math.Round(Convert.ToDouble(list.Sum(a => a.amount_pl)), 2);
+            ViewBag.qty_received = Math.Round(Convert.ToDecimal(list.Sum(a => a.qty_received)), 2);
+            ViewBag.amount_received = Math.Round(Convert.ToDouble(list.Sum(a => a.amount_received)), 2);
             ViewBag.usd_amount = Math.Round(Convert.ToDouble(list.Sum(a => a.amount_usd)), 2);
-            return await Task.Run(()=> View(list));
+            return await Task.Run(() => View(list));
         }
 
 
         public async Task<JsonResult> Getdata(string raw_source)
         {
             var obj = _db.Rm.Find(raw_source);
-            return await Task.Run(()=> Json(obj));
+            return await Task.Run(() => Json(obj));
         }
 
         [HttpPost]
@@ -149,7 +150,7 @@ namespace BMI.Controllers
                     obj.created_by = User.Identity.Name;
                     obj.status = "Closed";
                 }
-         
+
                 _db.Entry(obj).State = EntityState.Modified;
                 _db.SaveChanges();
 
@@ -278,7 +279,7 @@ namespace BMI.Controllers
         [AutoValidateAntiforgeryToken]
         [Authorize(Roles = "PF,Admin")]
         [Authorize(Policy = "Delete")]
-        public async Task<IActionResult> Delete(string raw_source,string status)
+        public async Task<IActionResult> Delete(string raw_source, string status)
         {
             var rm_detail = _db.Rm_detail.Where(x => x.raw_source == raw_source).ToList();
             _db.Rm_detail.RemoveRange(rm_detail);
@@ -322,14 +323,14 @@ namespace BMI.Controllers
         public async Task<JsonResult> Getdetailitem(int id)
         {
             var obj = _db.Rm_detail.Find(id);
-            return await Task.Run(()=> Json(obj));
+            return await Task.Run(() => Json(obj));
         }
 
         [HttpPost]
         [AutoValidateAntiforgeryToken]
         [Authorize(Roles = "PF,Admin")]
         [Authorize(Policy = "Delete")]
-        public async Task<IActionResult> Deleteitem(int id,string raw_source)
+        public async Task<IActionResult> Deleteitem(int id, string raw_source)
         {
             var obj = _db.Rm_detail.Find(id);
             _db.Rm_detail.Remove(obj);
@@ -341,7 +342,7 @@ namespace BMI.Controllers
 
         [Authorize(Roles = "PF,Admin")]
         [Authorize(Policy = "Delete")]
-        public async Task< IActionResult> Adddestroy(AdjustmentRawModel adjustmentRawModel)
+        public async Task<IActionResult> Adddestroy(AdjustmentRawModel adjustmentRawModel)
         {
             if (ModelState.IsValid)
             {
@@ -349,12 +350,16 @@ namespace BMI.Controllers
                 _db.SaveChanges();
                 TempData["msg"] = "Raw Material Succesfully Destroy";
                 TempData["result"] = "success";
-                return await Task.Run(()=> Redirect(Request.Headers["Referer"].ToString())) ;
+                return await Task.Run(() => Redirect(Request.Headers["Referer"].ToString()));
             }
             TempData["msg"] = "Raw Material Failed to Destroy";
             TempData["result"] = "failed";
             return await Task.Run(() => Redirect(Request.Headers["Referer"].ToString()));
         }
+
+
+        /// -------------------------------------------------------------------MOWI LINE------------------------------------------------
+  
 
 
 

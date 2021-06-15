@@ -35,12 +35,14 @@ namespace BMI.Data
         public DbSet<PendingModel> Pending { get; set; }
         public DbSet<FundModel> Fund { get; set; }
         public DbSet<DepositModel> Deposit { get; set; }
-        public DbSet<RmPlantModel> Rm_plant { get; set; }
+        public DbSet<SAP_POModel> SAP_PO { get; set; }
         public DbSet<VendorModel> Vendor { get; set; }
-        public DbSet<RmPlantDetailModel> Rm_plant_detail { get; set; }
+        public DbSet<SAP_PODetailModel> SAP_PO_Detail { get; set; }
         public DbSet<DateVesselModel> Date_vessel { get; set; }
         public DbSet<QtyLine1Input> QtyLine1Input { get; set; }
         public DbSet<QtyLine1Output> QtyLine1Output { get; set; }
+        public DbSet<CostAnalystModel> CostAnalyst { get; set; }
+        public DbSet<RmCostModel> Rm_Cost { get; set; }
     }
 }
 

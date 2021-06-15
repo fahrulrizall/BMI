@@ -13,7 +13,7 @@
 
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">@ViewBag.Date - @ViewBag.Vessel</h3>
+                        <h3 class="card-title">@ViewBag.Date - @ViewBag.Vessel - @ViewBag.reff</h3>
                         <div class="card-tools ">
                             <button class="btn btn-sm float-right mx-1 add-output-line1"
                                     data-toggle="modal" data-target="#modal-default">
@@ -50,7 +50,7 @@
                                         <td>@obj.qty</td>
                                         <td>
                                             <form asp-controller="Processing" asp-route-id="@obj.id" asp-action="DeleteItem" method="post">
-                                                <a data-toggle="modal" data-target="#modal-default" data-id="" class="btn btn-xs btn-warning update-fg">
+                                                <a data-toggle="modal" data-target="#modal-default" data-id="@obj.id" class="btn btn-xs btn-warning update-output-item">
                                                     <i class="fa fa-edit" style="color:whitesmoke;outline:thin">
                                                     </i>
                                                 </a>
@@ -92,6 +92,7 @@
                 <form method="POST" asp-controller="Processing" asp-action="AddItem" enctype="multipart/form-data">
                     <div class="card-body">
                         <input type="hidden" name="Id_DateVessel" value="@ViewBag.Id" />
+                        <input type="hidden" asp-for="FirstOrDefault().id" />
                         <div class="form-group">
                             <label class="col-form-label">SAP Code</label>
                             <div class="input-group">
@@ -106,6 +107,7 @@
                                 <span asp-validation-for="FirstOrDefault().qty" class="text-danger" style="font-size:smaller"> </span>
                             </div>
                         </div>
+                        <input type="hidden" name="refference" id="refference" value="@ViewBag.reff" />
                     </div>
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-primary">Upload</button>

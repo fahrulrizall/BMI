@@ -8,8 +8,9 @@
     });
 
     $('.update-master-data').on('click', function () {
-        $('#formModalLabel').html('Update Item');
+      
         var id = $(this).data('id');
+        $('#formModalLabel').html('Update Item ' + id );
         $('.sap-code').hide();
         $('.modal-body form').attr('action', '/MasterData/Update');
         $.ajax({
@@ -19,8 +20,12 @@
             dataType: 'json',
             success: function (data) {
                 $('#sap_code').val(data.sap_code).hide();
+                $('#hers_code').val(data.hers_code);
                 $('#description').val(data.description);
                 $('#lbs').val(data.lbs);
+                $('#standard_price').val(data.standard_price);
+                $('#PF3770').val(data.pF3770);
+                $('#PF3710').val(data.pF3710);
                 $('#category').val(data.category);
             }
         });

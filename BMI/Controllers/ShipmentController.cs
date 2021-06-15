@@ -107,7 +107,7 @@ namespace BMI.Controllers
             return await Task.Run(()=> Json(obj));
         }
 
-        public async Task< IActionResult> Detail(string po)
+        public async Task< IActionResult> Detail(string po, int no)
         {
             var obj = _db.Shipment
                 .Where(a => a.po == po)
@@ -129,6 +129,7 @@ namespace BMI.Controllers
             if (obj != null)
             {
                 ViewBag.po = po;
+                ViewBag.no = no;
                 ViewBag.totalcase = total_cases;
                 return await Task.Run(() => View(obj));
             }
