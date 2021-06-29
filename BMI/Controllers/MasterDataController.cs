@@ -43,7 +43,7 @@ namespace BMI.Controllers
                 //    created_at = DateTime.Now
                 //};
                 //_db.Master_data.Add(obj);
-                _db.Master_data.Update(masterdatamodel);
+                _db.Master_data.Add(masterdatamodel);
                 _db.SaveChanges();
                 TempData["msg"] = "Item Succesfully Added";
                 TempData["result"] = "success";

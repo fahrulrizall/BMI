@@ -22,7 +22,7 @@
                             </button>
                         </div>
                         <div>
-                            <button class="btn btn-sm float-right mx-1 select-material" data-po="@ViewBag.po"
+                            <button class="btn btn-sm float-right mx-1 select-material" data-po="@ViewBag.po" data-plant="@ViewBag.plant"
                                     data-toggle="modal" data-target="#modal-material">
                                 <i class="fa fa-cubes">
                                 </i>
@@ -69,29 +69,37 @@
                             <tbody>
                                 @foreach (var obj in Model)
                                 {
-                                    <tr>
-                                        <td style="font-size:small"> @obj.SAP_Code</td>
-                                        <td style="font-size:small"> @obj.masterdatamodel.description</td>
-                                        <td style="font-size:small"> @obj.masterdatamodel.category</td>
-                                        <td style="font-size:small"> @obj.Price</td>
-                                        <td style="font-size:small"> @obj.Target_Lbs</td>
+                                <tr>
+                                    <td style="font-size:small"> @obj.SAP_Code</td>
+                                    <td style="font-size:small"> @obj.masterdatamodel.description</td>
+                                    <td style="font-size:small"> @obj.masterdatamodel.category</td>
+                                    <td style="font-size:small"> @obj.Price</td>
+                                    <td style="font-size:small"> @obj.Target_Lbs</td>
+                                    @if (ViewBag.plant == "3770")
+                                    {
                                         <td style="font-size:small"> @((obj.masterdatamodel.PF3770))</td>
-                                        <td style="font-size:small"> @obj.masterdatamodel.standard_price</td>
-                                        <td style="font-size:small"> @obj.Yield</td>
-                                        <td style="font-size:small"> @obj.Result</td>
-                                        <td>
-                                            <form asp-controller="PO" asp-route-id="@obj.Id" asp-action="DeleteMaterial" method="post">
-                                                <a data-toggle="modal" data-target="#modal-update" data-id="@obj.Id" data-code="@obj.SAP_Code" class="btn btn-xs btn-warning update-material-ca">
-                                                    <i class="fa fa-edit" style="color:whitesmoke;outline:thin">
-                                                    </i>
-                                                </a>
-                                                <button type="submit" onclick="return confirm ('Delete Item @obj.SAP_Code ? ');" class="btn btn-xs btn-danger">
-                                                    <i class="fa fa-trash">
-                                                    </i>
-                                                </button>
-                                            </form>
-                                        </td>
-                                    </tr>
+                                    }
+                                    else
+                                    {
+                                        <td style="font-size:small"> @((obj.masterdatamodel.PF3710))</td>
+                                    }
+
+                                    <td style="font-size:small"> @obj.masterdatamodel.standard_price</td>
+                                    <td style="font-size:small"> @obj.Yield</td>
+                                    <td style="font-size:small"> @obj.Result</td>
+                                    <td>
+                                        <form asp-controller="PO" asp-route-id="@obj.Id" asp-action="DeleteMaterial" method="post">
+                                            <a data-toggle="modal" data-target="#modal-update" data-id="@obj.Id" data-code="@obj.SAP_Code" class="btn btn-xs btn-warning update-material-ca">
+                                                <i class="fa fa-edit" style="color:whitesmoke;outline:thin">
+                                                </i>
+                                            </a>
+                                            <button type="submit" onclick="return confirm ('Delete Item @obj.SAP_Code ? ');" class="btn btn-xs btn-danger">
+                                                <i class="fa fa-trash">
+                                                </i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
                                 }
                             </tbody>
                             <tfoot>
@@ -169,7 +177,7 @@
                 <form method="POST" asp-controller="PO" asp-action="UpdateMaterial" enctype="multipart/form-data">
                     <input type="hidden" value="@ViewBag.po" name="po" />
                     <div class="form-group">
-                        <select class="select2 show-material" name="Material" id="Material" multiple="multiple" data-placeholder="Select Materials" style="width: 100%; background-color:blue">
+                        <select class="select2 show-material" name="Material" id="Material" data-plant="@ViewBag.plant" multiple="multiple" data-placeholder="Select Materials" style="width: 100%; background-color:blue">
                           
                         </select>
                     </div>

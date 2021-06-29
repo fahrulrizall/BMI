@@ -111,7 +111,7 @@
                     <div class="card-body">
                         <div class="form-group sap-code">
                             <label>SAP Code</label>
-                            <input type="number" step="any" class="form-control" asp-for="First().sap_code"
+                            <input type="text" step="any" class="form-control" asp-for="First().sap_code"
                                    placeholder="SAP Code">
                             <span asp-validation-for="First().sap_code" class="text-danger" style="font-size:smaller"> </span>
                         </div>
@@ -134,19 +134,19 @@
                             <span asp-validation-for="First().lbs" class="text-danger" style="font-size:smaller"> </span>
                         </div>
                         <div class="form-group">
-                            <label>3770 Processing Fee</label>
+                            <label>3770 Processing Fee/Lb</label>
                             <input type="number" step="any" class="form-control" asp-for="First().PF3770"
                                    placeholder="Processing Fee 3770">
                             <span asp-validation-for="First().PF3770" class="text-danger" style="font-size:smaller"> </span>
                         </div>
                         <div class="form-group">
-                            <label>3710 Processing Fee</label>
+                            <label>3710 Processing Fee/Lb</label>
                             <input type="number" step="any" class="form-control" asp-for="First().PF3710"
                                    placeholder="Processing Fee 3710">
                             <span asp-validation-for="First().PF3710" class="text-danger" style="font-size:smaller"> </span>
                         </div>
                         <div class="form-group">
-                            <label>Standard Price</label>
+                            <label>Standard Price/Lb</label>
                             <input type="number" step="any" class="form-control" asp-for="First().standard_price"
                                    placeholder="Standard Price">
                             <span asp-validation-for="First().standard_price" class="text-danger" style="font-size:smaller"> </span>

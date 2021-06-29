@@ -145,15 +145,15 @@
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-route-plant="3770" asp-controller="PO" asp-action="Index" asp-route-status="Open">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>ICPO</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
                                     <a class="nav-link" asp-controller="SAP_PO" asp-action="Index" asp-route-plant="3770" asp-route-status="Plant">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>SAP PO</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="PO" asp-action="Index"  asp-route-plant="3770" asp-route-status="Open">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>ICPO</p>
                                     </a>
                                 </li>
                             </ul>
@@ -168,15 +168,15 @@
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-controller="PO" asp-action="index" asp-route-plant="3710">
+                                    <a class="nav-link" asp-controller="SAP_PO" asp-action="Index" asp-route-plant="3710" asp-route-status="Plant">
                                         <i class="far fa-circle nav-icon"></i>
-                                        <p>ICPO</p>
+                                        <p>SAP PO</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-controller="Rm" asp-action="IndexRMPlant" asp-route-status="Plant">
+                                    <a class="nav-link" asp-controller="PO" asp-action="Index" asp-route-plant="3710" asp-route-status="Open" >
                                         <i class="far fa-circle nav-icon"></i>
-                                        <p>SAP PO</p>
+                                        <p>ICPO</p>
                                     </a>
                                 </li>
                                 <li class="nav-item has-treeview">

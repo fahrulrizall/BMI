@@ -5,6 +5,7 @@
         $('#sap_code').val("").show();
         $('#description').val("");
         $('#lbs').val("");
+        $('#PF3770').val("");
     });
 
     $('.update-master-data').on('click', function () {

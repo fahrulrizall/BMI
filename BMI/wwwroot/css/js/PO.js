@@ -26,27 +26,12 @@
         });
     });
 
-    $(document).on('keyup', '.select2-search__field', function (e) {
-        $('.dropdown-wrapper').html("");
-        var material = $('.select2-search__field').val();
-        $.ajax({
-            url: '/PO/GetMaterial',
-            data: { material: material, },
-            method: 'get',
-            dataType: 'json',
-            success: function (data) {
-                data.forEach(function (e) {
-                    $('.show-material').append("<option>" + e + "</option>");
-                })
-            }
-        });
-    })
-
-
     $(document).on('click', '.select-material', function () {
         $('.show-material').html("");
         $('#Material').val("").select2();
         var po = $(this).data('po');
+        var plant = $(this).data('plant');
+        
         $.ajax({
             url: '/PO/SelectedMaterial',
             data: { po: po },
@@ -59,6 +44,23 @@
                 $('#Material').val(data).select2()
             }
         });
+
+        // on key up
+        $(document).on('keyup', '.select2-search__field', function (e) {
+            $('.dropdown-wrapper').html("");
+            var material = $('.select2-search__field').val();
+            $.ajax({
+                url: '/PO/GetMaterial',
+                data: { material: material,plant:plant },
+                method: 'get',
+                dataType: 'json',
+                success: function (data) {
+                    data.forEach(function (e) {
+                        $('.show-material').append("<option>" + e + "</option>");
+                    })
+                }
+            });
+        })
     })
 
     $('.select2').select2();

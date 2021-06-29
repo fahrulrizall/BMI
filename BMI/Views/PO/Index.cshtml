@@ -68,7 +68,7 @@
                                 @foreach (var obj in Model)
                                 {
                                     <tr>
-                                        <td style="font-size:small"><a asp-controller="PO" asp-action="Detail" asp-route-po="@obj.po" asp-route-pt="@obj.pt" style="color:black;font-size:small">@obj.po</a></td>
+                                        <td style="font-size:small"><a asp-controller="PO" asp-action="Detail" asp-route-po="@obj.po" asp-route-pt="@obj.pt" asp-route-plant="@ViewBag.plant"  style="color:black;font-size:small">@obj.po</a></td>
                                         <td style="font-size:small">PT# @obj.pt</td>
                                         @if (ViewBag.plant == "3700")
                                         {

@@ -13,30 +13,30 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-header">
-                        <h5 class="card-title">@status Refference</h5>
+                        <h5 class="card-title">@status Refference - @ViewBag.plant</h5>
 
                         <div class="card-tools">
                             <ul class="nav nav-pills">
                                 @if (status == "Plant")
                                 {
-                                    <li class="nav-item"><a class="nav-link" asp-controller="SAP_PO" asp-action="Index" asp-route-status="Otw" asp-route-plant="3770">OTW</a></li>
-                                    <li class="nav-item"><a class="nav-link active" asp-controller="SAP_PO" asp-action="Index" asp-route-status="Plant" asp-route-plant="3770">Plant</a></li>
-                                    <li class="nav-item"><a class="nav-link" asp-controller="SAP_PO" asp-action="Index" asp-route-status="Closed" asp-route-plant="3770">Closed</a></li>
+                                    <li class="nav-item"><a class="nav-link" asp-controller="SAP_PO" asp-action="Index" asp-route-status="Otw" asp-route-plant="@ViewBag.plant">OTW</a></li>
+                                    <li class="nav-item"><a class="nav-link active" asp-controller="SAP_PO" asp-action="Index" asp-route-status="Plant" asp-route-plant="@ViewBag.plant">Plant</a></li>
+                                    <li class="nav-item"><a class="nav-link" asp-controller="SAP_PO" asp-action="Index" asp-route-status="Closed" asp-route-plant="@ViewBag.plant">Closed</a></li>
                                 }
                                 else if (status == "On The Water")
                                 {
                                      <li href="#" type="button" class="nav-link upload-file"
                                            data-toggle="modal" data-target="#modal-upload">Upload File</li>
                                     
-                                    <li class="nav-item"><a class="nav-link active" asp-controller="SAP_PO" asp-action="Index" asp-route-status="Otw" asp-route-plant="3770">OTW</a></li>
-                                    <li class="nav-item"><a class="nav-link" asp-controller="SAP_PO" asp-action="Index" asp-route-status="plant" asp-route-plant="3770">Plant</a></li>
-                                    <li class="nav-item"><a class="nav-link" asp-controller="SAP_PO" asp-action="Index" asp-route-status="Closed" asp-route-plant="3770">Closed</a></li>
+                                    <li class="nav-item"><a class="nav-link active" asp-controller="SAP_PO" asp-action="Index" asp-route-status="Otw" asp-route-plant="@ViewBag.plant">OTW</a></li>
+                                    <li class="nav-item"><a class="nav-link" asp-controller="SAP_PO" asp-action="Index" asp-route-status="plant" asp-route-plant="@ViewBag.plant">Plant</a></li>
+                                    <li class="nav-item"><a class="nav-link" asp-controller="SAP_PO" asp-action="Index" asp-route-status="Closed" asp-route-plant="@ViewBag.plant">Closed</a></li>
                                 }
                                 else
                                 {
-                                    <li class="nav-item"><a class="nav-link" asp-controller="SAP_PO" asp-action="Index" asp-route-status="Otw" asp-route-plant="3770">OTW</a></li>
-                                    <li class="nav-item"><a class="nav-link" asp-controller="SAP_PO" asp-action="Index" asp-route-status="Plant" asp-route-plant="3770">Plant</a></li>
-                                    <li class="nav-item"><a class="nav-link active" asp-controller="SAP_PO" asp-action="Index" asp-route-status="Closed" asp-route-plant="3770">Closed</a></li>
+                                    <li class="nav-item"><a class="nav-link" asp-controller="SAP_PO" asp-action="Index" asp-route-status="Otw" asp-route-plant="@ViewBag.plant">OTW</a></li>
+                                    <li class="nav-item"><a class="nav-link" asp-controller="SAP_PO" asp-action="Index" asp-route-status="Plant" asp-route-plant="@ViewBag.plant">Plant</a></li>
+                                    <li class="nav-item"><a class="nav-link active" asp-controller="SAP_PO" asp-action="Index" asp-route-status="Closed" asp-route-plant="@ViewBag.plant">Closed</a></li>
                                 }
 
                             </ul>

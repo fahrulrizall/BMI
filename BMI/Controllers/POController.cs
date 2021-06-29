@@ -128,12 +128,11 @@ namespace BMI.Controllers
         }
 
 
-
-
-        public IActionResult Detail(string po, string pt)
+        public IActionResult Detail(string po, string pt, string plant)
         {
             ViewBag.po = po;
             ViewBag.pt = pt;
+            ViewBag.plant = plant;
 
             var material = _db.Rm_Cost.Where(a => a.PO == po).Select(a => a.Material).ToList();
 
@@ -155,31 +154,56 @@ namespace BMI.Controllers
             }
             else
             {
-            var price = (_db.SAP_PO_Detail.Where(a => material.Contains(a.refference)).Sum(a => a.qty_received * a.unit_price) /
-                _db.SAP_PO_Detail.Where(a => material.Contains(a.refference)).Sum(a => a.qty_received));
+             
+                
+            var price = (_db.SAP_PO_Detail.Where(a => material.Contains(a.refference)).Sum(a => a.qty_pl * a.unit_price)/
+                    _db.SAP_PO_Detail.Where(a => material.Contains(a.refference)).Sum(a => a.qty_pl* 2.204 * (a.style=="WR" ? 0.45: a.style=="DL" ?0.67: a.style == "HGT" ? 0.61 : a.style == "GG" ? 0.55:1 ))   );
 
-            result = _db.CostAnalyst
-                .Where(a => a.PO == po)
-                .Include(a => a.masterdatamodel)
-                .Select(a => new CostAnalystModel
+            if (plant == "3770")
                 {
-                    Id = a.Id,
-                    SAP_Code = a.SAP_Code,
-                    masterdatamodel = a.masterdatamodel,
-                    Price = Math.Round(price, 2),
-                    Target_Lbs = a.Target_Lbs,
-                    Yield = Math.Round((a.Target_Lbs / (_db.CostAnalyst.Where(a => a.PO == po).Sum(a => a.Target_Lbs)) * 100), 2),
-                    Result = Math.Round(Convert.ToDouble(((a.masterdatamodel.standard_price / 10) * a.Target_Lbs) - (a.Target_Lbs * ((price / 1 / 0.95) + (a.masterdatamodel.PF3770 / 2.204) + 0.44))), 2)
-                }).ToList();
-            ViewBag.total_result = Math.Round(Convert.ToDouble(result.Sum(a => a.Result)), 2);
-            }
-
-             ViewBag.total_lbs = result.Sum(a => a.Target_Lbs);
+                            result = _db.CostAnalyst
+                                .Where(a => a.PO == po)
+                                .Include(a => a.masterdatamodel)
+                                .Select(a => new CostAnalystModel
+                                {
+                                    Id = a.Id,
+                                    SAP_Code = a.SAP_Code,
+                                    masterdatamodel = a.masterdatamodel,
+                                    Price = Math.Round(price, 2),
+                                    Target_Lbs = a.Target_Lbs,
+                                    Yield = Math.Round((a.Target_Lbs / (_db.CostAnalyst.Where(a => a.PO == po).Sum(a => a.Target_Lbs)) * 100), 2),
+                                    Result = Math.Round(Convert.ToDouble(((a.masterdatamodel.standard_price) * a.Target_Lbs) - (a.Target_Lbs * ((price / 1 / 0.95) + a.masterdatamodel.PF3770 + 0.44))), 2)
+                                }).ToList();
+                            ViewBag.total_result = Math.Round(Convert.ToDouble(result.Sum(a => a.Result)), 2);
+                }
+                else
+                {
+                    result = _db.CostAnalyst
+                                .Where(a => a.PO == po)
+                                .Include(a => a.masterdatamodel)
+                                .Select(a => new CostAnalystModel
+                                {
+                                    Id = a.Id,
+                                    SAP_Code = a.SAP_Code,
+                                    masterdatamodel = a.masterdatamodel,
+                                    Price = Math.Round(price+0.29, 2),
+                                    Target_Lbs = a.Target_Lbs,
+                                    Yield = Math.Round((a.Target_Lbs / (_db.CostAnalyst.Where(a => a.PO == po).Sum(a => a.Target_Lbs)) * 100), 2),
+                                    //Result = Math.Round( ((price+0.29) / 1 / 0.95),2)
+                                    //Result = Math.Round(Convert.ToDouble (((a.masterdatamodel.standard_price) * a.Target_Lbs) - (a.Target_Lbs * (((price+0.29) / 1 / 0.95) + a.masterdatamodel.PF3710 + 0.22))), 2)
+                                    //Result = Math.Round(Convert.ToDouble (((a.masterdatamodel.standard_price) * a.Target_Lbs) - (a.Target_Lbs * (    Math.Round(    ((price+0.29) / 1 / 0.95),2) + a.masterdatamodel.PF3710 + 0.22))), 2)
+                                    Result = Math.Round(Convert.ToDouble (((a.masterdatamodel.standard_price) * a.Target_Lbs) - (a.Target_Lbs * ( ((price+0.29) / 1 / 0.95) + a.masterdatamodel.PF3710 + 0.22))),2)
+                                }).ToList();
+                        ViewBag.total_result = Math.Round(Convert.ToDouble(result.Sum(a => a.Result)), 2);
+                }
+           }
+            
+            ViewBag.total_lbs = result.Sum(a => a.Target_Lbs);
             return View(result);
         }
 
 
-        public async Task<IActionResult> Import(IFormFile postedFile, string po, string version)
+        public async Task<IActionResult> Import(IFormFile postedFile, string po)
         {
             if (postedFile != null)
             {
@@ -260,9 +284,11 @@ namespace BMI.Controllers
             return await Task.Run(() => Redirect(Request.Headers["Referer"].ToString()));
         }
 
-        public async Task<JsonResult> GetMaterial(string material)
+
+        // when keyup
+        public async Task<JsonResult> GetMaterial(string material,string plant)
         {
-            var result = _db.SAP_PO.Where(a => a.refference.Contains(material)).Select(a => a.refference);
+            var result = _db.SAP_PO.Where(a => a.plant == plant && a.refference.Contains(material)).Select(a => a.refference);
             return await Task.Run(() => Json(result));
         }
 
